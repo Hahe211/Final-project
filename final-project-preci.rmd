@@ -1,0 +1,29 @@
+---
+title: "Final Submission"
+author: "hannah hess"
+date: "October 19, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Objective:
+
+I want to examine changes in search frequency of pornography related terms over Ramadan. I already worked with some data on this I scraped in an econometrics class and found a significant decrease of pornography related terms over Ramadan in muslim majoirty countries. However, for this course I wish to expand the scope and display my results with friendly graphics
+
+Data:
+
+My study will employ Google search data from thirteen countries, Brazil Egypt, France, Jordan   Malaysia, Morocco, Pakistan, Qatar, Saudi Arabia (SA), Turkey, United Kingdom (UK), United States (US) and Bangladesh, nine of which have significant Muslim majorities. All of the Muslim majority countries except Turkey assert Islam as the state religion in their constitution. The non-muslim countries will be included as controls.
+
+
+There will be a total of 4,745 observations: each observation represents one week in a given country in a given year. My observations extend over a seven-year period, from the week of 01/03/10 to the week of 12/25/2016.10  I will not include observations before this period out of concern that changes in data availability and Internet access might skew the results
+
+
+
+
+Progress: I am still scraping the data. I have identified the key search terms I wish to use. 
+
+
