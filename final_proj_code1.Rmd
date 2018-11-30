@@ -10,13 +10,38 @@ knitr::opts_chunk$set(echo = TRUE)
 library(stargazer)
 library(gtrendsR)
 library(tidyverse)
+library(knitr)
+```
+
+
+ 
+first - try to pull a cross country data frame from google then combine by country... although I could make life easy on myself and not pull more than two countries. 
+```{r}
+
+#create preliminary data set - last 5 years
+
+D1 <- gtrends(keyword = c("sex", "porn"), geo = c("EG", "SA"), time = "today+5-y")
+D1_interest <- D1$interest_over_time 
+
+
+
+
+#since I'm still figuring out how to join the dates - 
+        
+      
+
 ```
 
 
 ```{r}
 #showing/determining high volume porn searches 
-```
 
+
+#justify that I'm picking the right terms (warning explicit content) - since I'm focused with change over time - its not critical that I isolate all the relevant terms but just that they indeed be pornography serach terms  adn that they capture a high level of the variation over time
+
+ 
+
+```
 
 
 ```{r}
@@ -63,6 +88,10 @@ for (i in 1:length(D1_interest$date)) {
 #my next step in data manipulation before running a regression will be to add an additional variable for year so that I can control for that. 
 #I also may go back up (before doing the ramadan stuff) and create a combined variable of porn searches called porn which is the average of the high volume porn searches I've found 
 
+D1_interest$year <- substring(D1_interest$date, 1,4)
+
+
+
 
 
 ```
@@ -71,6 +100,32 @@ for (i in 1:length(D1_interest$date)) {
 
 
 
+```{r}
+#regression analysis
+
+#descriptive statistics
+
+des_table <- stargazer(D1_interest, type = "text", title="Descriptive statistics", digits=1)
+
+
+#CODE FOR SELECTIVE DESCRIPTIVE Stats
+# stargazer(mydata[c("mpg","hp","drat")], type = "text",
+#  title="Descriptive statistics/selected variables", digits=1, out="table2.txt", flip=TRUE,
+#  covariate.labels=c("Miles/(US)gallon","Gross horsepower","Rear axle ratio"))
+
+
+#Make a regression table
+
+m1 <- lm(hits ~ in_ram, data=D1_interest)
+m2 <- lm(hits ~ days_in_ram, data=D1_interest)
+
+reg_table <- stargazer(m1, m2, type="text")
+
+kable(reg_table)
+
+
+
+```
 
 
 
@@ -91,37 +146,7 @@ search volume (porn/sex)
 
 
 
-first - try to pull a cross country data frame from google 
-```{r}
-
-#create preliminary data set - last 5 years 
-D1 <- gtrends(keyword = c("sex", "porn"), geo = c("EG", "SA"), time = "today+5-y")
-D1_interest <- D1$interest_over_time %>% 
-  mutate(data)
-
-ramadan_dates
-
-join()
-#since I'm still figuring out how to join the dates - 
-        
-      
-
-```
-
-
-then - rearrange the countries 
-```{r}
-# I will make a graph by bringing togethor the countries and then 
-
-
-D1 <- gtrends(keyword = c("sex", "porn"), geo = c("EG", "SA"), time = "today+5-y")
-
-
-D1_interest <- D1$interest_over_time %>% 
-  mutate(data)
 
 
 
-
-```
-
+It's important to acknowledge that the population covered in my study are those people who access pornography searches not through a proxy site and it is likely that this population would differ somewhat from those who use a proxy site and are not found on google. thus my sample size is not representative of the population as a whole 
