@@ -1,5 +1,5 @@
 ---
-title: "final_proj1"
+title: "regression analysis"
 author: "hannah hess"
 date: "November 29, 2018"
 output: html_document
@@ -11,24 +11,41 @@ library(stargazer)
 library(gtrendsR)
 library(tidyverse)
 library(knitr)
+library(readxl)
 ```
 
+This is a page for regression analysis, tables and charts
+in another page, I will look at graphs of - popular hours for porn consumption, changes in porn consumption over time
 
  
 first - try to pull a cross country data frame from google then combine by country... although I could make life easy on myself and not pull more than two countries. 
 ```{r}
 
-#create preliminary data set - last 5 years
+#create preliminary data set from gtrends - last 5 years
 
-D1 <- gtrends(keyword = c("sex", "porn"), geo = c("EG", "SA"), time = "today+5-y")
+
+
+  #donload data
+D1 <- gtrends(keyword = "sex", geo = c("EG", "SA", "AE", "PK", "MA"), time = "today+5-y")
 D1_interest <- D1$interest_over_time 
 
+#download world data to see if theres a world influence
+world <- gtrends(keyword = "sex", time = "today+5-y")
+world_interest <- world$interest_over_time 
 
 
+#load the data set I made with dates of ramadan and major holidays
 
-#since I'm still figuring out how to join the dates - 
-        
-      
+ramadan_dates <- read_excel("ramadan_dates.xlsx")
+
+
+```
+
+
+```{r}
+#dowload data set for more countries 
+
+
 
 ```
 
@@ -38,8 +55,13 @@ D1_interest <- D1$interest_over_time
 
 
 #justify that I'm picking the right terms (warning explicit content) - since I'm focused with change over time - its not critical that I isolate all the relevant terms but just that they indeed be pornography serach terms  adn that they capture a high level of the variation over time
+  
+D1$related_queries %>% 
+     select(subject, value) %>% 
+      slice(1:10)
 
- 
+
+
 
 ```
 
@@ -85,10 +107,9 @@ for (i in 1:length(D1_interest$date)) {
 #Thank you to Eric Wasserman Harvard 2019 Dunster House for helping me conceptualize how best to approach the coding problem above!
 
 
-#my next step in data manipulation before running a regression will be to add an additional variable for year so that I can control for that. 
-#I also may go back up (before doing the ramadan stuff) and create a combined variable of porn searches called porn which is the average of the high volume porn searches I've found 
+#my next step in data manipulation before running a regression will be to add an additional variable for year so that I can control #for that. 
+#I also may go back up (before doing the ramadan stuff) and create a combined variable of porn searches called porn which is the #average of the high volume porn searches I've found 
 
-D1_interest$year <- substring(D1_interest$date, 1,4)
 
 
 
@@ -96,6 +117,72 @@ D1_interest$year <- substring(D1_interest$date, 1,4)
 
 ```
 
+
+
+```{r}
+
+#repeat the above step but for WORLD data to test if there's a global impact
+
+
+
+#I have a problem: the gtrends data set does not indicate the presence or absence of Ramadan. I have to pull that info from a different data set I have called ramadan_holiday
+#My google trends data set (D1_interest) includes ramadan search values for a whole week 
+#manipulate data set to add all days of the week 
+world_interest$date1 = as.Date(world_interest$date) + 1 
+world_interest$date2 = as.Date(world_interest$date) + 2 
+world_interest$date3 = as.Date(world_interest$date) + 3 
+world_interest$date4 = as.Date(world_interest$date) + 4 
+world_interest$date5 = as.Date(world_interest$date) + 5 
+world_interest$date6 = as.Date(world_interest$date) + 6 
+
+world_interest$year <- substring(world_interest$date,1,4)
+
+
+#For loop to create (1) a "days_in_ram" variable ->  the number of days in a given week with ramadan present and also (2) "in_ram" variable -> (0 or 1) whether or not ramadan is present in that week
+#first iterate over a week in a given year in the D1_interests data set to see if there are any matches for Ramadan occuring
+#count the number of days of a given week in teh D1_interest$date variable which overlap with ramadan
+#create a binary variable to code 1 if a week includes more than 3 days of ramadan. 
+
+for (i in 1:length(world_interest$date)) {
+  world_interest[i, "days_in_ram"] = 0 
+  for( j in c("date" , "date1", "date2" , "date3", "date4", "date5", "date6")){
+    if ( (world_interest[i, j] > ramadan_dates[ramadan_dates$year==   world_interest[i, "year"]   &  ramadan_dates$Holiday == "Ramadan" , ]$start  ) & (world_interest[i, j] < ramadan_dates[ramadan_dates$year== world_interest[i,"year"] & ramadan_dates$Holiday == "Ramadan" ,]$end  ) ) {
+        world_interest[i, "days_in_ram"] =   world_interest[i, "days_in_ram"]  + 1
+    }
+  }
+  
+  if (world_interest[i, "days_in_ram"] > 2){
+      world_interest[i,"in_ram"] = 1
+  } else{
+      world_interest[i,"in_ram"] = 0
+  }
+  
+  
+}
+
+
+
+
+
+```
+
+
+```{r}
+#surveying my handiwork:)
+#country level data
+D1_interest <- D1_interest %>% 
+  select(date, geo, days_in_ram, in_ram, keyword, hits, year)
+
+      
+head(D1_interest)
+
+#global data
+world_interest <- world_interest %>% 
+    select(date, geo, days_in_ram, in_ram, keyword, hits, year)
+
+head(world_interest)
+  
+```
 
 
 
@@ -116,8 +203,9 @@ des_table <- stargazer(D1_interest, type = "text", title="Descriptive statistics
 
 #Make a regression table
 
-m1 <- lm(hits ~ in_ram, data=D1_interest)
-m2 <- lm(hits ~ days_in_ram, data=D1_interest)
+m1 <- lm(hits ~ in_ram + geo + year, data=D1_interest)
+m2 <- lm(hits ~ days_in_ram + geo + year, data=D1_interest)
+
 
 reg_table <- stargazer(m1, m2, type="text")
 
@@ -141,8 +229,6 @@ country
 year 
 Ramadan vs not ramadan 
 search volume (porn/sex)
-
-
 
 
 
