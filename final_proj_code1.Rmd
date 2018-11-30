@@ -247,21 +247,28 @@ mb <- lm(hits ~ days_in_ram + geo, data=D1_interest)
 m1 <- lm(hits ~ in_ram + geo + year, data=D1_interest)
 m2 <- lm(hits ~ days_in_ram + geo + year, data=D1_interest)
 
-#year controls dont make a difference in p values, sd, or coeff so I'm back to removing them - probably because data set is already normalized for year
-m1 <- lm(hits ~ in_ram + geo, data=D1_interest)
-m2 <- lm(hits ~ days_in_ram + geo, data=D1_interest)
+#year and country controls dont make a difference in p values, sd, or coeff so I'm back to removing them - probably because data set is already normalized for year and country
+m1 <- lm(hits ~ in_ram , data=D1_interest)
+m2 <- lm(hits ~ days_in_ram, data=D1_interest)
 
 
-#global data - no sig impact detected
-m3 <- lm(hits ~ days_in_ram, data=world_interest)
-m4 <-  lm(hits ~ in_ram, data=world_interest)
 
 #sig impact detected! .2 percentage point degrease
-reg_table <- stargazer(ma, mb, m1, m2, m3, m4, type="text")
+reg_table <- 
+  stargazer(ma, mb, m1, m2, type="text", dep.var.labels= "Country level porn hits")
+
+ covariate.labels=c("Gross horsepower","Rear axle ratio","Four foward gears",
+ "Five forward gears","Type of transmission (manual=1)"))
 
 kable(reg_table)
 
 
+
+#global data -  sig impact detected
+m3 <- lm(hits ~ days_in_ram, data=world_interest)
+m4 <-  lm(hits ~ in_ram, data=world_interest)
+
+#make a seperate table for world data
 
 
 #options moving forward - I could either include celebratory holidays OR look at it on a regional level - ie: middle eastern vs south asian countries vs gulf countries. 
