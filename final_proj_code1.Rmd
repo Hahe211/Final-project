@@ -13,6 +13,11 @@ library(tidyverse)
 ```
 
 
+```{r}
+#showing/determining high volume porn searches 
+```
+
+
 
 ```{r}
 
@@ -55,7 +60,9 @@ for (i in 1:length(D1_interest$date)) {
 #Thank you to Eric Wasserman Harvard 2019 Dunster House for helping me conceptualize how best to approach the coding problem above!
 
 
-#my next step in data manipulation before 
+#my next step in data manipulation before running a regression will be to add an additional variable for year so that I can control for that. 
+#I also may go back up (before doing the ramadan stuff) and create a combined variable of porn searches called porn which is the average of the high volume porn searches I've found 
+
 
 
 ```
