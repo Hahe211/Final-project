@@ -120,6 +120,41 @@ for (i in 1:length(D1_interest$date)) {
 
 
 ```{r}
+#repeat the ramadan iteration but this time for celebratory holidays
+
+#first I'll manipulate the ramadan_dates to code "celebratory holiday for Eid
+
+
+
+#For loop to create (1) a "days_in_ram" variable ->  the number of days in a given week with ramadan present and also (2) "in_ram" variable -> (0 or 1) whether or not ramadan is present in that week
+#first iterate over a week in a given year in the D1_interests data set to see if there are any matches for Ramadan occuring
+#count the number of days of a given week in teh D1_interest$date variable which overlap with ramadan
+#create a binary variable to code 1 if a week includes more than 3 days of ramadan. 
+
+#ERROR MESSAGE HAVING DIFFICULTY!!
+
+for (i in 1:length(D1_interest$date)) {
+  D1_interest[i, "days_in_eid"] = 0 
+  for( j in c("date" , "date1", "date2" , "date3", "date4", "date5", "date6")){
+    if ( (D1_interest[i, j] > ramadan_dates[ramadan_dates$year==   D1_interest[i, "year"]   &  ramadan_dates$Holiday ==  "Eid al-Fitr" , ]$start  ) & (D1_interest[i, j] < ramadan_dates[ramadan_dates$year== D1_interest[i,"year"] & ramadan_dates$Holiday ==  "Eid al-Fitr"  ,]$end  ) ) {
+        D1_interest[i, "days_in_eid"] =   D1_interest[i, "days_in_eid"]  + 1
+    }
+  }
+  
+  
+}
+
+#Thank you to Eric Wasserman Harvard 2019 Dunster House for helping me conceptualize how best to approach the coding problem above!
+
+
+#my next step in data manipulation before running a regression will be to add an additional variable for year so that I can control #for that. 
+#I also may go back up (before doing the ramadan stuff) and create a combined variable of porn searches called porn which is the #average of the high volume porn searches I've found 
+
+
+```
+
+
+```{r}
 
 #repeat the above step but for WORLD data to test if there's a global impact
 
@@ -171,14 +206,15 @@ for (i in 1:length(world_interest$date)) {
 #surveying my handiwork:)
 #country level data
 D1_interest <- D1_interest %>% 
-  select(date, geo, days_in_ram, in_ram, keyword, hits, year)
+  select(date, geo, days_in_ram, in_ram, hits, year) 
+
 
       
 head(D1_interest)
 
 #global data
 world_interest <- world_interest %>% 
-    select(date, geo, days_in_ram, in_ram, keyword, hits, year)
+    select(date, days_in_ram, in_ram, hits, year)
 
 head(world_interest)
   
@@ -202,16 +238,33 @@ des_table <- stargazer(D1_interest, type = "text", title="Descriptive statistics
 
 
 #Make a regression table
+#first regression without year or country controls
+ma <- lm(hits ~ days_in_ram, data=D1_interest)
 
+#adding country controls
+mb <- lm(hits ~ days_in_ram + geo, data=D1_interest)
+#both year and country controls, switching between in_ram and days_in_ram
 m1 <- lm(hits ~ in_ram + geo + year, data=D1_interest)
 m2 <- lm(hits ~ days_in_ram + geo + year, data=D1_interest)
 
+#year controls dont make a difference in p values, sd, or coeff so I'm back to removing them - probably because data set is already normalized for year
+m1 <- lm(hits ~ in_ram + geo, data=D1_interest)
+m2 <- lm(hits ~ days_in_ram + geo, data=D1_interest)
 
-reg_table <- stargazer(m1, m2, type="text")
+
+#global data - no sig impact detected
+m3 <- lm(hits ~ days_in_ram, data=world_interest)
+m4 <-  lm(hits ~ in_ram, data=world_interest)
+
+#sig impact detected! .2 percentage point degrease
+reg_table <- stargazer(ma, mb, m1, m2, m3, m4, type="text")
 
 kable(reg_table)
 
 
+
+
+#options moving forward - I could either include celebratory holidays OR look at it on a regional level - ie: middle eastern vs south asian countries vs gulf countries. 
 
 ```
 
