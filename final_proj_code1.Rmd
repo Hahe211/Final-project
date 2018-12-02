@@ -12,6 +12,9 @@ library(gtrendsR)
 library(tidyverse)
 library(knitr)
 library(readxl)
+#library(ls)
+
+
 ```
 
 This is a page for regression analysis, tables and charts
@@ -111,20 +114,9 @@ for (i in 1:length(D1_interest$date)) {
 #I also may go back up (before doing the ramadan stuff) and create a combined variable of porn searches called porn which is the #average of the high volume porn searches I've found 
 
 
-#write rds file to use in graph
-library(ls)
-
-write_rds(D1_interest, "graph_data.rds")
-
-
-```
-
-
-
-```{r}
 #repeat the ramadan iteration but this time for celebratory holidays
 
-#first I'll manipulate the ramadan_dates to code "celebratory holiday for Eid
+#first I'll manipulate the ramadan_dates to code "celebratory holiday for Eid""
 
 
 #code variable for celebratory holidays, same method as ramadan 
@@ -155,21 +147,9 @@ for (i in 1:length(D1_interest$date)) {
 
 
 
-
-
-
-
-
-
-
-#Thank you to Eric Wasserman Harvard 2019 Dunster House for helping me conceptualize how best to approach the coding problem above!
-
-
-#my next step in data manipulation before running a regression will be to add an additional variable for year so that I can control #for that. 
-#I also may go back up (before doing the ramadan stuff) and create a combined variable of porn searches called porn which is the #average of the high volume porn searches I've found 
-
-
 ```
+
+
 
 
 ```{r}
@@ -213,28 +193,51 @@ for (i in 1:length(world_interest$date)) {
   
 }
 
+#same code as above - Eid al-fitr: days_in_eid
+
+for (i in 1:length(world_interest$date)) {
+  world_interest[i, "days_in_eid"] = 0 
+  for( j in c("date" , "date1", "date2" , "date3", "date4", "date5", "date6")){
+    if ( (D1_interest[i, j] >= ramadan_dates[ramadan_dates$year==   D1_interest[i, "year"]   &  ramadan_dates$Holiday ==  "Eid al-Fitr" , ]$start  ) & (D1_interest[i, j] <=  ramadan_dates[ramadan_dates$year== world_interest[i,"year"] & ramadan_dates$Holiday ==  "Eid al-Fitr" ,]$end  ) ) {
+        world_interest[i, "days_in_eid"] =   world_interest[i, "days_in_eid"]  + 1
+    }
+  }
+
+}
+
+#same code as above - Eid al-ahda: days_in_eida
 
 
+for (i in 1:length(world_interest$date)) {
+  world_interest[i, "days_in_eida"] = 0 
+  for( j in c("date" , "date1", "date2" , "date3", "date4", "date5", "date6")){
+    if ( (world_interest[i, j] >= ramadan_dates[ramadan_dates$year==   D1_interest[i, "year"]   &  ramadan_dates$Holiday ==  "Eid-al-adha" , ]$start  ) & (D1_interest[i, j] <=  ramadan_dates[ramadan_dates$year== world_interest[i,"year"] & ramadan_dates$Holiday ==  "Eid-al-adha" ,]$end  ) ) {
+        world_interest[i, "days_in_eida"] =   world_interest[i, "days_in_eid"]  + 1
+    }
+  }
+
+  
+}
 
 
 ```
 
 
 ```{r}
-#surveying my handiwork:)
-#country level data
-D1_interest <- D1_interest %>% 
-  select(date, geo, days_in_ram, in_ram, hits, year) 
-
-
-      
-head(D1_interest)
-
-#global data
-world_interest <- world_interest %>% 
-    select(date, days_in_ram, in_ram, hits, year)
-
-head(world_interest)
+# #surveying my handiwork:)
+# #country level data
+# D1_interest <- D1_interest %>% 
+#   select(date, geo, days_in_ram, in_ram, hits, year) 
+# 
+# 
+#       
+# head(D1_interest)
+# 
+# #global data
+# world_interest <- world_interest %>% 
+#     select(date, days_in_ram, in_ram, hits, year)
+# 
+# head(world_interest)
   
 ```
 
@@ -275,8 +278,8 @@ m2 <- lm(hits ~ days_in_ram, data=D1_interest)
 reg_table <- 
   stargazer(ma, mb, m1, m2, type="text", dep.var.labels= "Country level porn hits")
 
- covariate.labels=c("Gross horsepower","Rear axle ratio","Four foward gears",
- "Five forward gears","Type of transmission (manual=1)"))
+ # covariate.labels=c("Gross horsepower","Rear axle ratio","Four foward gears",
+ # "Five forward gears","Type of transmission (manual=1)")
 
 kable(reg_table)
 

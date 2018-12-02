@@ -55,6 +55,21 @@ plot(sex) +
   geom_line(size = 0.5) 
 
 
+
+
+
+
+
+```
+```{r}
+#graph with rectanglas for ramadan presence
+
+
+read_rds("graph_data.rds")
+
+
+
+
 ```
 
 
