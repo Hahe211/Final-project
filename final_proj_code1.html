@@ -248,58 +248,7 @@ $(document).ready(function () {
 #     select(date, days_in_ram, in_ram, hits, year)
 # 
 # head(world_interest)</code></pre>
-<pre><code>## 
-## Descriptive statistics
-## ==========================================================
-## Statistic      N   Mean St. Dev. Min Pctl(25) Pctl(75) Max
-## ----------------------------------------------------------
-## hits         6,500 41.7   14.5   13     31       50    100
-## category     6,500 0.0    0.0     0     0        0      0 
-## hits.sex     6,500 35.5   14.1    8     27       43    100
-## sum.porn     6,500 38.6   11.0   10    31.5      45    94 
-## days_in_ram  6,500 0.6    1.9     0     0        0      7 
-## in_ram       6,500 0.1    0.3     0     0        0      1 
-## days_in_eid  6,500 0.1    0.4     0     0        0      3 
-## days_in_eida 6,500 0.02   0.1     0     0        0      1 
-## ----------------------------------------------------------</code></pre>
 <p>stargazer experiment</p>
-<pre><code>## 
-## &lt;table style=&quot;text-align:center&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;5&quot; style=&quot;border-bottom: 1px solid black&quot;&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;4&quot;&gt;&lt;em&gt;Dependent variable:&lt;/em&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td colspan=&quot;4&quot; style=&quot;border-bottom: 1px solid black&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;4&quot;&gt;Country level porn hits&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;(1)&lt;/td&gt;&lt;td&gt;(2)&lt;/td&gt;&lt;td&gt;(3)&lt;/td&gt;&lt;td&gt;(4)&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td colspan=&quot;5&quot; style=&quot;border-bottom: 1px solid black&quot;&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;days_in_ram&lt;/td&gt;&lt;td&gt;-1.855&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;-1.855&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;-2.129&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;(0.094)&lt;/td&gt;&lt;td&gt;(0.094)&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;(0.094)&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;in_ram&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;-14.204&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;(0.619)&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;days_in_eid&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;7.415&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;6.586&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;(0.486)&lt;/td&gt;&lt;td&gt;(0.479)&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;Constant&lt;/td&gt;&lt;td&gt;42.752&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;42.752&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;42.565&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;42.559&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;(0.183)&lt;/td&gt;&lt;td&gt;(0.183)&lt;/td&gt;&lt;td&gt;(0.181)&lt;/td&gt;&lt;td&gt;(0.181)&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td colspan=&quot;5&quot; style=&quot;border-bottom: 1px solid black&quot;&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;Observations&lt;/td&gt;&lt;td&gt;6,500&lt;/td&gt;&lt;td&gt;6,500&lt;/td&gt;&lt;td&gt;6,500&lt;/td&gt;&lt;td&gt;6,500&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;R&lt;sup&gt;2&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;0.057&lt;/td&gt;&lt;td&gt;0.057&lt;/td&gt;&lt;td&gt;0.086&lt;/td&gt;&lt;td&gt;0.084&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;Adjusted R&lt;sup&gt;2&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;0.057&lt;/td&gt;&lt;td&gt;0.057&lt;/td&gt;&lt;td&gt;0.086&lt;/td&gt;&lt;td&gt;0.084&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;Residual Std. Error&lt;/td&gt;&lt;td&gt;14.084 (df = 6498)&lt;/td&gt;&lt;td&gt;14.084 (df = 6498)&lt;/td&gt;&lt;td&gt;13.867 (df = 6497)&lt;/td&gt;&lt;td&gt;13.884 (df = 6497)&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;F Statistic&lt;/td&gt;&lt;td&gt;393.283&lt;sup&gt;***&lt;/sup&gt; (df = 1; 6498)&lt;/td&gt;&lt;td&gt;393.283&lt;sup&gt;***&lt;/sup&gt; (df = 1; 6498)&lt;/td&gt;&lt;td&gt;306.131&lt;sup&gt;***&lt;/sup&gt; (df = 2; 6497)&lt;/td&gt;&lt;td&gt;297.069&lt;sup&gt;***&lt;/sup&gt; (df = 2; 6497)&lt;/td&gt;&lt;/tr&gt;
-## &lt;tr&gt;&lt;td colspan=&quot;5&quot; style=&quot;border-bottom: 1px solid black&quot;&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;em&gt;Note:&lt;/em&gt;&lt;/td&gt;&lt;td colspan=&quot;4&quot; style=&quot;text-align:right&quot;&gt;&lt;sup&gt;*&lt;/sup&gt;p&lt;0.1; &lt;sup&gt;**&lt;/sup&gt;p&lt;0.05; &lt;sup&gt;***&lt;/sup&gt;p&lt;0.01&lt;/td&gt;&lt;/tr&gt;
-## &lt;/table&gt;</code></pre>
-<table>
-<thead>
-<tr class="header">
-<th align="left">x</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td align="left"></td>
-</tr>
-</tbody>
-</table>
-|
 <table style="text-align:center">
 <tr>
 <td colspan="5" style="border-bottom: 1px solid black">
@@ -312,16 +261,12 @@ $(document).ready(function () {
 <em>Dependent variable:</em>
 </td>
 </tr>
-<pre><code>                                     |</code></pre>
-|
 <tr>
 <td>
 </td>
 <td colspan="4" style="border-bottom: 1px solid black">
 </td>
 </tr>
-<pre><code>                                                                                                                                                        |</code></pre>
-|
 <tr>
 <td style="text-align:left">
 </td>
@@ -329,8 +274,6 @@ $(document).ready(function () {
 Country level porn hits
 </td>
 </tr>
-<pre><code>                                                                                                                                                |</code></pre>
-|
 <tr>
 <td style="text-align:left">
 </td>
@@ -347,8 +290,6 @@ Country level porn hits
 (4)
 </td>
 </tr>
-<pre><code>                                                                                                                                            |</code></pre>
-|
 <tr>
 <td colspan="5" style="border-bottom: 1px solid black">
 </td>
@@ -369,8 +310,6 @@ days_in_ram
 -2.129<sup>***</sup>
 </td>
 </tr>
-<pre><code>            |</code></pre>
-|
 <tr>
 <td style="text-align:left">
 </td>
@@ -386,8 +325,6 @@ days_in_ram
 (0.094)
 </td>
 </tr>
-<pre><code>                                                                                                                                   |</code></pre>
-|
 <tr>
 <td style="text-align:left">
 </td>
@@ -400,8 +337,6 @@ days_in_ram
 <td>
 </td>
 </tr>
-<pre><code>                                                                                                                                                        |</code></pre>
-|
 <tr>
 <td style="text-align:left">
 in_ram
@@ -416,8 +351,6 @@ in_ram
 <td>
 </td>
 </tr>
-<pre><code>                                                                                                                             |</code></pre>
-|
 <tr>
 <td style="text-align:left">
 </td>
@@ -431,8 +364,6 @@ in_ram
 <td>
 </td>
 </tr>
-<pre><code>                                                                                                                                                 |</code></pre>
-|
 <tr>
 <td style="text-align:left">
 </td>
@@ -445,8 +376,6 @@ in_ram
 <td>
 </td>
 </tr>
-<pre><code>                                                                                                                                                        |</code></pre>
-|
 <tr>
 <td style="text-align:left">
 days_in_eid
@@ -462,8 +391,6 @@ days_in_eid
 6.586<sup>***</sup>
 </td>
 </tr>
-<pre><code>                                                                                                       |</code></pre>
-|
 <tr>
 <td style="text-align:left">
 </td>
@@ -478,8 +405,6 @@ days_in_eid
 (0.479)
 </td>
 </tr>
-<pre><code>                                                                                                                                          |</code></pre>
-|
 <tr>
 <td style="text-align:left">
 </td>
@@ -492,8 +417,6 @@ days_in_eid
 <td>
 </td>
 </tr>
-<pre><code>                                                                                                                                                        |</code></pre>
-|
 <tr>
 <td style="text-align:left">
 Constant
@@ -511,8 +434,6 @@ Constant
 42.559<sup>***</sup>
 </td>
 </tr>
-<pre><code>                                                                |</code></pre>
-|
 <tr>
 <td style="text-align:left">
 </td>
@@ -529,8 +450,6 @@ Constant
 (0.181)
 </td>
 </tr>
-<pre><code>                                                                                                                            |</code></pre>
-|
 <tr>
 <td style="text-align:left">
 </td>
@@ -543,8 +462,6 @@ Constant
 <td>
 </td>
 </tr>
-<pre><code>                                                                                                                                                        |</code></pre>
-|
 <tr>
 <td colspan="5" style="border-bottom: 1px solid black">
 </td>
@@ -566,8 +483,6 @@ Observations
 6,500
 </td>
 </tr>
-<pre><code>                                                   |</code></pre>
-|
 <tr>
 <td style="text-align:left">
 R<sup>2</sup>
@@ -585,8 +500,6 @@ R<sup>2</sup>
 0.084
 </td>
 </tr>
-<pre><code>                                                                                                                       |</code></pre>
-|
 <tr>
 <td style="text-align:left">
 Adjusted R<sup>2</sup>
@@ -604,8 +517,6 @@ Adjusted R<sup>2</sup>
 0.084
 </td>
 </tr>
-<pre><code>                                                                                                              |</code></pre>
-|
 <tr>
 <td style="text-align:left">
 Residual Std. Error
@@ -623,8 +534,6 @@ Residual Std. Error
 13.884 (df = 6497)
 </td>
 </tr>
-<pre><code>                                                             |</code></pre>
-|
 <tr>
 <td style="text-align:left">
 F Statistic
@@ -642,7 +551,6 @@ F Statistic
 297.069<sup>***</sup> (df = 2; 6497)
 </td>
 </tr>
-| |
 <tr>
 <td colspan="5" style="border-bottom: 1px solid black">
 </td>
@@ -655,9 +563,7 @@ F Statistic
 <sup><em></sup>p&lt;0.1; <sup><strong></sup>p&lt;0.05; <sup></strong></em></sup>p&lt;0.01
 </td>
 </tr>
-| |
 </table>
-<pre><code>                                                                                                                                                                                                                              |</code></pre>
 <p>Variable names: country year Ramadan vs not ramadan search volume (porn/sex)</p>
 <p>It’s important to acknowledge that the population covered in my study are those people who access pornography searches not through a proxy site and it is likely that this population would differ somewhat from those who use a proxy site and are not found on google. thus my sample size is not representative of the population as a whole</p>
 

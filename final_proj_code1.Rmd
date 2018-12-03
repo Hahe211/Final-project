@@ -264,7 +264,7 @@ for (i in 1:length(world_interest$date)) {
 
 
 
-```{r, echo = FALSE, message = FALSE, warning= FALSE}
+```{r, include = FALSE, echo = FALSE, message = FALSE, warning= FALSE}
 #regression analysis
 
 #descriptive statistics
@@ -319,7 +319,7 @@ m4 <-  lm(hits ~ in_ram, data=world_interest)
 #   stargazer(ma, mb, m1, m2, type="text", summary = FALSE, dep.var.labels= "Country level porn hits", summary.logical = FALSE)
 # 
 # kable(reg_table)
-
+my_stargazer <- capture.output(stargazer(ma, mb, m1, m2, type = "html", dep.var.labels = "Country level porn hits"))
 ```
 
 
@@ -328,13 +328,12 @@ m4 <-  lm(hits ~ in_ram, data=world_interest)
 
 stargazer experiment 
 
-```{r, echo = FALSE, message = FALSE, warning= FALSE}
-#stargazer(ma, mb, m1, m2, summary = FALSE, type = "html", dep.var.labels = "Country level porn hits")
+```{r, echo = FALSE, message = FALSE, warning= FALSE, results = "asis"}
+stargazer(ma, mb, m1, m2, summary = FALSE, type = "html", dep.var.labels = "Country level porn hits")
 
-
+#my_stargazer
 #and in kable
-
-kable(stargazer(ma, mb, m1, m2, summary = FALSE, type = "html", dep.var.labels = "Country level porn hits"))
+#kable(x = my_stargazer)
 ```
 
 
