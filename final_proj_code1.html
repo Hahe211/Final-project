@@ -131,177 +131,18 @@ $(document).ready(function () {
 
 <p>This is a page for regression analysis, tables and charts in another page, I will look at graphs of - popular hours for porn consumption, changes in porn consumption over time</p>
 <p>first - try to pull a cross country data frame from google then combine by country… although I could make life easy on myself and not pull more than two countries.</p>
-<pre class="r"><code>#create preliminary data set from gtrends - last 5 years
-
-
-
-  #donload data
-D1 &lt;- gtrends(keyword = &quot;sex&quot;, geo = c(&quot;EG&quot;, &quot;SA&quot;, &quot;AE&quot;, &quot;PK&quot;, &quot;MA&quot;), time = &quot;today+5-y&quot;)
-D1_interest &lt;- D1$interest_over_time 
-
-#download world data to see if theres a world influence
-world &lt;- gtrends(keyword = &quot;sex&quot;, time = &quot;today+5-y&quot;)
-world_interest &lt;- world$interest_over_time 
-
-
-#load the data set I made with dates of ramadan and major holidays
-
-ramadan_dates &lt;- read_excel(&quot;ramadan_dates.xlsx&quot;)</code></pre>
 <pre class="r"><code>#dowload data set for more countries </code></pre>
-<pre class="r"><code>#showing/determining high volume porn searches 
-
-
-#justify that I'm picking the right terms (warning explicit content) - since I'm focused with change over time - its not critical that I isolate all the relevant terms but just that they indeed be pornography serach terms  adn that they capture a high level of the variation over time
-  
-D1$related_queries %&gt;% 
-     select(subject, value) %&gt;% 
-      slice(1:10)</code></pre>
 <pre><code>##    subject      value
-## 1      100   free sex
+## 1      100   sex free
 ## 2       68   arab sex
-## 3       57    hot sex
-## 4       51   sex tube
-## 5       51  video sex
-## 6       49   sex xnxx
-## 7       46   sex porn
-## 8       41 videos sex
-## 9       40 sex movies
-## 10      34    mom sex</code></pre>
-<pre class="r"><code>#I have a problem: the gtrends data set does not indicate the presence or absence of Ramadan. I have to pull that info from a different data set I have called ramadan_holiday
-#My google trends data set (D1_interest) includes ramadan search values for a whole week 
-#manipulate data set to add all days of the week 
-D1_interest$date1 = as.Date(D1_interest$date) + 1 
-D1_interest$date2 = as.Date(D1_interest$date) + 2 
-D1_interest$date3 = as.Date(D1_interest$date) + 3 
-D1_interest$date4 = as.Date(D1_interest$date) + 4 
-D1_interest$date5 = as.Date(D1_interest$date) + 5 
-D1_interest$date6 = as.Date(D1_interest$date) + 6 
-
-D1_interest$year &lt;- substring(D1_interest$date,1,4)
-
-
-#For loop to create (1) a &quot;days_in_ram&quot; variable -&gt;  the number of days in a given week with ramadan present and also (2) &quot;in_ram&quot; variable -&gt; (0 or 1) whether or not ramadan is present in that week
-#first iterate over a week in a given year in the D1_interests data set to see if there are any matches for Ramadan occuring
-#count the number of days of a given week in teh D1_interest$date variable which overlap with ramadan
-#create a binary variable to code 1 if a week includes more than 3 days of ramadan. 
-
-for (i in 1:length(D1_interest$date)) {
-  D1_interest[i, &quot;days_in_ram&quot;] = 0 
-  for( j in c(&quot;date&quot; , &quot;date1&quot;, &quot;date2&quot; , &quot;date3&quot;, &quot;date4&quot;, &quot;date5&quot;, &quot;date6&quot;)){
-    if ( (D1_interest[i, j] &gt;= ramadan_dates[ramadan_dates$year==   D1_interest[i, &quot;year&quot;]   &amp;  ramadan_dates$Holiday == &quot;Ramadan&quot; , ]$start  ) &amp; (D1_interest[i, j] &lt;= ramadan_dates[ramadan_dates$year== D1_interest[i,&quot;year&quot;] &amp; ramadan_dates$Holiday == &quot;Ramadan&quot; ,]$end  ) ) {
-        D1_interest[i, &quot;days_in_ram&quot;] =   D1_interest[i, &quot;days_in_ram&quot;]  + 1
-    }
-  }
-  
-  if (D1_interest[i, &quot;days_in_ram&quot;] &gt; 2){
-      D1_interest[i,&quot;in_ram&quot;] = 1
-  } else{
-      D1_interest[i,&quot;in_ram&quot;] = 0
-  }
-  
-  
-}
-
-#Thank you to Eric Wasserman Harvard 2019 Dunster House for helping me conceptualize how best to approach the coding problem above!
-
-
-#my next step in data manipulation before running a regression will be to add an additional variable for year so that I can control #for that. 
-#I also may go back up (before doing the ramadan stuff) and create a combined variable of porn searches called porn which is the #average of the high volume porn searches I've found 
-
-
-#repeat the ramadan iteration but this time for celebratory holidays
-
-#first I'll manipulate the ramadan_dates to code &quot;celebratory holiday for Eid&quot;&quot;
-
-
-#code variable for celebratory holidays, same method as ramadan 
-
-
-for (i in 1:length(D1_interest$date)) {
-  D1_interest[i, &quot;days_in_eid&quot;] = 0 
-  for( j in c(&quot;date&quot; , &quot;date1&quot;, &quot;date2&quot; , &quot;date3&quot;, &quot;date4&quot;, &quot;date5&quot;, &quot;date6&quot;)){
-    if ( (D1_interest[i, j] &gt;= ramadan_dates[ramadan_dates$year==   D1_interest[i, &quot;year&quot;]   &amp;  ramadan_dates$Holiday ==  &quot;Eid al-Fitr&quot; , ]$start  ) &amp; (D1_interest[i, j] &lt;=  ramadan_dates[ramadan_dates$year== D1_interest[i,&quot;year&quot;] &amp; ramadan_dates$Holiday ==  &quot;Eid al-Fitr&quot; ,]$end  ) ) {
-        D1_interest[i, &quot;days_in_eid&quot;] =   D1_interest[i, &quot;days_in_eid&quot;]  + 1
-    }
-  }
-
-}
-
-
-for (i in 1:length(D1_interest$date)) {
-  D1_interest[i, &quot;days_in_eida&quot;] = 0 
-  for( j in c(&quot;date&quot; , &quot;date1&quot;, &quot;date2&quot; , &quot;date3&quot;, &quot;date4&quot;, &quot;date5&quot;, &quot;date6&quot;)){
-    if ( (D1_interest[i, j] &gt;= ramadan_dates[ramadan_dates$year==   D1_interest[i, &quot;year&quot;]   &amp;  ramadan_dates$Holiday ==  &quot;Eid-al-adha&quot; , ]$start  ) &amp; (D1_interest[i, j] &lt;=  ramadan_dates[ramadan_dates$year== D1_interest[i,&quot;year&quot;] &amp; ramadan_dates$Holiday ==  &quot;Eid-al-adha&quot; ,]$end  ) ) {
-        D1_interest[i, &quot;days_in_eida&quot;] =   D1_interest[i, &quot;days_in_eid&quot;]  + 1
-    }
-  }
-
-  
-}</code></pre>
-<pre class="r"><code>#repeat the above step but for WORLD data to test if there's a global impact
-
-
-
-#I have a problem: the gtrends data set does not indicate the presence or absence of Ramadan. I have to pull that info from a different data set I have called ramadan_holiday
-#My google trends data set (D1_interest) includes ramadan search values for a whole week 
-#manipulate data set to add all days of the week 
-world_interest$date1 = as.Date(world_interest$date) + 1 
-world_interest$date2 = as.Date(world_interest$date) + 2 
-world_interest$date3 = as.Date(world_interest$date) + 3 
-world_interest$date4 = as.Date(world_interest$date) + 4 
-world_interest$date5 = as.Date(world_interest$date) + 5 
-world_interest$date6 = as.Date(world_interest$date) + 6 
-
-world_interest$year &lt;- substring(world_interest$date,1,4)
-
-
-#For loop to create (1) a &quot;days_in_ram&quot; variable -&gt;  the number of days in a given week with ramadan present and also (2) &quot;in_ram&quot; variable -&gt; (0 or 1) whether or not ramadan is present in that week
-#first iterate over a week in a given year in the D1_interests data set to see if there are any matches for Ramadan occuring
-#count the number of days of a given week in teh D1_interest$date variable which overlap with ramadan
-#create a binary variable to code 1 if a week includes more than 3 days of ramadan. 
-
-for (i in 1:length(world_interest$date)) {
-  world_interest[i, &quot;days_in_ram&quot;] = 0 
-  for( j in c(&quot;date&quot; , &quot;date1&quot;, &quot;date2&quot; , &quot;date3&quot;, &quot;date4&quot;, &quot;date5&quot;, &quot;date6&quot;)){
-    if ( (world_interest[i, j] &gt; ramadan_dates[ramadan_dates$year==   world_interest[i, &quot;year&quot;]   &amp;  ramadan_dates$Holiday == &quot;Ramadan&quot; , ]$start  ) &amp; (world_interest[i, j] &lt; ramadan_dates[ramadan_dates$year== world_interest[i,&quot;year&quot;] &amp; ramadan_dates$Holiday == &quot;Ramadan&quot; ,]$end  ) ) {
-        world_interest[i, &quot;days_in_ram&quot;] =   world_interest[i, &quot;days_in_ram&quot;]  + 1
-    }
-  }
-  
-  if (world_interest[i, &quot;days_in_ram&quot;] &gt; 2){
-      world_interest[i,&quot;in_ram&quot;] = 1
-  } else{
-      world_interest[i,&quot;in_ram&quot;] = 0
-  }
-  
-  
-}
-
-#same code as above - Eid al-fitr: days_in_eid
-
-for (i in 1:length(world_interest$date)) {
-  world_interest[i, &quot;days_in_eid&quot;] = 0 
-  for( j in c(&quot;date&quot; , &quot;date1&quot;, &quot;date2&quot; , &quot;date3&quot;, &quot;date4&quot;, &quot;date5&quot;, &quot;date6&quot;)){
-    if ( (D1_interest[i, j] &gt;= ramadan_dates[ramadan_dates$year==   D1_interest[i, &quot;year&quot;]   &amp;  ramadan_dates$Holiday ==  &quot;Eid al-Fitr&quot; , ]$start  ) &amp; (D1_interest[i, j] &lt;=  ramadan_dates[ramadan_dates$year== world_interest[i,&quot;year&quot;] &amp; ramadan_dates$Holiday ==  &quot;Eid al-Fitr&quot; ,]$end  ) ) {
-        world_interest[i, &quot;days_in_eid&quot;] =   world_interest[i, &quot;days_in_eid&quot;]  + 1
-    }
-  }
-
-}
-
-#same code as above - Eid al-ahda: days_in_eida
-
-
-for (i in 1:length(world_interest$date)) {
-  world_interest[i, &quot;days_in_eida&quot;] = 0 
-  for( j in c(&quot;date&quot; , &quot;date1&quot;, &quot;date2&quot; , &quot;date3&quot;, &quot;date4&quot;, &quot;date5&quot;, &quot;date6&quot;)){
-    if ( (world_interest[i, j] &gt;= ramadan_dates[ramadan_dates$year==   D1_interest[i, &quot;year&quot;]   &amp;  ramadan_dates$Holiday ==  &quot;Eid-al-adha&quot; , ]$start  ) &amp; (D1_interest[i, j] &lt;=  ramadan_dates[ramadan_dates$year== world_interest[i,&quot;year&quot;] &amp; ramadan_dates$Holiday ==  &quot;Eid-al-adha&quot; ,]$end  ) ) {
-        world_interest[i, &quot;days_in_eida&quot;] =   world_interest[i, &quot;days_in_eid&quot;]  + 1
-    }
-  }
-
-  
-}</code></pre>
+## 3       60    sex hot
+## 4       53  video sex
+## 5       52   tube sex
+## 6       47   porn sex
+## 7       46   xnxx sex
+## 8       40 movies sex
+## 9       37 videos sex
+## 10      33    sex mom</code></pre>
 <pre class="r"><code># #surveying my handiwork:)
 # #country level data
 # D1_interest &lt;- D1_interest %&gt;% 
@@ -316,48 +157,18 @@ for (i in 1:length(world_interest$date)) {
 #     select(date, days_in_ram, in_ram, hits, year)
 # 
 # head(world_interest)</code></pre>
-<pre class="r"><code>#regression analysis
-
-#descriptive statistics
-
-des_table &lt;- stargazer(D1_interest, type = &quot;text&quot;, title=&quot;Descriptive statistics&quot;, digits=1)</code></pre>
 <pre><code>## 
 ## Descriptive statistics
 ## ==========================================================
 ## Statistic      N   Mean St. Dev. Min Pctl(25) Pctl(75) Max
 ## ----------------------------------------------------------
-## hits         1,300 27.8   19.8    5     15       29    100
+## hits         1,300 27.4   19.5    5     15       28    100
 ## category     1,300 0.0    0.0     0     0        0      0 
 ## days_in_ram  1,300 0.6    1.9     0     0        0      7 
 ## in_ram       1,300 0.1    0.3     0     0        0      1 
 ## days_in_eid  1,300 0.1    0.4     0     0        0      3 
 ## days_in_eida 1,300 0.02   0.1     0     0        0      1 
 ## ----------------------------------------------------------</code></pre>
-<pre class="r"><code>#CODE FOR SELECTIVE DESCRIPTIVE Stats
-# stargazer(mydata[c(&quot;mpg&quot;,&quot;hp&quot;,&quot;drat&quot;)], type = &quot;text&quot;,
-#  title=&quot;Descriptive statistics/selected variables&quot;, digits=1, out=&quot;table2.txt&quot;, flip=TRUE,
-#  covariate.labels=c(&quot;Miles/(US)gallon&quot;,&quot;Gross horsepower&quot;,&quot;Rear axle ratio&quot;))
-
-
-#Make a regression table
-#first regression without year or country controls
-ma &lt;- lm(hits ~ days_in_ram, data=D1_interest)
-
-#adding country controls
-mb &lt;- lm(hits ~ days_in_ram + geo, data=D1_interest)
-#both year and country controls, switching between in_ram and days_in_ram
-m1 &lt;- lm(hits ~ in_ram + geo + year, data=D1_interest)
-m2 &lt;- lm(hits ~ days_in_ram + geo + year, data=D1_interest)
-
-#year and country controls dont make a difference in p values, sd, or coeff so I'm back to removing them - probably because data set is already normalized for year and country
-m1 &lt;- lm(hits ~ in_ram , data=D1_interest)
-m2 &lt;- lm(hits ~ days_in_ram, data=D1_interest)
-
-
-
-#sig impact detected! .2 percentage point degrease
-reg_table &lt;- 
-  stargazer(ma, mb, m1, m2, type=&quot;text&quot;, dep.var.labels= &quot;Country level porn hits&quot;)</code></pre>
 <pre><code>## 
 ## ==========================================================================================================================
 ##                                                              Dependent variable:                                          
@@ -365,39 +176,35 @@ reg_table &lt;-
 ##                                                            Country level porn hits                                        
 ##                               (1)                        (2)                       (3)                      (4)           
 ## --------------------------------------------------------------------------------------------------------------------------
-## days_in_ram                -1.175***                  -1.175***                                          -1.175***        
-##                             (0.293)                    (0.083)                                            (0.293)         
+## days_in_ram                -1.143***                  -1.143***                                          -1.143***        
+##                             (0.288)                    (0.082)                                            (0.288)         
 ##                                                                                                                           
-## geoEG                                                 -6.962***                                                           
-##                                                        (0.489)                                                            
+## geoEG                                                 -6.773***                                                           
+##                                                        (0.482)                                                            
 ##                                                                                                                           
-## geoMA                                                 -4.508***                                                           
-##                                                        (0.489)                                                            
+## geoMA                                                 -4.469***                                                           
+##                                                        (0.482)                                                            
 ##                                                                                                                           
-## geoPK                                                 39.623***                                                           
-##                                                        (0.489)                                                            
+## geoPK                                                 39.065***                                                           
+##                                                        (0.482)                                                            
 ##                                                                                                                           
-## geoSA                                                -13.712***                                                           
-##                                                        (0.489)                                                            
+## geoSA                                                -13.477***                                                           
+##                                                        (0.482)                                                            
 ##                                                                                                                           
-## in_ram                                                                          -7.420***                                 
-##                                                                                  (1.889)                                  
+## in_ram                                                                          -7.270***                                 
+##                                                                                  (1.861)                                  
 ##                                                                                                                           
-## Constant                   28.523***                  25.634***                 28.512***                28.523***        
-##                             (0.574)                    (0.349)                   (0.574)                  (0.574)         
+## Constant                   28.093***                  25.223***                 28.086***                28.093***        
+##                             (0.565)                    (0.344)                   (0.565)                  (0.565)         
 ##                                                                                                                           
 ## --------------------------------------------------------------------------------------------------------------------------
 ## Observations                 1,300                      1,300                     1,300                    1,300          
 ## R2                           0.012                      0.921                     0.012                    0.012          
 ## Adjusted R2                  0.011                      0.921                     0.011                    0.011          
-## Residual Std. Error    19.711 (df = 1298)         5.574 (df = 1294)         19.716 (df = 1298)       19.711 (df = 1298)   
-## F Statistic         16.107*** (df = 1; 1298) 3,027.871*** (df = 5; 1294) 15.427*** (df = 1; 1298) 16.107*** (df = 1; 1298)
+## Residual Std. Error    19.419 (df = 1298)         5.492 (df = 1294)         19.422 (df = 1298)       19.419 (df = 1298)   
+## F Statistic         15.717*** (df = 1; 1298) 3,025.528*** (df = 5; 1294) 15.260*** (df = 1; 1298) 15.717*** (df = 1; 1298)
 ## ==========================================================================================================================
 ## Note:                                                                                          *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
-<pre class="r"><code> # covariate.labels=c(&quot;Gross horsepower&quot;,&quot;Rear axle ratio&quot;,&quot;Four foward gears&quot;,
- # &quot;Five forward gears&quot;,&quot;Type of transmission (manual=1)&quot;)
-
-kable(reg_table)</code></pre>
 <table>
 <colgroup>
 <col width="100%"></col>
@@ -430,64 +237,64 @@ kable(reg_table)</code></pre>
 <td align="left">————————————————————————————————————————–</td>
 </tr>
 <tr class="even">
-<td align="left">days_in_ram -1.175*** -1.175*** -1.175***</td>
+<td align="left">days_in_ram -1.143*** -1.143*** -1.143***</td>
 </tr>
 <tr class="odd">
-<td align="left">(0.293) (0.083) (0.293)</td>
+<td align="left">(0.288) (0.082) (0.288)</td>
 </tr>
 <tr class="even">
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left">geoEG -6.962***</td>
+<td align="left">geoEG -6.773***</td>
 </tr>
 <tr class="even">
-<td align="left">(0.489)</td>
+<td align="left">(0.482)</td>
 </tr>
 <tr class="odd">
 <td align="left"></td>
 </tr>
 <tr class="even">
-<td align="left">geoMA -4.508***</td>
+<td align="left">geoMA -4.469***</td>
 </tr>
 <tr class="odd">
-<td align="left">(0.489)</td>
+<td align="left">(0.482)</td>
 </tr>
 <tr class="even">
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left">geoPK 39.623***</td>
+<td align="left">geoPK 39.065***</td>
 </tr>
 <tr class="even">
-<td align="left">(0.489)</td>
+<td align="left">(0.482)</td>
 </tr>
 <tr class="odd">
 <td align="left"></td>
 </tr>
 <tr class="even">
-<td align="left">geoSA -13.712***</td>
+<td align="left">geoSA -13.477***</td>
 </tr>
 <tr class="odd">
-<td align="left">(0.489)</td>
+<td align="left">(0.482)</td>
 </tr>
 <tr class="even">
 <td align="left"></td>
 </tr>
 <tr class="odd">
-<td align="left">in_ram -7.420***</td>
+<td align="left">in_ram -7.270***</td>
 </tr>
 <tr class="even">
-<td align="left">(1.889)</td>
+<td align="left">(1.861)</td>
 </tr>
 <tr class="odd">
 <td align="left"></td>
 </tr>
 <tr class="even">
-<td align="left">Constant 28.523*** 25.634*** 28.512*** 28.523***</td>
+<td align="left">Constant 28.093*** 25.223*** 28.086*** 28.093***</td>
 </tr>
 <tr class="odd">
-<td align="left">(0.574) (0.349) (0.574) (0.574)</td>
+<td align="left">(0.565) (0.344) (0.565) (0.565)</td>
 </tr>
 <tr class="even">
 <td align="left"></td>
@@ -505,10 +312,10 @@ kable(reg_table)</code></pre>
 <td align="left">Adjusted R2 0.011 0.921 0.011 0.011</td>
 </tr>
 <tr class="odd">
-<td align="left">Residual Std. Error 19.711 (df = 1298) 5.574 (df = 1294) 19.716 (df = 1298) 19.711 (df = 1298)</td>
+<td align="left">Residual Std. Error 19.419 (df = 1298) 5.492 (df = 1294) 19.422 (df = 1298) 19.419 (df = 1298)</td>
 </tr>
 <tr class="even">
-<td align="left">F Statistic 16.107*** (df = 1; 1298) 3,027.871*** (df = 5; 1294) 15.427*** (df = 1; 1298) 16.107*** (df = 1; 1298)</td>
+<td align="left">F Statistic 15.717*** (df = 1; 1298) 3,025.528*** (df = 5; 1294) 15.260*** (df = 1; 1298) 15.717*** (df = 1; 1298)</td>
 </tr>
 <tr class="odd">
 <td align="left">==========================================================================================================================</td>
@@ -518,14 +325,6 @@ kable(reg_table)</code></pre>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>#global data -  sig impact detected
-m3 &lt;- lm(hits ~ days_in_ram, data=world_interest)
-m4 &lt;-  lm(hits ~ in_ram, data=world_interest)
-
-#make a seperate table for world data
-
-
-#options moving forward - I could either include celebratory holidays OR look at it on a regional level - ie: middle eastern vs south asian countries vs gulf countries.</code></pre>
 <div id="create-and-merge-large-data-set-organized-by-year-and-dates-and-countries-which-show-the-occurence-of-ramadan" class="section level1">
 <h1>create and merge large data set organized by year and dates and countries which show the occurence of ramadan</h1>
 <p>Variable names: country year Ramadan vs not ramadan search volume (porn/sex)</p>
