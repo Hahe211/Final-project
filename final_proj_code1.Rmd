@@ -28,13 +28,31 @@ first - try to pull a cross country data frame from google then combine by count
 
 
 
-  #donload data
-D1 <- gtrends(keyword = "sex", geo = c("EG", "SA", "AE", "PK", "MA"), time = "today+5-y")
-D1_interest <- D1$interest_over_time 
+  #download data for sex and porn searches, this has to be done seperately or there's an overload issue
+D1 <- gtrends(keyword = c("sex"), geo = c("EG", "SA", "AE","JO", "MA"), time = "today+5-y")
+D2 <- gtrends(keyword = c("porn"), geo = c("EG", "SA", "AE","JO", "MA"), time = "today+5-y") 
+ 
 
-#download world data to see if theres a world influence
+  #combine data for sex and porn searches
+D2_interest <- D2$interest_over_time %>% 
+  select(hits, date) %>% 
+  transmute(hits.sex = hits, date = date)
+  
+
+D1_interest <- D1$interest_over_time %>% 
+  full_join(D2_interest, by = "date") %>% 
+  mutate(sum.porn = (hits + hits.sex)/2)
+
+
+#download world data to see if theres a world influence, the default is worlk data unless you change something
 world <- gtrends(keyword = "sex", time = "today+5-y")
-world_interest <- world$interest_over_time 
+world2 <- gtrends(keyword = "porn", time = "today+5-y") %>% 
+  select(hits, date) %>% 
+  transmute(hits_sex = hits, date = date)
+
+world_interest <- world$interest_over_time %>% 
+  full_join(world2, by = "date") %>% 
+  mutate(sum.porn = (hits + hits.sex)/2)
 
 
 #load the data set I made with dates of ramadan and major holidays
@@ -226,8 +244,9 @@ for (i in 1:length(world_interest$date)) {
 ```{r}
 # #surveying my handiwork:)
 # #country level data
-# D1_interest <- D1_interest %>% 
-#   select(date, geo, days_in_ram, in_ram, hits, year) 
+D1_interest <- D1_interest %>% 
+ select(date, days_in_ram, in_ram, hits, year, days_in_eid) 
+
 # 
 # 
 #       
@@ -257,26 +276,27 @@ des_table <- stargazer(D1_interest, type = "text", title="Descriptive statistics
 #  title="Descriptive statistics/selected variables", digits=1, out="table2.txt", flip=TRUE,
 #  covariate.labels=c("Miles/(US)gallon","Gross horsepower","Rear axle ratio"))
 
+#both year and country controls, switching between in_ram and days_in_ram
+m5 <- lm(hits ~ in_ram + geo + year, data=D1_interest)
+m6 <- lm(hits ~ days_in_ram + geo + year, data=D1_interest)
+
+
+#I'm having an issue where the table prints the names of all the countries 
 
 #Make a regression table
 #first regression without year or country controls
 ma <- lm(hits ~ days_in_ram, data=D1_interest)
 
 #adding country controls
-mb <- lm(hits ~ days_in_ram + geo, data=D1_interest)
-#both year and country controls, switching between in_ram and days_in_ram
-m1 <- lm(hits ~ in_ram + geo + year, data=D1_interest)
-m2 <- lm(hits ~ days_in_ram + geo + year, data=D1_interest)
+mb <- lm(hits ~ days_in_ram, data=D1_interest)
 
 #year and country controls dont make a difference in p values, sd, or coeff so I'm back to removing them - probably because data set is already normalized for year and country
-m1 <- lm(hits ~ in_ram , data=D1_interest)
-m2 <- lm(hits ~ days_in_ram, data=D1_interest)
-
-
+m1 <- lm(hits ~ in_ram + days_in_eid, data=D1_interest)
+m2 <- lm(hits ~ days_in_ram + days_in_eid, data=D1_interest)
 
 #sig impact detected! .2 percentage point degrease
 reg_table <- 
-  stargazer(ma, mb, m1, m2, type="text", dep.var.labels= "Country level porn hits")
+  stargazer(ma, mb, m1, m2, type="text", summary = FALSE, dep.var.labels= "Country level porn hits", summary.logical = FALSE)
 
  # covariate.labels=c("Gross horsepower","Rear axle ratio","Four foward gears",
  # "Five forward gears","Type of transmission (manual=1)")
@@ -297,7 +317,11 @@ m4 <-  lm(hits ~ in_ram, data=world_interest)
 
 
 
+
+
 ```
+
+
 
 
 
