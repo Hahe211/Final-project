@@ -329,6 +329,9 @@ my_stargazer <- capture.output(stargazer(ma, mb, m1, m2, type = "html", dep.var.
 stargazer experiment 
 
 ```{r, echo = FALSE, message = FALSE, warning= FALSE, results = "asis"}
+#use results = asis in the caption to make sure the table prints properly
+
+
 stargazer(ma, mb, m1, m2, summary = FALSE, type = "html", dep.var.labels = "Country level porn hits")
 
 #my_stargazer
