@@ -74,11 +74,13 @@ ramadan_dates <- read_excel("ramadan_dates.xlsx")
   
 D1$related_queries %>% 
      select(subject, value) %>% 
-      slice(1:10)
+      slice(1:10) %>% 
+     kable(caption = "A Table of Related Queries", col.names = c("Correlation Score", "Value"))
 
 D2$related_queries %>% 
   select(subject, value) %>% 
-  slice(1:10)
+  slice(1:10) %>% 
+  kable(caption = "A Table of Related Queries", col.names = c("Correlation Score", "Value"))
 
 
 ```

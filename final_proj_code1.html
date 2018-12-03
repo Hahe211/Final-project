@@ -131,22 +131,113 @@ $(document).ready(function () {
 
 <p>This is a page for regression analysis, tables and charts in another page, I will look at graphs of - popular hours for porn consumption, changes in porn consumption over time</p>
 <p>first - try to pull a cross country data frame from google then combine by country… although I could make life easy on myself and not pull more than two countries.</p>
-<pre class="r"><code>#dowload data set for more countries </code></pre>
-<pre><code>##    subject      value
-## 1      100   sex free
-## 2       68   arab sex
-## 3       60    sex hot
-## 4       53  video sex
-## 5       52   tube sex
-## 6       47   porn sex
-## 7       46   xnxx sex
-## 8       40 movies sex
-## 9       37 videos sex
-## 10      33    sex mom</code></pre>
+<table>
+<caption>A Table of Related Queries</caption>
+<thead>
+<tr class="header">
+<th align="left">Correlation Score</th>
+<th align="left">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">100</td>
+<td align="left">sex free</td>
+</tr>
+<tr class="even">
+<td align="left">76</td>
+<td align="left">sex arab</td>
+</tr>
+<tr class="odd">
+<td align="left">63</td>
+<td align="left">hot sex</td>
+</tr>
+<tr class="even">
+<td align="left">60</td>
+<td align="left">tube sex</td>
+</tr>
+<tr class="odd">
+<td align="left">55</td>
+<td align="left">sex video</td>
+</tr>
+<tr class="even">
+<td align="left">48</td>
+<td align="left">porn sex</td>
+</tr>
+<tr class="odd">
+<td align="left">48</td>
+<td align="left">xnxx sex</td>
+</tr>
+<tr class="even">
+<td align="left">44</td>
+<td align="left">movies sex</td>
+</tr>
+<tr class="odd">
+<td align="left">44</td>
+<td align="left">sex videos</td>
+</tr>
+<tr class="even">
+<td align="left">36</td>
+<td align="left">sex mom</td>
+</tr>
+</tbody>
+</table>
+<table>
+<caption>A Table of Related Queries</caption>
+<thead>
+<tr class="header">
+<th align="left">Correlation Score</th>
+<th align="left">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">100</td>
+<td align="left">porn sex</td>
+</tr>
+<tr class="even">
+<td align="left">91</td>
+<td align="left">porn free</td>
+</tr>
+<tr class="odd">
+<td align="left">55</td>
+<td align="left">tube porn</td>
+</tr>
+<tr class="even">
+<td align="left">49</td>
+<td align="left">porn xnxx</td>
+</tr>
+<tr class="odd">
+<td align="left">38</td>
+<td align="left">porn hub</td>
+</tr>
+<tr class="even">
+<td align="left">34</td>
+<td align="left">arab porn</td>
+</tr>
+<tr class="odd">
+<td align="left">33</td>
+<td align="left">porn hd</td>
+</tr>
+<tr class="even">
+<td align="left">27</td>
+<td align="left">porn hot</td>
+</tr>
+<tr class="odd">
+<td align="left">27</td>
+<td align="left">mom porn</td>
+</tr>
+<tr class="even">
+<td align="left">25</td>
+<td align="left">porn movies</td>
+</tr>
+</tbody>
+</table>
 <pre class="r"><code># #surveying my handiwork:)
 # #country level data
 # D1_interest &lt;- D1_interest %&gt;% 
-#   select(date, geo, days_in_ram, in_ram, hits, year) 
+#  select(date, days_in_ram, in_ram, hits, year, days_in_eid) 
+
 # 
 # 
 #       
@@ -162,53 +253,41 @@ $(document).ready(function () {
 ## ==========================================================
 ## Statistic      N   Mean St. Dev. Min Pctl(25) Pctl(75) Max
 ## ----------------------------------------------------------
-## hits         1,300 27.4   19.5    5     15       28    100
-## category     1,300 0.0    0.0     0     0        0      0 
-## days_in_ram  1,300 0.6    1.9     0     0        0      7 
-## in_ram       1,300 0.1    0.3     0     0        0      1 
-## days_in_eid  1,300 0.1    0.4     0     0        0      3 
-## days_in_eida 1,300 0.02   0.1     0     0        0      1 
+## hits         6,500 41.7   14.5   13     31       50    100
+## category     6,500 0.0    0.0     0     0        0      0 
+## hits.sex     6,500 35.5   14.1    8     27       43    100
+## sum.porn     6,500 38.6   11.0   10    31.5      45    94 
+## days_in_ram  6,500 0.6    1.9     0     0        0      7 
+## in_ram       6,500 0.1    0.3     0     0        0      1 
+## days_in_eid  6,500 0.1    0.4     0     0        0      3 
+## days_in_eida 6,500 0.02   0.1     0     0        0      1 
 ## ----------------------------------------------------------</code></pre>
+<p>stargazer experiment</p>
 <pre><code>## 
-## ==========================================================================================================================
-##                                                              Dependent variable:                                          
-##                     ------------------------------------------------------------------------------------------------------
-##                                                            Country level porn hits                                        
-##                               (1)                        (2)                       (3)                      (4)           
-## --------------------------------------------------------------------------------------------------------------------------
-## days_in_ram                -1.143***                  -1.143***                                          -1.143***        
-##                             (0.288)                    (0.082)                                            (0.288)         
-##                                                                                                                           
-## geoEG                                                 -6.773***                                                           
-##                                                        (0.482)                                                            
-##                                                                                                                           
-## geoMA                                                 -4.469***                                                           
-##                                                        (0.482)                                                            
-##                                                                                                                           
-## geoPK                                                 39.065***                                                           
-##                                                        (0.482)                                                            
-##                                                                                                                           
-## geoSA                                                -13.477***                                                           
-##                                                        (0.482)                                                            
-##                                                                                                                           
-## in_ram                                                                          -7.270***                                 
-##                                                                                  (1.861)                                  
-##                                                                                                                           
-## Constant                   28.093***                  25.223***                 28.086***                28.093***        
-##                             (0.565)                    (0.344)                   (0.565)                  (0.565)         
-##                                                                                                                           
-## --------------------------------------------------------------------------------------------------------------------------
-## Observations                 1,300                      1,300                     1,300                    1,300          
-## R2                           0.012                      0.921                     0.012                    0.012          
-## Adjusted R2                  0.011                      0.921                     0.011                    0.011          
-## Residual Std. Error    19.419 (df = 1298)         5.492 (df = 1294)         19.422 (df = 1298)       19.419 (df = 1298)   
-## F Statistic         15.717*** (df = 1; 1298) 3,025.528*** (df = 5; 1294) 15.260*** (df = 1; 1298) 15.717*** (df = 1; 1298)
-## ==========================================================================================================================
-## Note:                                                                                          *p&lt;0.1; **p&lt;0.05; ***p&lt;0.01</code></pre>
+## &lt;table style=&quot;text-align:center&quot;&gt;&lt;tr&gt;&lt;td colspan=&quot;5&quot; style=&quot;border-bottom: 1px solid black&quot;&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;4&quot;&gt;&lt;em&gt;Dependent variable:&lt;/em&gt;&lt;/td&gt;&lt;/tr&gt;
+## &lt;tr&gt;&lt;td&gt;&lt;/td&gt;&lt;td colspan=&quot;4&quot; style=&quot;border-bottom: 1px solid black&quot;&gt;&lt;/td&gt;&lt;/tr&gt;
+## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td colspan=&quot;4&quot;&gt;Country level porn hits&lt;/td&gt;&lt;/tr&gt;
+## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;(1)&lt;/td&gt;&lt;td&gt;(2)&lt;/td&gt;&lt;td&gt;(3)&lt;/td&gt;&lt;td&gt;(4)&lt;/td&gt;&lt;/tr&gt;
+## &lt;tr&gt;&lt;td colspan=&quot;5&quot; style=&quot;border-bottom: 1px solid black&quot;&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;days_in_ram&lt;/td&gt;&lt;td&gt;-1.855&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;-1.855&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;-2.129&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;
+## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;(0.094)&lt;/td&gt;&lt;td&gt;(0.094)&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;(0.094)&lt;/td&gt;&lt;/tr&gt;
+## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;in_ram&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;-14.204&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;(0.619)&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;days_in_eid&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;7.415&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;6.586&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;
+## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;(0.486)&lt;/td&gt;&lt;td&gt;(0.479)&lt;/td&gt;&lt;/tr&gt;
+## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;Constant&lt;/td&gt;&lt;td&gt;42.752&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;42.752&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;42.565&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;42.559&lt;sup&gt;***&lt;/sup&gt;&lt;/td&gt;&lt;/tr&gt;
+## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;(0.183)&lt;/td&gt;&lt;td&gt;(0.183)&lt;/td&gt;&lt;td&gt;(0.181)&lt;/td&gt;&lt;td&gt;(0.181)&lt;/td&gt;&lt;/tr&gt;
+## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;td&gt;&lt;/td&gt;&lt;/tr&gt;
+## &lt;tr&gt;&lt;td colspan=&quot;5&quot; style=&quot;border-bottom: 1px solid black&quot;&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;Observations&lt;/td&gt;&lt;td&gt;6,500&lt;/td&gt;&lt;td&gt;6,500&lt;/td&gt;&lt;td&gt;6,500&lt;/td&gt;&lt;td&gt;6,500&lt;/td&gt;&lt;/tr&gt;
+## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;R&lt;sup&gt;2&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;0.057&lt;/td&gt;&lt;td&gt;0.057&lt;/td&gt;&lt;td&gt;0.086&lt;/td&gt;&lt;td&gt;0.084&lt;/td&gt;&lt;/tr&gt;
+## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;Adjusted R&lt;sup&gt;2&lt;/sup&gt;&lt;/td&gt;&lt;td&gt;0.057&lt;/td&gt;&lt;td&gt;0.057&lt;/td&gt;&lt;td&gt;0.086&lt;/td&gt;&lt;td&gt;0.084&lt;/td&gt;&lt;/tr&gt;
+## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;Residual Std. Error&lt;/td&gt;&lt;td&gt;14.084 (df = 6498)&lt;/td&gt;&lt;td&gt;14.084 (df = 6498)&lt;/td&gt;&lt;td&gt;13.867 (df = 6497)&lt;/td&gt;&lt;td&gt;13.884 (df = 6497)&lt;/td&gt;&lt;/tr&gt;
+## &lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;F Statistic&lt;/td&gt;&lt;td&gt;393.283&lt;sup&gt;***&lt;/sup&gt; (df = 1; 6498)&lt;/td&gt;&lt;td&gt;393.283&lt;sup&gt;***&lt;/sup&gt; (df = 1; 6498)&lt;/td&gt;&lt;td&gt;306.131&lt;sup&gt;***&lt;/sup&gt; (df = 2; 6497)&lt;/td&gt;&lt;td&gt;297.069&lt;sup&gt;***&lt;/sup&gt; (df = 2; 6497)&lt;/td&gt;&lt;/tr&gt;
+## &lt;tr&gt;&lt;td colspan=&quot;5&quot; style=&quot;border-bottom: 1px solid black&quot;&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td style=&quot;text-align:left&quot;&gt;&lt;em&gt;Note:&lt;/em&gt;&lt;/td&gt;&lt;td colspan=&quot;4&quot; style=&quot;text-align:right&quot;&gt;&lt;sup&gt;*&lt;/sup&gt;p&lt;0.1; &lt;sup&gt;**&lt;/sup&gt;p&lt;0.05; &lt;sup&gt;***&lt;/sup&gt;p&lt;0.01&lt;/td&gt;&lt;/tr&gt;
+## &lt;/table&gt;</code></pre>
 <table>
-<colgroup>
-<col width="100%"></col>
-</colgroup>
 <thead>
 <tr class="header">
 <th align="left">x</th>
@@ -218,118 +297,369 @@ $(document).ready(function () {
 <tr class="odd">
 <td align="left"></td>
 </tr>
-<tr class="even">
-<td align="left">==========================================================================================================================</td>
-</tr>
-<tr class="odd">
-<td align="left">Dependent variable:</td>
-</tr>
-<tr class="even">
-<td align="left">——————————————————————————————————</td>
-</tr>
-<tr class="odd">
-<td align="left">Country level porn hits</td>
-</tr>
-<tr class="even">
-<td align="left">(1) (2) (3) (4)</td>
-</tr>
-<tr class="odd">
-<td align="left">————————————————————————————————————————–</td>
-</tr>
-<tr class="even">
-<td align="left">days_in_ram -1.143*** -1.143*** -1.143***</td>
-</tr>
-<tr class="odd">
-<td align="left">(0.288) (0.082) (0.288)</td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">geoEG -6.773***</td>
-</tr>
-<tr class="even">
-<td align="left">(0.482)</td>
-</tr>
-<tr class="odd">
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">geoMA -4.469***</td>
-</tr>
-<tr class="odd">
-<td align="left">(0.482)</td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">geoPK 39.065***</td>
-</tr>
-<tr class="even">
-<td align="left">(0.482)</td>
-</tr>
-<tr class="odd">
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">geoSA -13.477***</td>
-</tr>
-<tr class="odd">
-<td align="left">(0.482)</td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">in_ram -7.270***</td>
-</tr>
-<tr class="even">
-<td align="left">(1.861)</td>
-</tr>
-<tr class="odd">
-<td align="left"></td>
-</tr>
-<tr class="even">
-<td align="left">Constant 28.093*** 25.223*** 28.086*** 28.093***</td>
-</tr>
-<tr class="odd">
-<td align="left">(0.565) (0.344) (0.565) (0.565)</td>
-</tr>
-<tr class="even">
-<td align="left"></td>
-</tr>
-<tr class="odd">
-<td align="left">————————————————————————————————————————–</td>
-</tr>
-<tr class="even">
-<td align="left">Observations 1,300 1,300 1,300 1,300</td>
-</tr>
-<tr class="odd">
-<td align="left">R2 0.012 0.921 0.012 0.012</td>
-</tr>
-<tr class="even">
-<td align="left">Adjusted R2 0.011 0.921 0.011 0.011</td>
-</tr>
-<tr class="odd">
-<td align="left">Residual Std. Error 19.419 (df = 1298) 5.492 (df = 1294) 19.422 (df = 1298) 19.419 (df = 1298)</td>
-</tr>
-<tr class="even">
-<td align="left">F Statistic 15.717*** (df = 1; 1298) 3,025.528*** (df = 5; 1294) 15.260*** (df = 1; 1298) 15.717*** (df = 1; 1298)</td>
-</tr>
-<tr class="odd">
-<td align="left">==========================================================================================================================</td>
-</tr>
-<tr class="even">
-<td align="left">Note: <em>p&lt;0.1; <strong>p&lt;0.05; </strong></em>p&lt;0.01</td>
-</tr>
 </tbody>
 </table>
-<div id="create-and-merge-large-data-set-organized-by-year-and-dates-and-countries-which-show-the-occurence-of-ramadan" class="section level1">
-<h1>create and merge large data set organized by year and dates and countries which show the occurence of ramadan</h1>
+|
+<table style="text-align:center">
+<tr>
+<td colspan="5" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="4">
+<em>Dependent variable:</em>
+</td>
+</tr>
+<pre><code>                                     |</code></pre>
+|
+<tr>
+<td>
+</td>
+<td colspan="4" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<pre><code>                                                                                                                                                        |</code></pre>
+|
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="4">
+Country level porn hits
+</td>
+</tr>
+<pre><code>                                                                                                                                                |</code></pre>
+|
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(1)
+</td>
+<td>
+(2)
+</td>
+<td>
+(3)
+</td>
+<td>
+(4)
+</td>
+</tr>
+<pre><code>                                                                                                                                            |</code></pre>
+|
+<tr>
+<td colspan="5" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+days_in_ram
+</td>
+<td>
+-1.855<sup>***</sup>
+</td>
+<td>
+-1.855<sup>***</sup>
+</td>
+<td>
+</td>
+<td>
+-2.129<sup>***</sup>
+</td>
+</tr>
+<pre><code>            |</code></pre>
+|
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.094)
+</td>
+<td>
+(0.094)
+</td>
+<td>
+</td>
+<td>
+(0.094)
+</td>
+</tr>
+<pre><code>                                                                                                                                   |</code></pre>
+|
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<pre><code>                                                                                                                                                        |</code></pre>
+|
+<tr>
+<td style="text-align:left">
+in_ram
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+-14.204<sup>***</sup>
+</td>
+<td>
+</td>
+</tr>
+<pre><code>                                                                                                                             |</code></pre>
+|
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+(0.619)
+</td>
+<td>
+</td>
+</tr>
+<pre><code>                                                                                                                                                 |</code></pre>
+|
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<pre><code>                                                                                                                                                        |</code></pre>
+|
+<tr>
+<td style="text-align:left">
+days_in_eid
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+7.415<sup>***</sup>
+</td>
+<td>
+6.586<sup>***</sup>
+</td>
+</tr>
+<pre><code>                                                                                                       |</code></pre>
+|
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+(0.486)
+</td>
+<td>
+(0.479)
+</td>
+</tr>
+<pre><code>                                                                                                                                          |</code></pre>
+|
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<pre><code>                                                                                                                                                        |</code></pre>
+|
+<tr>
+<td style="text-align:left">
+Constant
+</td>
+<td>
+42.752<sup>***</sup>
+</td>
+<td>
+42.752<sup>***</sup>
+</td>
+<td>
+42.565<sup>***</sup>
+</td>
+<td>
+42.559<sup>***</sup>
+</td>
+</tr>
+<pre><code>                                                                |</code></pre>
+|
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.183)
+</td>
+<td>
+(0.183)
+</td>
+<td>
+(0.181)
+</td>
+<td>
+(0.181)
+</td>
+</tr>
+<pre><code>                                                                                                                            |</code></pre>
+|
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<pre><code>                                                                                                                                                        |</code></pre>
+|
+<tr>
+<td colspan="5" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Observations
+</td>
+<td>
+6,500
+</td>
+<td>
+6,500
+</td>
+<td>
+6,500
+</td>
+<td>
+6,500
+</td>
+</tr>
+<pre><code>                                                   |</code></pre>
+|
+<tr>
+<td style="text-align:left">
+R<sup>2</sup>
+</td>
+<td>
+0.057
+</td>
+<td>
+0.057
+</td>
+<td>
+0.086
+</td>
+<td>
+0.084
+</td>
+</tr>
+<pre><code>                                                                                                                       |</code></pre>
+|
+<tr>
+<td style="text-align:left">
+Adjusted R<sup>2</sup>
+</td>
+<td>
+0.057
+</td>
+<td>
+0.057
+</td>
+<td>
+0.086
+</td>
+<td>
+0.084
+</td>
+</tr>
+<pre><code>                                                                                                              |</code></pre>
+|
+<tr>
+<td style="text-align:left">
+Residual Std. Error
+</td>
+<td>
+14.084 (df = 6498)
+</td>
+<td>
+14.084 (df = 6498)
+</td>
+<td>
+13.867 (df = 6497)
+</td>
+<td>
+13.884 (df = 6497)
+</td>
+</tr>
+<pre><code>                                                             |</code></pre>
+|
+<tr>
+<td style="text-align:left">
+F Statistic
+</td>
+<td>
+393.283<sup>***</sup> (df = 1; 6498)
+</td>
+<td>
+393.283<sup>***</sup> (df = 1; 6498)
+</td>
+<td>
+306.131<sup>***</sup> (df = 2; 6497)
+</td>
+<td>
+297.069<sup>***</sup> (df = 2; 6497)
+</td>
+</tr>
+| |
+<tr>
+<td colspan="5" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+<em>Note:</em>
+</td>
+<td colspan="4" style="text-align:right">
+<sup><em></sup>p&lt;0.1; <sup><strong></sup>p&lt;0.05; <sup></strong></em></sup>p&lt;0.01
+</td>
+</tr>
+| |
+</table>
+<pre><code>                                                                                                                                                                                                                              |</code></pre>
 <p>Variable names: country year Ramadan vs not ramadan search volume (porn/sex)</p>
 <p>It’s important to acknowledge that the population covered in my study are those people who access pornography searches not through a proxy site and it is likely that this population would differ somewhat from those who use a proxy site and are not found on google. thus my sample size is not representative of the population as a whole</p>
-</div>
 
 
 
