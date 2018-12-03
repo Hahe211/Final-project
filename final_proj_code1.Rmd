@@ -65,13 +65,6 @@ ramadan_dates <- read_excel("ramadan_dates.xlsx")
 ```
 
 
-```{r}
-#dowload data set for more countries 
-
-
-
-```
-
 
 ```{r, echo = FALSE, message = FALSE, warning= FALSE}
 #showing/determining high volume porn searches 
@@ -83,7 +76,9 @@ D1$related_queries %>%
      select(subject, value) %>% 
       slice(1:10)
 
-
+D2$related_queries %>% 
+  select(subject, value) %>% 
+  slice(1:10)
 
 
 ```
