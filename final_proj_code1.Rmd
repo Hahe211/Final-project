@@ -2,7 +2,9 @@
 title: "regression analysis"
 author: "hannah hess"
 date: "November 29, 2018"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -22,7 +24,7 @@ in another page, I will look at graphs of - popular hours for porn consumption, 
 
  
 first - try to pull a cross country data frame from google then combine by country... although I could make life easy on myself and not pull more than two countries. 
-```{r, include = FALSE, echo = FALSE, message = FALSE, warning= FALSE}
+```{r, cache = TRUE, include = FALSE, echo = FALSE, message = FALSE, warning= FALSE}
 
 #create preliminary data set from gtrends - last 5 years
 
@@ -66,7 +68,7 @@ ramadan_dates <- read_excel("ramadan_dates.xlsx")
 
 
 
-```{r, echo = FALSE, message = FALSE, warning= FALSE}
+```{r, cache = TRUE, echo = FALSE, message = FALSE, warning= FALSE}
 #showing/determining high volume porn searches 
 
 
@@ -86,7 +88,7 @@ D2$related_queries %>%
 ```
 
 
-```{r, include = FALSE, echo = FALSE, message = FALSE, warning= FALSE}
+```{r, cache = TRUE, include = FALSE, echo = FALSE, message = FALSE, warning= FALSE}
 
 
 #I have a problem: the gtrends data set does not indicate the presence or absence of Ramadan. I have to pull that info from a different data set I have called ramadan_holiday
@@ -169,7 +171,7 @@ for (i in 1:length(D1_interest$date)) {
 
 
 
-```{r, include = FALSE, echo = FALSE, message = FALSE, warning= FALSE}
+```{r, cache = TRUE, include = FALSE, echo = FALSE, message = FALSE, warning= FALSE}
 
 #repeat the above step but for WORLD data to test if there's a global impact
 
@@ -243,8 +245,8 @@ for (i in 1:length(world_interest$date)) {
 ```{r}
 # #surveying my handiwork:)
 # #country level data
-D1_interest <- D1_interest %>% 
- select(date, days_in_ram, in_ram, hits, year, days_in_eid) 
+# D1_interest <- D1_interest %>% 
+#  select(date, days_in_ram, in_ram, hits, year, days_in_eid) 
 
 # 
 # 
@@ -293,14 +295,12 @@ mb <- lm(hits ~ days_in_ram, data=D1_interest)
 m1 <- lm(hits ~ in_ram + days_in_eid, data=D1_interest)
 m2 <- lm(hits ~ days_in_ram + days_in_eid, data=D1_interest)
 
-#sig impact detected! .2 percentage point degrease
-reg_table <- 
-  stargazer(ma, mb, m1, m2, type="text", summary = FALSE, dep.var.labels= "Country level porn hits", summary.logical = FALSE)
+
 
  # covariate.labels=c("Gross horsepower","Rear axle ratio","Four foward gears",
  # "Five forward gears","Type of transmission (manual=1)")
 
-kable(reg_table)
+
 
 
 
@@ -314,9 +314,11 @@ m4 <-  lm(hits ~ in_ram, data=world_interest)
 #options moving forward - I could either include celebratory holidays OR look at it on a regional level - ie: middle eastern vs south asian countries vs gulf countries.
 
 
-
-
-
+#sig impact detected! .2 percentage point degrease
+# reg_table <- 
+#   stargazer(ma, mb, m1, m2, type="text", summary = FALSE, dep.var.labels= "Country level porn hits", summary.logical = FALSE)
+# 
+# kable(reg_table)
 
 ```
 
@@ -324,7 +326,16 @@ m4 <-  lm(hits ~ in_ram, data=world_interest)
 
 
 
-#create and merge large data set organized by year and dates and countries which show the occurence of ramadan 
+stargazer experiment 
+
+```{r, echo = FALSE, message = FALSE, warning= FALSE}
+#stargazer(ma, mb, m1, m2, summary = FALSE, type = "html", dep.var.labels = "Country level porn hits")
+
+
+#and in kable
+
+kable(stargazer(ma, mb, m1, m2, summary = FALSE, type = "html", dep.var.labels = "Country level porn hits"))
+```
 
 
 
