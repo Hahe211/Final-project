@@ -46,13 +46,15 @@ D1_interest <- D1$interest_over_time %>%
 
 #download world data to see if theres a world influence, the default is worlk data unless you change something
 world <- gtrends(keyword = "sex", time = "today+5-y")
-world2 <- gtrends(keyword = "porn", time = "today+5-y") %>% 
+world2 <- gtrends(keyword = "porn", time = "today+5-y")
+
+world2 <- world2$interest_over_time %>% 
   select(hits, date) %>% 
   transmute(hits_sex = hits, date = date)
 
 world_interest <- world$interest_over_time %>% 
   full_join(world2, by = "date") %>% 
-  mutate(sum.porn = (hits + hits.sex)/2)
+  mutate(sum.porn = (hits + hits_sex)/2)
 
 
 #load the data set I made with dates of ramadan and major holidays
