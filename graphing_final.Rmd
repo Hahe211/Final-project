@@ -5,7 +5,7 @@ date: "November 28, 2018"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, cache= TRUE}
 knitr::opts_chunk$set(echo = TRUE)
 
 
@@ -25,7 +25,7 @@ library(readxl)
 
 
 
-```{r, include = FALSE}
+```{r, include = FALSE, cache = TRUE}
 
 #set nice theme for background of first plot 
 my_theme <- function() {
@@ -96,7 +96,7 @@ hourly2$interest_over_time %>%
 
 
 ```
-```{r}
+```{r, cache = TRUE}
 #graph with rectanglas for ramadan presence
 
 #read in the first graph which includes indicators for the presence of ramadan/eid and the value for sex and porn searches
