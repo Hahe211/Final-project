@@ -10,7 +10,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 
 library(gtrendsR)
-library(maps)
 library(ggplot2)
 library(lettercase)
 library(viridis)
@@ -18,7 +17,6 @@ library(pals)
 library(scico)
 library(ggrepel)
 library(tidyverse)
-library(ggmap)
 library(readxl)
 ```
 
@@ -119,7 +117,8 @@ graph3 <- bind_rows(graph1, graph2)
 
 #read in data of ramadan dates
 
-ramadan_dates <- read_excel("ramadan_dates.xlsx")
+ramadan_dates <- read_excel("ramadan_dates.xlsx") %>% 
+filter(year >= 2014)
 
 
 
@@ -129,10 +128,23 @@ ramadan_dates <- read_excel("ramadan_dates.xlsx")
 
 ```{r}
 
-graph3 %>% 
-  ggplot(aes(x = date, y = hits, colour = category)) 
-#+
-  #geom_line() +  geom_rect(data=ramadan_dates, aes(xmin=start, xmax=end, ymin=-Inf, ymax=+Inf), fill='pink', alpha=0.2)
+
+ggplot() + geom_line(data = graph3, aes(x = date, y = hits, colour = category))+ geom_rect(data= ramadan_dates, aes(xmin=start, xmax=end, ymin=-Inf, ymax=+Inf), alpha = 0.2)
+
+
+
+```
+
+```{r, cache= TRUE, warning = FALSE, message = FALSE}
+
+yearly <- gtrends(c("sex","porn"), geo = c("SA", "JO"), time = "today+5-y")  
+yearly = yearly$interest_over_time
+
+ggplot() + geom_line(data = yearly, aes(x = date, y = hits, colour = keyword)) + 
+  geom_rect(data = ramadan_dates, aes(xmin=start, xmax=end, ymin=-Inf, ymax=+Inf), alpha = 0.2)
+
+
+
 
 
 ```
