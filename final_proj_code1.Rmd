@@ -26,7 +26,8 @@ in another page, I will look at graphs of - popular hours for porn consumption, 
 first - try to pull a cross country data frame from google then combine by country... although I could make life easy on myself and not pull more than two countries. 
 ```{r, cache = TRUE, include = FALSE, echo = FALSE, message = FALSE, warning= FALSE}
 
-#create preliminary data set from gtrends - last 5 years
+#create preliminary data set from gtrends - last 5 years. Although I would have ideally liked to gather data from more than 5 years - I'm limited in scope because the algorithm can't pull more data then that at a time
+
 
 
 
@@ -35,18 +36,23 @@ D1 <- gtrends(keyword = c("sex"), geo = c("EG", "SA", "AE","JO", "MA"), time = "
 D2 <- gtrends(keyword = c("porn"), geo = c("EG", "SA", "AE","JO", "MA"), time = "today+5-y") 
  
 
-  #combine data for sex and porn searches
+  #combine data for sex and porn searches by merging D2 and D1
+#search values are stored in the interest over time tibble: here is some information from google on what that represents:
+# Numbers represent search interest relative to the highest point on the chart for the given region and time. A value of 100 is the peak popularity for the term. A value of 50 means that the term is half as popular. A score of 0 means there was not enough data for this term.
+
 D2_interest <- D2$interest_over_time %>% 
   select(hits, date) %>% 
-  transmute(hits.sex = hits, date = date)
+  transmute(hits.porn = hits, date = date)
   
 
 D1_interest <- D1$interest_over_time %>% 
+  mutate(hits.sex = hits) %>% 
   full_join(D2_interest, by = "date") %>% 
-  mutate(sum.porn = (hits + hits.sex)/2)
+  mutate(sum = (hits + hits.porn)/2) %>% 
+  select(-hits)
 
 
-#download world data to see if theres a world influence, the default is worlk data unless you change something
+#download world data to see if theres a world influence, the default is world data unless you change something
 world <- gtrends(keyword = "sex", time = "today+5-y")
 world2 <- gtrends(keyword = "porn", time = "today+5-y")
 
@@ -67,12 +73,17 @@ ramadan_dates <- read_excel("ramadan_dates.xlsx")
 ```
 
 
-
+The table below shows related queries for searches in the category of sex and porn over Ramadan. Two demonstrate the nature of the searches I display the top 10 related search values. Warning, this includes graphic content.
+According to the google trends website, scoring is on a relative scale where a value of 100 is the most commonly searched query, 50 is a query searched half as often as the most popular query, and so on.
+  
 ```{r, cache = TRUE, echo = FALSE, message = FALSE, warning= FALSE}
 #showing/determining high volume porn searches 
 
 
-#justify that I'm picking the right terms (warning explicit content) - since I'm focused with change over time - its not critical that I isolate all the relevant terms but just that they indeed be pornography serach terms  adn that they capture a high level of the variation over time
+#justify that I'm picking the right terms (warning explicit content) - since I'm focused with change over time - its not critical that I isolate all the relevant terms but just that they indeed be pornography serach terms  and that they capture a high level of the variation over time
+#related queries captures the following: 
+# Users searching for your term also searched for these queries. You can sort by the following metrics:
+# * Top - The most popular search queries. Scoring is on a relative scale where a value of 100 is the most commonly searched query, 50 is a query searched half as often as the most popular query, and so on.
   
 D1$related_queries %>% 
      select(subject, value) %>% 
@@ -83,6 +94,7 @@ D2$related_queries %>%
   select(subject, value) %>% 
   slice(1:10) %>% 
   kable(caption = "A Table of Related Queries", col.names = c("Correlation Score", "Value"))
+
 
 
 ```
@@ -162,8 +174,10 @@ for (i in 1:length(D1_interest$date)) {
 
   
 }
-  
+ 
 
+#write an rds file to graph the data 
+write_rds(D1_interest, "D1_interest.rds")
 
 
 ```
@@ -242,58 +256,59 @@ for (i in 1:length(world_interest$date)) {
 ```
 
 
-```{r}
-# #surveying my handiwork:)
-# #country level data
-# D1_interest <- D1_interest %>% 
-#  select(date, days_in_ram, in_ram, hits, year, days_in_eid) 
 
-# 
-# 
-#       
-# head(D1_interest)
-# 
-# #global data
-# world_interest <- world_interest %>% 
-#     select(date, days_in_ram, in_ram, hits, year)
-# 
-# head(world_interest)
-  
+This table of descriptive statistics gives an overview of the data. As indicated, there are 6500 observations. Understanding values for sex and porn searches:
+According to the google trends website, numbers represent search interest relative to the highest point on the chart for the given region and time. A value of 100 is the peak popularity for the term. A value of 50 means that the term is half as popular. A score of 0 means there was not enough data for this term. 
+```{r, include = FALSE, echo = FALSE, message = FALSE, warning= FALSE, results = "asis", cache = TRUE}
+#regression analysis
+
+
+#displaying summary statistics
+
+#I realize I don't like the display for this approach quite as much 
+# trends = gtrends(keyword = c("sex"), geo = c("EG", "SA", "AE","JO", "MA"), time = "today+5-y")
+# #select only interst over time 
+# time_trend=trends$interest_over_time %>% 
+#   select(-keyword, -gprop)
+# head(time_trend)
+
+#I edit here with type = "text" but will switch to type = html for print out
+des_table <- D1_interest %>% 
+  select(-days_in_ram, -days_in_eid, -days_in_eida, -in_ram) %>% 
+  stargazer(type = "html", title="Descriptive statistics", digits=1, flip = TRUE, summary.stat = c("n", "mean", "sd", "max"), summary.logical= FALSE)
+
+des_table
+# #CODE FOR SELECTIVE DESCRIPTIVE Stats
+#  stargazer(mydata[c("mpg","hp","data")], type = "text",
+#  title="Descriptive statistics/selected variables", digits=1, out="table2.txt", flip=TRUE,
+#  covariate.labels=c("Miles/(US)gallon","Gross horsepower","Rear axle ratio"))
+
 ```
 
 
 
+```{r, include = FALSE}
+#regression analysis - putting togethor the regressions
 
-```{r, include = FALSE, echo = FALSE, message = FALSE, warning= FALSE}
-#regression analysis
-
-#descriptive statistics
-
-des_table <- stargazer(D1_interest, type = "text", title="Descriptive statistics", digits=1)
-
-
-#CODE FOR SELECTIVE DESCRIPTIVE Stats
-# stargazer(mydata[c("mpg","hp","drat")], type = "text",
-#  title="Descriptive statistics/selected variables", digits=1, out="table2.txt", flip=TRUE,
-#  covariate.labels=c("Miles/(US)gallon","Gross horsepower","Rear axle ratio"))
 
 #both year and country controls, switching between in_ram and days_in_ram
-m5 <- lm(hits ~ in_ram + geo + year, data=D1_interest)
-m6 <- lm(hits ~ days_in_ram + geo + year, data=D1_interest)
+m5 <- lm(sum ~ in_ram + geo + year, data=D1_interest)
+m6 <- lm(sum ~ days_in_ram + geo + year, data=D1_interest)
 
 
 #I'm having an issue where the table prints the names of all the countries 
 
 #Make a regression table
 #first regression without year or country controls
-ma <- lm(hits ~ days_in_ram, data=D1_interest)
+ma <- lm(sum ~ days_in_ram, data=D1_interest)
+
 
 #adding country controls
-mb <- lm(hits ~ days_in_ram, data=D1_interest)
+mb <- lm(sum ~ in_ram, data=D1_interest)
 
 #year and country controls dont make a difference in p values, sd, or coeff so I'm back to removing them - probably because data set is already normalized for year and country
-m1 <- lm(hits ~ in_ram + days_in_eid, data=D1_interest)
-m2 <- lm(hits ~ days_in_ram + days_in_eid, data=D1_interest)
+m1 <- lm(sum ~ in_ram + days_in_eid, data=D1_interest)
+m2 <- lm(sum ~ days_in_ram + days_in_eid, data=D1_interest)
 
 
 
@@ -319,20 +334,17 @@ m4 <-  lm(hits ~ in_ram, data=world_interest)
 #   stargazer(ma, mb, m1, m2, type="text", summary = FALSE, dep.var.labels= "Country level porn hits", summary.logical = FALSE)
 # 
 # kable(reg_table)
-my_stargazer <- capture.output(stargazer(ma, mb, m1, m2, type = "html", dep.var.labels = "Country level porn hits"))
+#my_stargazer <- capture.output(stargazer(ma, mb, m1, m2, type = "html", dep.var.labels = "Country level porn hits"))
+
 ```
 
 
-
-
-
-stargazer experiment 
-
+This regression table output demonstrates how Ramadan causes a sigificant decrease in sex and porn related searches. 
 ```{r, echo = FALSE, message = FALSE, warning= FALSE, results = "asis"}
 #use results = asis in the caption to make sure the table prints properly
 
 
-stargazer(ma, mb, m1, m2, summary = FALSE, type = "html", dep.var.labels = "Country level porn hits")
+stargazer(ma, mb, m1, m2, summary = FALSE, type = "text", dep.var.labels = "Country level porn hits")
 
 #my_stargazer
 #and in kable

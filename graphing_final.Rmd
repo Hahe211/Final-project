@@ -24,8 +24,9 @@ library(ggmap)
 
 
 
-```{r}
+```{r, include = FALSE}
 
+#set nice theme for background of first plot 
 my_theme <- function() {
     theme_bw() +
     theme(panel.background = element_blank()) +
@@ -47,6 +48,7 @@ my_theme <- function() {
 
 ```{r}
 
+#introductory plot to display pornography search data 
 sex <- gtrends(c("sex","porn"), gprop = "web", geo = c("SA"))
 sex %>% glimpse()
 
@@ -64,9 +66,8 @@ plot(sex) +
 ```{r}
 #graph with rectanglas for ramadan presence
 
-
+#read in the first graph which includes indicators for the presence of ramadan/eid and the value for sex and porn searches
 read_rds("graph_data.rds")
-
 
 
 
@@ -74,8 +75,9 @@ read_rds("graph_data.rds")
 
 
 ```{r}
+#download data for the second graph which shows hourly interest over a seven day period 
 
-
+#(hourly interest code)
 
 ```
 
