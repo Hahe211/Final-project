@@ -49,13 +49,31 @@ my_theme <- function() {
 ```{r}
 
 #introductory plot to display pornography search data 
-sex <- gtrends(c("sex","porn"), gprop = "web", geo = c("SA"))
-sex %>% glimpse()
+SA_data <- gtrends(c("sex","porn"), gprop = "web", geo = c("SA"))
 
-plot(sex) + 
+
+plot(SA_data) + 
   my_theme() +
   geom_line(size = 0.5) 
 
+
+
+#graph with hourly data on sex and porn searches - to get a sense of the evening hours when most sex/porn searches occur 
+
+hourly <- gtrends(c("sex","porn"), gprop = "web", geo = c("SA"), time = "now 7-d") 
+
+ hourly$interest_over_time %>% 
+  mutate(day = lubridate::wday(date, label = TRUE), hour = lubridate::hour(date)) %>% 
+    ggplot() +
+  geom_line(aes(x = hour, y = hits, colour = keyword)) +
+  geom_smooth(aes(x = hour, y = hits), se = FALSE) +
+  facet_grid(. ~ day) +
+  theme_bw() + 
+  theme(legend.position = 'top') +
+  scale_x_continuous(breaks = c(6, 12, 18, 24)) +
+  labs(y = NULL, x = "Time of Day", 
+       caption = "November 27, 2018 11:00am to December 4, 2018 1:00pm",
+       colour = NULL, title = "Google Trends Popularity of 'porn' or 'sex' over a Week")
 
 
 

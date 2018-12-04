@@ -323,44 +323,27 @@ m2 <- lm(sum ~ days_in_ram + days_in_eid, data=D1_interest)
 m3 <- lm(hits ~ days_in_ram, data=world_interest)
 m4 <-  lm(hits ~ in_ram, data=world_interest)
 
-#make a seperate table for world data
-
-
-#options moving forward - I could either include celebratory holidays OR look at it on a regional level - ie: middle eastern vs south asian countries vs gulf countries.
-
-
-#sig impact detected! .2 percentage point degrease
-# reg_table <- 
-#   stargazer(ma, mb, m1, m2, type="text", summary = FALSE, dep.var.labels= "Country level porn hits", summary.logical = FALSE)
-# 
-# kable(reg_table)
-#my_stargazer <- capture.output(stargazer(ma, mb, m1, m2, type = "html", dep.var.labels = "Country level porn hits"))
 
 ```
 
 
-This regression table output demonstrates how Ramadan causes a sigificant decrease in sex and porn related searches. 
+This regression table output demonstrates how Ramadan causes a sigificant decrease in sex and porn related searches in five muslim majority countries. It also indicates how the presence of a feasting holiday, Eid-al-Futr, which occurs in the week following Ramadan, results in an increase in related search values. The regression is run on sex and porn search values aggregated on a weekly basis. 
+
+"Days in Ramadan" is a continuous variable with values zero throuhg seven, designating the number of days in a a given week which include. "Presence of Ramadan" is a binary variable with values of one or zero based on the presence of absence of Ramadan.
+
+"Days in Eid" is a continuous variable which counts the number of days of Eid al-Futr which occur in a given week. Eid al-Futr is a feasting holiday which occurs immediately following Ramadan. 
 ```{r, echo = FALSE, message = FALSE, warning= FALSE, results = "asis"}
 #use results = asis in the caption to make sure the table prints properly
 
 
-stargazer(ma, mb, m1, m2, summary = FALSE, type = "text", dep.var.labels = "Country level porn hits")
+#reviewing this final regression - I realize I should also look into including a binary variable for the presence of Eid, given that that seems to yeild a more significant result. 
+stargazer(ma, mb, m1, m2, summary = FALSE, type = "html", title = "Changes in Sex and Porn Related Search Values Over Ramadan in 5 Muslim-Majority Countries", dep.var.labels = "Mean values for 'sex' and 'porn' hits",  covariate.labels = c("Days in Ram", "Presence of Ram (0 or 1)", "Days in Eid"))
 
-#my_stargazer
-#and in kable
-#kable(x = my_stargazer)
+
+
 ```
 
 
-
-
-
-
-Variable names:
-country 
-year 
-Ramadan vs not ramadan 
-search volume (porn/sex)
 
 
 
