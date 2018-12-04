@@ -19,6 +19,7 @@ library(scico)
 library(ggrepel)
 library(tidyverse)
 library(ggmap)
+library(readxl)
 ```
 
 
@@ -46,7 +47,7 @@ my_theme <- function() {
 
 
 
-```{r}
+```{r, warning = FALSE, message = FALSE, cache = TRUE}
 
 #introductory plot to display pornography search data 
 SA_data <- gtrends(c("sex","porn"), gprop = "web", geo = c("SA"))
@@ -73,10 +74,24 @@ hourly <- gtrends(c("sex","porn"), gprop = "web", geo = c("SA"), time = "now 7-d
   scale_x_continuous(breaks = c(6, 12, 18, 24)) +
   labs(y = NULL, x = "Time of Day", 
        caption = "November 27, 2018 11:00am to December 4, 2018 1:00pm",
-       colour = NULL, title = "Google Trends Popularity of 'porn' or 'sex' over a Week")
+       colour = NULL, title = "Google Trends Popularity of 'porn' or 'sex' over a Week in Saudi Arabia")
 
 
 
+ hourly2 <- gtrends(c("sex","porn"), gprop = "web", geo = c("JO"), time = "now 7-d") 
+
+hourly2$interest_over_time %>% 
+  mutate(day = lubridate::wday(date, label = TRUE), hour = lubridate::hour(date)) %>% 
+    ggplot() +
+  geom_line(aes(x = hour, y = hits, colour = keyword)) +
+  geom_smooth(aes(x = hour, y = hits), se = FALSE) +
+  facet_grid(. ~ day) +
+  theme_bw() + 
+  theme(legend.position = 'top') +
+  scale_x_continuous(breaks = c(6, 12, 18, 24)) +
+  labs(y = NULL, x = "Time of Day", 
+       caption = "November 27, 2018 11:00am to December 4, 2018 1:00pm",
+       colour = NULL, title = "Google Trends Popularity of 'porn' or 'sex' over a Week in Jordan")
 
 
 
@@ -85,7 +100,27 @@ hourly <- gtrends(c("sex","porn"), gprop = "web", geo = c("SA"), time = "now 7-d
 #graph with rectanglas for ramadan presence
 
 #read in the first graph which includes indicators for the presence of ramadan/eid and the value for sex and porn searches
-read_rds("graph_data.rds")
+graph <- read_rds("D1_interest.rds") %>% 
+select(-keyword, -date1, -date2, -date3, -date4, -date5, -date6) 
+
+
+graph1 <- graph %>%
+  mutate(hits = hits.porn,
+         category = "porn") %>%
+  select(hits, category, date, in_ram)
+
+graph2 <- graph %>%
+  mutate(hits = hits.sex,
+         category = "sex") %>%
+select(hits, category, date, in_ram)
+
+graph3 <- bind_rows(graph1, graph2)
+
+
+#read in data of ramadan dates
+
+ramadan_dates <- read_excel("ramadan_dates.xlsx")
+
 
 
 
@@ -93,9 +128,12 @@ read_rds("graph_data.rds")
 
 
 ```{r}
-#download data for the second graph which shows hourly interest over a seven day period 
 
-#(hourly interest code)
+graph3 %>% 
+  ggplot(aes(x = date, y = hits, colour = category)) 
+#+
+  #geom_line() +  geom_rect(data=ramadan_dates, aes(xmin=start, xmax=end, ymin=-Inf, ymax=+Inf), fill='pink', alpha=0.2)
+
 
 ```
 
