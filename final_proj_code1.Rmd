@@ -41,16 +41,14 @@ D2 <- gtrends(keyword = c("porn"), geo = c("EG", "SA", "AE","JO", "MA"), time = 
 # Numbers represent search interest relative to the highest point on the chart for the given region and time. A value of 100 is the peak popularity for the term. A value of 50 means that the term is half as popular. A score of 0 means there was not enough data for this term.
 
 D2_interest <- D2$interest_over_time %>% 
-  select(hits, date) %>% 
-  transmute(hits.porn = hits, date = date)
+  select(hits, date, geo) %>% 
+  transmute(hits.porn = hits, date = date, geo = geo)
   
 
 D1_interest <- D1$interest_over_time %>% 
-  mutate(hits.sex = hits) %>% 
-  full_join(D2_interest, by = "date") %>% 
-  mutate(sum = (hits + hits.porn)/2) %>% 
-  select(-hits)
-
+  rename(hits.sex = hits) %>% 
+  left_join(D2_interest, by = c("date", "geo")) %>% 
+  mutate(sum = (hits.sex + hits.porn)/2)
 
 #download world data to see if theres a world influence, the default is world data unless you change something
 world <- gtrends(keyword = "sex", time = "today+5-y")
@@ -138,6 +136,22 @@ for (i in 1:length(D1_interest$date)) {
   
 }
 
+
+#code variable for the week before ramadan to test whether the week before ramadan results in a change in values
+
+D1_interest$before_ram = 0 
+  for (i in 1:length(D1_interest$date) - 1) {
+if (D1_interest$in_ram == 0 & D1_interest$in_ram[i +1] == 1) D1_interest$before_ram[i] = 1 else D1_interest$before_ram[i] <- 0
+}
+
+#code variable for the week before ramadan to test whether 2 weeks before ramadan results in a change in values
+
+D1_interest$before2_ram = 0 
+  for (i in 1:length(D1_interest$date) - 2) {
+if (D1_interest$in_ram == 0 & D1_interest$in_ram[i +2] == 1) D1_interest$before2_ram[i] = 1 else D1_interest$before2_ram[i] <- 0
+}
+
+
 #Thank you to Eric Wasserman Harvard 2019 Dunster House for helping me conceptualize how best to approach the coding problem above!
 
 
@@ -173,6 +187,23 @@ for (i in 1:length(D1_interest$date)) {
 
 
 
+
+for (i in 1:length(D1_interest$date)) {
+  D1_interest[i, "days_before"] = 0 
+  for( j in c("date" , "date1", "date2" , "date3", "date4", "date5", "date6")){
+    if ( (D1_interest[i, j] >= ramadan_dates[ramadan_dates$year==   D1_interest[i, "year"]   &  ramadan_dates$Holiday == "Ramadan" , ]$start  ) & (D1_interest[i, j] <= ramadan_dates[ramadan_dates$year== D1_interest[i,"year"] & ramadan_dates$Holiday == "Ramadan" ,]$end  ) ) {
+        D1_interest[i, "days_in_ram"] =   D1_interest[i, "days_in_ram"]  + 1
+    }
+  }
+  
+  if (D1_interest[i, "days_in_ram"] > 2){
+      D1_interest[i,"in_ram"] = 1
+  } else{
+      D1_interest[i,"in_ram"] = 0
+  }
+  
+  
+}
 
 #I'm commenting out this section for coding in Eid al-ahda which occurs later in the calender year because I didn't find any significant relationship
 # for (i in 1:length(D1_interest$date)) {
@@ -246,6 +277,11 @@ for (i in 1:length(world_interest$date)) {
         world_interest[i, "days_in_eid"] =   world_interest[i, "days_in_eid"]  + 1
     }
   }
+   if (D1_interest[i, "days_in_eid"] > 2){
+      D1_interest[i,"in_eid"] = 1
+  } else{
+      D1_interest[i,"in_eid"] = 0
+  }
 
 }
 
@@ -308,6 +344,11 @@ des_table
 ma <- lm(sum ~ days_in_ram, data=D1_interest)
 mb <- lm(sum ~ in_ram, data=D1_interest)
 m1 <- lm(sum ~ in_ram + in_eid, data=D1_interest)
+m2 <- lm(sum ~ days_in_ram + in_eid, data=D1_interest)
+m3 <- lm(sum ~ before_ram + in_ram + in_eid, data = D1_interest)
+m4 <- lm(sum ~ before2_ram + in_ram + in_eid, data = D1_interest)
+
+
 
 #both year and country controls, switching between in_ram and days_in_ram
 # m5 <- lm(sum ~ in_ram + geo + year, data=D1_interest)
@@ -317,11 +358,11 @@ m1 <- lm(sum ~ in_ram + in_eid, data=D1_interest)
 
 
 
-#global data -  sig impact detected
-w1 <- lm(sum.porn ~ days_in_ram, data=world_interest)
-w2 <- lm(sum.porn ~ in_ram, data=world_interest)
-w3 <- lm(sum.porn ~ in_ram + days_in_eid, data=world_interest)
-w4 <- lm(sum.porn ~ days_in_ram + days_in_eid, data=world_interest)
+# #global data -  sig impact detected
+# w1 <- lm(sum.porn ~ days_in_ram, data=world_interest)
+# w2 <- lm(sum.porn ~ in_ram, data=world_interest)
+# w3 <- lm(sum.porn ~ in_ram + in_eid, data=world_interest)
+# w4 <- lm(sum.porn ~ days_in_ram + in_eid, data=world_interest)
 
 ```
 
@@ -336,7 +377,7 @@ This regression table output demonstrates how Ramadan causes a sigificant decrea
 
 
 #reviewing this final regression - I realize I should also look into including a binary variable for the presence of Eid, given that that seems to yeild a more significant result. 
-stargazer(ma, mb, m1, summary = FALSE, type = "text", title = "Changes in Sex and Porn Related Search Values Over Ramadan in 5 Muslim-Majority Countries", dep.var.labels = "Mean values for 'sex' and 'porn' hits by Week",  covariate.labels = c("Days in Ram", "Presence of Ram (0 or 1)", "Presence of Eid (0 or 1)"))
+stargazer(ma, mb, m1, m2, m3, m4, summary = FALSE, type = "html", title = "Changes in Sex and Porn Related Search Values Over Ramadan in 5 Muslim-Majority Countries", dep.var.labels = "Mean values for 'sex' and 'porn' hits by Week",  covariate.labels = c("Days in Ram", "Presence of Ram (0 or 1)", "Presence of Eid (0 or 1)"))
 
 
 
@@ -345,8 +386,8 @@ stargazer(ma, mb, m1, summary = FALSE, type = "text", title = "Changes in Sex an
 Reviewing world search values  - we should be shocked to see that indeed the cumulative Global value of sex and porn searches decresaes over Ramadan on a five year basis
 ```{r, echo = FALSE, message = FALSE, warning= FALSE, results = "asis"}
 
-stargazer(w1, w2, w3, w4, summary = FALSE, type = "html", title = "Changes in Sex and Porn Related Search Values Over Ramadan on a Global Scale", dep.var.labels = "Global Values for 'sex' and 'porn' hits by Week",  covariate.labels = c("Days in Ram", "Presence of Ram (0 or 1)", "Days in Eid"))
-
+# stargazer(w1, w2, w3, w4, summary = FALSE, type = "html", title = "Changes in Sex and Porn Related Search Values Over Ramadan on a Global Scale", dep.var.labels = "Global Values for 'sex' and 'porn' hits by Week",  covariate.labels = c("Days in Ram", "Presence of Ram (0 or 1)", "Days in Eid"))
+# 
 
 
 ```

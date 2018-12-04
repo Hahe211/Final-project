@@ -237,33 +237,33 @@ $(document).ready(function () {
 <p>This table of descriptive statistics gives an overview of the data. As indicated, there are 6500 observations. Understanding values for sex and porn searches: According to the google trends website, numbers represent search interest relative to the highest point on the chart for the given region and time. A value of 100 is the peak popularity for the term. A value of 50 means that the term is half as popular. A score of 0 means there was not enough data for this term.</p>
 <p>This regression table output demonstrates how Ramadan causes a sigificant decrease in sex and porn related searches in five muslim majority countries. It also indicates how the presence of a feasting holiday, Eid-al-Futr, which occurs in the week following Ramadan, results in an increase in related search values. The regression is run on sex and porn search values aggregated on a weekly basis.</p>
 <p>“Days in Ramadan” is a continuous variable with values zero throuhg seven, designating the number of days in a a given week which include. “Presence of Ramadan” is a binary variable with values of one or zero based on the presence of absence of Ramadan.</p>
-<p>“Days in Eid” is a continuous variable which counts the number of days of Eid al-Futr which occur in a given week. Eid al-Futr is a feasting holiday which occurs immediately following Ramadan.</p>
+<p>“Days in Eid” is a continuous variable which registers the presence of Eid al-Futr in a given week. Eid al-Futr is a three day feasting holiday which occurs immediately following Ramadan.</p>
 <table style="text-align:center">
 <caption>
 <strong>Changes in Sex and Porn Related Search Values Over Ramadan in 5 Muslim-Majority Countries</strong>
 </caption>
 <tr>
-<td colspan="5" style="border-bottom: 1px solid black">
+<td colspan="7" style="border-bottom: 1px solid black">
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
 </td>
-<td colspan="4">
+<td colspan="6">
 <em>Dependent variable:</em>
 </td>
 </tr>
 <tr>
 <td>
 </td>
-<td colspan="4" style="border-bottom: 1px solid black">
+<td colspan="6" style="border-bottom: 1px solid black">
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
 </td>
-<td colspan="4">
-Mean values for ‘sex’ and ‘porn’ hits
+<td colspan="6">
+Mean values for ‘sex’ and ‘porn’ hits by Week
 </td>
 </tr>
 <tr>
@@ -281,9 +281,15 @@ Mean values for ‘sex’ and ‘porn’ hits
 <td>
 (4)
 </td>
+<td>
+(5)
+</td>
+<td>
+(6)
+</td>
 </tr>
 <tr>
-<td colspan="5" style="border-bottom: 1px solid black">
+<td colspan="7" style="border-bottom: 1px solid black">
 </td>
 </tr>
 <tr>
@@ -291,32 +297,44 @@ Mean values for ‘sex’ and ‘porn’ hits
 Days in Ram
 </td>
 <td>
--1.623<sup>***</sup>
+-0.797<sup>***</sup>
 </td>
 <td>
 </td>
 <td>
 </td>
 <td>
--1.870<sup>***</sup>
+-0.868<sup>***</sup>
+</td>
+<td>
+</td>
+<td>
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
 </td>
 <td>
-(0.070)
+(0.100)
 </td>
 <td>
 </td>
 <td>
 </td>
 <td>
-(0.071)
+(0.100)
+</td>
+<td>
+</td>
+<td>
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
 </td>
 <td>
 </td>
@@ -334,24 +352,13 @@ Presence of Ram (0 or 1)
 <td>
 </td>
 <td>
--10.140<sup>***</sup>
-</td>
-<td>
--12.502<sup>***</sup>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
 </td>
 <td>
 </td>
 <td>
-(0.456)
 </td>
 <td>
-(0.462)
+-4.753<sup>**</sup>
 </td>
 <td>
 </td>
@@ -367,20 +374,10 @@ Presence of Ram (0 or 1)
 </td>
 <td>
 </td>
-</tr>
-<tr>
-<td style="text-align:left">
-Days in Eid
+<td>
+(2.174)
 </td>
 <td>
-</td>
-<td>
-</td>
-<td>
-6.675<sup>***</sup>
-</td>
-<td>
-5.942<sup>***</sup>
 </td>
 </tr>
 <tr>
@@ -391,14 +388,169 @@ Days in Eid
 <td>
 </td>
 <td>
-(0.364)
 </td>
 <td>
-(0.358)
+</td>
+<td>
+</td>
+<td>
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
+Presence of Eid (0 or 1)
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+-3.829<sup>**</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+(1.552)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+in_ram
+</td>
+<td>
+</td>
+<td>
+-8.906<sup>***</sup>
+</td>
+<td>
+-11.816<sup>***</sup>
+</td>
+<td>
+</td>
+<td>
+-7.811<sup>***</sup>
+</td>
+<td>
+-9.541<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+(1.273)
+</td>
+<td>
+(1.328)
+</td>
+<td>
+</td>
+<td>
+(2.261)
+</td>
+<td>
+(1.615)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+in_eid
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+24.250<sup>***</sup>
+</td>
+<td>
+17.674<sup>***</sup>
+</td>
+<td>
+20.145<sup>***</sup>
+</td>
+<td>
+21.814<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+(3.666)
+</td>
+<td>
+(3.498)
+</td>
+<td>
+(4.115)
+</td>
+<td>
+(3.790)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
 </td>
 <td>
 </td>
@@ -414,32 +566,44 @@ Days in Eid
 Constant
 </td>
 <td>
-39.482<sup>***</sup>
+38.754<sup>***</sup>
 </td>
 <td>
-39.457<sup>***</sup>
+38.666<sup>***</sup>
 </td>
 <td>
-39.315<sup>***</sup>
+38.666<sup>***</sup>
 </td>
 <td>
-39.308<sup>***</sup>
+38.634<sup>***</sup>
+</td>
+<td>
+38.766<sup>***</sup>
+</td>
+<td>
+38.828<sup>***</sup>
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
 </td>
 <td>
-(0.138)
+(0.391)
 </td>
 <td>
-(0.138)
+(0.394)
 </td>
 <td>
-(0.135)
+(0.388)
 </td>
 <td>
-(0.136)
+(0.388)
+</td>
+<td>
+(0.390)
+</td>
+<td>
+(0.393)
 </td>
 </tr>
 <tr>
@@ -453,9 +617,13 @@ Constant
 </td>
 <td>
 </td>
+<td>
+</td>
+<td>
+</td>
 </tr>
 <tr>
-<td colspan="5" style="border-bottom: 1px solid black">
+<td colspan="7" style="border-bottom: 1px solid black">
 </td>
 </tr>
 <tr>
@@ -463,16 +631,22 @@ Constant
 Observations
 </td>
 <td>
-6,500
+1,305
 </td>
 <td>
-6,500
+1,305
 </td>
 <td>
-6,500
+1,305
 </td>
 <td>
-6,500
+1,305
+</td>
+<td>
+1,305
+</td>
+<td>
+1,305
 </td>
 </tr>
 <tr>
@@ -480,16 +654,22 @@ Observations
 R<sup>2</sup>
 </td>
 <td>
-0.076
+0.047
+</td>
+<td>
+0.036
+</td>
+<td>
+0.068
+</td>
+<td>
+0.065
 </td>
 <td>
 0.071
 </td>
 <td>
-0.117
-</td>
-<td>
-0.113
+0.072
 </td>
 </tr>
 <tr>
@@ -497,16 +677,22 @@ R<sup>2</sup>
 Adjusted R<sup>2</sup>
 </td>
 <td>
-0.075
+0.046
 </td>
 <td>
-0.071
+0.035
 </td>
 <td>
-0.116
+0.066
 </td>
 <td>
-0.113
+0.063
+</td>
+<td>
+0.069
+</td>
+<td>
+0.070
 </td>
 </tr>
 <tr>
@@ -514,16 +700,22 @@ Adjusted R<sup>2</sup>
 Residual Std. Error
 </td>
 <td>
-10.604 (df = 6498)
+13.464 (df = 1303)
 </td>
 <td>
-10.631 (df = 6498)
+13.537 (df = 1303)
 </td>
 <td>
-10.366 (df = 6497)
+13.321 (df = 1302)
 </td>
 <td>
-10.387 (df = 6497)
+13.339 (df = 1302)
+</td>
+<td>
+13.301 (df = 1301)
+</td>
+<td>
+13.295 (df = 1301)
 </td>
 </tr>
 <tr>
@@ -531,350 +723,38 @@ Residual Std. Error
 F Statistic
 </td>
 <td>
-531.061<sup>***</sup> (df = 1; 6498)
+63.638<sup>***</sup> (df = 1; 1303)
 </td>
 <td>
-495.500<sup>***</sup> (df = 1; 6498)
+48.915<sup>***</sup> (df = 1; 1303)
 </td>
 <td>
-429.113<sup>***</sup> (df = 2; 6497)
+47.133<sup>***</sup> (df = 2; 1302)
 </td>
 <td>
-414.512<sup>***</sup> (df = 2; 6497)
+45.179<sup>***</sup> (df = 2; 1302)
+</td>
+<td>
+33.106<sup>***</sup> (df = 3; 1301)
+</td>
+<td>
+33.572<sup>***</sup> (df = 3; 1301)
 </td>
 </tr>
 <tr>
-<td colspan="5" style="border-bottom: 1px solid black">
+<td colspan="7" style="border-bottom: 1px solid black">
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
 <em>Note:</em>
 </td>
-<td colspan="4" style="text-align:right">
+<td colspan="6" style="text-align:right">
 <sup><em></sup>p&lt;0.1; <sup><strong></sup>p&lt;0.05; <sup></strong></em></sup>p&lt;0.01
 </td>
 </tr>
 </table>
 <p>Reviewing world search values - we should be shocked to see that indeed the cumulative Global value of sex and porn searches decresaes over Ramadan on a five year basis</p>
-<table style="text-align:center">
-<caption>
-<strong>Changes in Sex and Porn Related Search Values Over Ramadan on a Global Scale</strong>
-</caption>
-<tr>
-<td colspan="5" style="border-bottom: 1px solid black">
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-</td>
-<td colspan="4">
-<em>Dependent variable:</em>
-</td>
-</tr>
-<tr>
-<td>
-</td>
-<td colspan="4" style="border-bottom: 1px solid black">
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-</td>
-<td colspan="4">
-Mean values for ‘sex’ and ‘porn’ hits by
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-</td>
-<td>
-(1)
-</td>
-<td>
-(2)
-</td>
-<td>
-(3)
-</td>
-<td>
-(4)
-</td>
-</tr>
-<tr>
-<td colspan="5" style="border-bottom: 1px solid black">
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-Days in Ram
-</td>
-<td>
--0.166
-</td>
-<td>
-</td>
-<td>
-</td>
-<td>
--0.168
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-</td>
-<td>
-(0.128)
-</td>
-<td>
-</td>
-<td>
-</td>
-<td>
-(0.128)
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-</td>
-<td>
-</td>
-<td>
-</td>
-<td>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-Presence of Ram (0 or 1)
-</td>
-<td>
-</td>
-<td>
--1.546<sup>*</sup>
-</td>
-<td>
--1.554<sup>*</sup>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-</td>
-<td>
-</td>
-<td>
-(0.831)
-</td>
-<td>
-(0.830)
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-</td>
-<td>
-</td>
-<td>
-</td>
-<td>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-Days in Eid
-</td>
-<td>
-</td>
-<td>
-</td>
-<td>
--0.084
-</td>
-<td>
--0.084
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-</td>
-<td>
-</td>
-<td>
-</td>
-<td>
-(0.067)
-</td>
-<td>
-(0.068)
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-</td>
-<td>
-</td>
-<td>
-</td>
-<td>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-Constant
-</td>
-<td>
-79.985<sup>***</sup>
-</td>
-<td>
-80.023<sup>***</sup>
-</td>
-<td>
-80.271<sup>***</sup>
-</td>
-<td>
-80.234<sup>***</sup>
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-</td>
-<td>
-(0.243)
-</td>
-<td>
-(0.242)
-</td>
-<td>
-(0.313)
-</td>
-<td>
-(0.315)
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-</td>
-<td>
-</td>
-<td>
-</td>
-<td>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td colspan="5" style="border-bottom: 1px solid black">
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-Observations
-</td>
-<td>
-260
-</td>
-<td>
-260
-</td>
-<td>
-260
-</td>
-<td>
-260
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-R<sup>2</sup>
-</td>
-<td>
-0.007
-</td>
-<td>
-0.013
-</td>
-<td>
-0.019
-</td>
-<td>
-0.012
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-Adjusted R<sup>2</sup>
-</td>
-<td>
-0.003
-</td>
-<td>
-0.009
-</td>
-<td>
-0.012
-</td>
-<td>
-0.005
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-Residual Std. Error
-</td>
-<td>
-3.743 (df = 258)
-</td>
-<td>
-3.730 (df = 258)
-</td>
-<td>
-3.726 (df = 257)
-</td>
-<td>
-3.739 (df = 257)
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-F Statistic
-</td>
-<td>
-1.690 (df = 1; 258)
-</td>
-<td>
-3.458<sup>*</sup> (df = 1; 258)
-</td>
-<td>
-2.507<sup>*</sup> (df = 2; 257)
-</td>
-<td>
-1.620 (df = 2; 257)
-</td>
-</tr>
-<tr>
-<td colspan="5" style="border-bottom: 1px solid black">
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-<em>Note:</em>
-</td>
-<td colspan="4" style="text-align:right">
-<sup><em></sup>p&lt;0.1; <sup><strong></sup>p&lt;0.05; <sup></strong></em></sup>p&lt;0.01
-</td>
-</tr>
-</table>
 <p>It’s important to acknowledge that the population covered in my study are those people who access pornography searches not through a proxy site and it is likely that this population would differ somewhat from those who use a proxy site and are not found on google. thus my sample size is not representative of the population as a whole</p>
 
 
