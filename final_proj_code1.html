@@ -131,6 +131,7 @@ $(document).ready(function () {
 
 <p>This is a page for regression analysis, tables and charts in another page, I will look at graphs of - popular hours for porn consumption, changes in porn consumption over time</p>
 <p>first - try to pull a cross country data frame from google then combine by country… although I could make life easy on myself and not pull more than two countries.</p>
+<p>The table below shows related queries for searches in the category of sex and porn over Ramadan. Two demonstrate the nature of the searches I display the top 10 related search values. Warning, this includes graphic content. According to the google trends website, scoring is on a relative scale where a value of 100 is the most commonly searched query, 50 is a query searched half as often as the most popular query, and so on.</p>
 <table>
 <caption>A Table of Related Queries</caption>
 <thead>
@@ -145,40 +146,40 @@ $(document).ready(function () {
 <td align="left">sex free</td>
 </tr>
 <tr class="even">
-<td align="left">76</td>
+<td align="left">71</td>
 <td align="left">sex arab</td>
 </tr>
 <tr class="odd">
-<td align="left">63</td>
+<td align="left">59</td>
 <td align="left">hot sex</td>
 </tr>
 <tr class="even">
-<td align="left">60</td>
+<td align="left">52</td>
 <td align="left">tube sex</td>
 </tr>
 <tr class="odd">
-<td align="left">55</td>
-<td align="left">sex video</td>
+<td align="left">51</td>
+<td align="left">video sex</td>
 </tr>
 <tr class="even">
-<td align="left">48</td>
-<td align="left">porn sex</td>
+<td align="left">46</td>
+<td align="left">sex porn</td>
 </tr>
 <tr class="odd">
-<td align="left">48</td>
+<td align="left">46</td>
 <td align="left">xnxx sex</td>
 </tr>
 <tr class="even">
-<td align="left">44</td>
-<td align="left">movies sex</td>
+<td align="left">40</td>
+<td align="left">sex movies</td>
 </tr>
 <tr class="odd">
-<td align="left">44</td>
+<td align="left">36</td>
 <td align="left">sex videos</td>
 </tr>
 <tr class="even">
-<td align="left">36</td>
-<td align="left">sex mom</td>
+<td align="left">35</td>
+<td align="left">mom sex</td>
 </tr>
 </tbody>
 </table>
@@ -193,27 +194,27 @@ $(document).ready(function () {
 <tbody>
 <tr class="odd">
 <td align="left">100</td>
-<td align="left">porn sex</td>
+<td align="left">sex porn</td>
 </tr>
 <tr class="even">
-<td align="left">91</td>
+<td align="left">83</td>
 <td align="left">porn free</td>
 </tr>
 <tr class="odd">
-<td align="left">55</td>
-<td align="left">tube porn</td>
+<td align="left">54</td>
+<td align="left">porn tube</td>
 </tr>
 <tr class="even">
-<td align="left">49</td>
+<td align="left">48</td>
 <td align="left">porn xnxx</td>
 </tr>
 <tr class="odd">
-<td align="left">38</td>
-<td align="left">porn hub</td>
+<td align="left">35</td>
+<td align="left">hub porn</td>
 </tr>
 <tr class="even">
 <td align="left">34</td>
-<td align="left">arab porn</td>
+<td align="left">porn arab</td>
 </tr>
 <tr class="odd">
 <td align="left">33</td>
@@ -224,32 +225,23 @@ $(document).ready(function () {
 <td align="left">porn hot</td>
 </tr>
 <tr class="odd">
-<td align="left">27</td>
-<td align="left">mom porn</td>
+<td align="left">26</td>
+<td align="left">porn videos</td>
 </tr>
 <tr class="even">
 <td align="left">25</td>
-<td align="left">porn movies</td>
+<td align="left">mom porn</td>
 </tr>
 </tbody>
 </table>
-<pre class="r"><code># #surveying my handiwork:)
-# #country level data
-# D1_interest &lt;- D1_interest %&gt;% 
-#  select(date, days_in_ram, in_ram, hits, year, days_in_eid) 
-
-# 
-# 
-#       
-# head(D1_interest)
-# 
-# #global data
-# world_interest &lt;- world_interest %&gt;% 
-#     select(date, days_in_ram, in_ram, hits, year)
-# 
-# head(world_interest)</code></pre>
-<p>stargazer experiment</p>
+<p>This table of descriptive statistics gives an overview of the data. As indicated, there are 6500 observations. Understanding values for sex and porn searches: According to the google trends website, numbers represent search interest relative to the highest point on the chart for the given region and time. A value of 100 is the peak popularity for the term. A value of 50 means that the term is half as popular. A score of 0 means there was not enough data for this term.</p>
+<p>This regression table output demonstrates how Ramadan causes a sigificant decrease in sex and porn related searches in five muslim majority countries. It also indicates how the presence of a feasting holiday, Eid-al-Futr, which occurs in the week following Ramadan, results in an increase in related search values. The regression is run on sex and porn search values aggregated on a weekly basis.</p>
+<p>“Days in Ramadan” is a continuous variable with values zero throuhg seven, designating the number of days in a a given week which include. “Presence of Ramadan” is a binary variable with values of one or zero based on the presence of absence of Ramadan.</p>
+<p>“Days in Eid” is a continuous variable which counts the number of days of Eid al-Futr which occur in a given week. Eid al-Futr is a feasting holiday which occurs immediately following Ramadan.</p>
 <table style="text-align:center">
+<caption>
+<strong>Changes in Sex and Porn Related Search Values Over Ramadan in 5 Muslim-Majority Countries</strong>
+</caption>
 <tr>
 <td colspan="5" style="border-bottom: 1px solid black">
 </td>
@@ -271,7 +263,7 @@ $(document).ready(function () {
 <td style="text-align:left">
 </td>
 <td colspan="4">
-Country level porn hits
+Mean values for ‘sex’ and ‘porn’ hits
 </td>
 </tr>
 <tr>
@@ -296,72 +288,31 @@ Country level porn hits
 </tr>
 <tr>
 <td style="text-align:left">
-days_in_ram
+Days in Ram
 </td>
 <td>
--1.855<sup>***</sup>
-</td>
-<td>
--1.855<sup>***</sup>
+-1.623<sup>***</sup>
 </td>
 <td>
 </td>
 <td>
--2.129<sup>***</sup>
+</td>
+<td>
+-1.870<sup>***</sup>
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
 </td>
 <td>
-(0.094)
-</td>
-<td>
-(0.094)
-</td>
-<td>
-</td>
-<td>
-(0.094)
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
+(0.070)
 </td>
 <td>
 </td>
 <td>
 </td>
 <td>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-in_ram
-</td>
-<td>
-</td>
-<td>
-</td>
-<td>
--14.204<sup>***</sup>
-</td>
-<td>
-</td>
-</tr>
-<tr>
-<td style="text-align:left">
-</td>
-<td>
-</td>
-<td>
-</td>
-<td>
-(0.619)
-</td>
-<td>
+(0.071)
 </td>
 </tr>
 <tr>
@@ -378,17 +329,31 @@ in_ram
 </tr>
 <tr>
 <td style="text-align:left">
-days_in_eid
+Presence of Ram (0 or 1)
 </td>
 <td>
 </td>
 <td>
+-10.140<sup>***</sup>
 </td>
 <td>
-7.415<sup>***</sup>
+-12.502<sup>***</sup>
 </td>
 <td>
-6.586<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+(0.456)
+</td>
+<td>
+(0.462)
+</td>
+<td>
 </td>
 </tr>
 <tr>
@@ -399,10 +364,37 @@ days_in_eid
 <td>
 </td>
 <td>
-(0.486)
 </td>
 <td>
-(0.479)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Days in Eid
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+6.675<sup>***</sup>
+</td>
+<td>
+5.942<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+<td>
+(0.364)
+</td>
+<td>
+(0.358)
 </td>
 </tr>
 <tr>
@@ -422,32 +414,32 @@ days_in_eid
 Constant
 </td>
 <td>
-42.752<sup>***</sup>
+39.482<sup>***</sup>
 </td>
 <td>
-42.752<sup>***</sup>
+39.457<sup>***</sup>
 </td>
 <td>
-42.565<sup>***</sup>
+39.315<sup>***</sup>
 </td>
 <td>
-42.559<sup>***</sup>
+39.308<sup>***</sup>
 </td>
 </tr>
 <tr>
 <td style="text-align:left">
 </td>
 <td>
-(0.183)
+(0.138)
 </td>
 <td>
-(0.183)
+(0.138)
 </td>
 <td>
-(0.181)
+(0.135)
 </td>
 <td>
-(0.181)
+(0.136)
 </td>
 </tr>
 <tr>
@@ -488,16 +480,16 @@ Observations
 R<sup>2</sup>
 </td>
 <td>
-0.057
+0.076
 </td>
 <td>
-0.057
+0.071
 </td>
 <td>
-0.086
+0.117
 </td>
 <td>
-0.084
+0.113
 </td>
 </tr>
 <tr>
@@ -505,16 +497,16 @@ R<sup>2</sup>
 Adjusted R<sup>2</sup>
 </td>
 <td>
-0.057
+0.075
 </td>
 <td>
-0.057
+0.071
 </td>
 <td>
-0.086
+0.116
 </td>
 <td>
-0.084
+0.113
 </td>
 </tr>
 <tr>
@@ -522,16 +514,16 @@ Adjusted R<sup>2</sup>
 Residual Std. Error
 </td>
 <td>
-14.084 (df = 6498)
+10.604 (df = 6498)
 </td>
 <td>
-14.084 (df = 6498)
+10.631 (df = 6498)
 </td>
 <td>
-13.867 (df = 6497)
+10.366 (df = 6497)
 </td>
 <td>
-13.884 (df = 6497)
+10.387 (df = 6497)
 </td>
 </tr>
 <tr>
@@ -539,16 +531,16 @@ Residual Std. Error
 F Statistic
 </td>
 <td>
-393.283<sup>***</sup> (df = 1; 6498)
+531.061<sup>***</sup> (df = 1; 6498)
 </td>
 <td>
-393.283<sup>***</sup> (df = 1; 6498)
+495.500<sup>***</sup> (df = 1; 6498)
 </td>
 <td>
-306.131<sup>***</sup> (df = 2; 6497)
+429.113<sup>***</sup> (df = 2; 6497)
 </td>
 <td>
-297.069<sup>***</sup> (df = 2; 6497)
+414.512<sup>***</sup> (df = 2; 6497)
 </td>
 </tr>
 <tr>
@@ -564,7 +556,6 @@ F Statistic
 </td>
 </tr>
 </table>
-<p>Variable names: country year Ramadan vs not ramadan search volume (porn/sex)</p>
 <p>It’s important to acknowledge that the population covered in my study are those people who access pornography searches not through a proxy site and it is likely that this population would differ somewhat from those who use a proxy site and are not found on google. thus my sample size is not representative of the population as a whole</p>
 
 
