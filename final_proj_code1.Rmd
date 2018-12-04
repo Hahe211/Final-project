@@ -63,7 +63,7 @@ world2 <- world2$interest_over_time %>%
 world_interest <- world$interest_over_time %>% 
   full_join(world2, by = "date") %>% 
   mutate(sum.porn = (hits + hits_sex)/2)
-
+  
 
 #load the data set I made with dates of ramadan and major holidays
 
@@ -160,20 +160,31 @@ for (i in 1:length(D1_interest$date)) {
         D1_interest[i, "days_in_eid"] =   D1_interest[i, "days_in_eid"]  + 1
     }
   }
-
-}
-
-
-for (i in 1:length(D1_interest$date)) {
-  D1_interest[i, "days_in_eida"] = 0 
-  for( j in c("date" , "date1", "date2" , "date3", "date4", "date5", "date6")){
-    if ( (D1_interest[i, j] >= ramadan_dates[ramadan_dates$year==   D1_interest[i, "year"]   &  ramadan_dates$Holiday ==  "Eid-al-adha" , ]$start  ) & (D1_interest[i, j] <=  ramadan_dates[ramadan_dates$year== D1_interest[i,"year"] & ramadan_dates$Holiday ==  "Eid-al-adha" ,]$end  ) ) {
-        D1_interest[i, "days_in_eida"] =   D1_interest[i, "days_in_eid"]  + 1
-    }
+    if (D1_interest[i, "days_in_eid"] > 2){
+      D1_interest[i,"in_eid"] = 1
+  } else{
+      D1_interest[i,"in_eid"] = 0
   }
-
   
+
 }
+
+
+
+
+
+
+#I'm commenting out this section for coding in Eid al-ahda which occurs later in the calender year because I didn't find any significant relationship
+# for (i in 1:length(D1_interest$date)) {
+#   D1_interest[i, "days_in_eida"] = 0 
+#   for( j in c("date" , "date1", "date2" , "date3", "date4", "date5", "date6")){
+#     if ( (D1_interest[i, j] >= ramadan_dates[ramadan_dates$year==   D1_interest[i, "year"]   &  ramadan_dates$Holiday ==  "Eid-al-adha" , ]$start  ) & (D1_interest[i, j] <=  ramadan_dates[ramadan_dates$year== D1_interest[i,"year"] & ramadan_dates$Holiday ==  "Eid-al-adha" ,]$end  ) ) {
+#         D1_interest[i, "days_in_eida"] =   D1_interest[i, "days_in_eida"]  + 1
+#     }
+#   }
+# 
+#   
+# }
  
 
 #write an rds file to graph the data 
@@ -291,38 +302,26 @@ des_table
 #regression analysis - putting togethor the regressions
 
 
-#both year and country controls, switching between in_ram and days_in_ram
-m5 <- lm(sum ~ in_ram + geo + year, data=D1_interest)
-m6 <- lm(sum ~ days_in_ram + geo + year, data=D1_interest)
 
 
-#I'm having an issue where the table prints the names of all the countries 
-
-#Make a regression table
-#first regression without year or country controls
+#year and country controls dont make a difference in p values, sd, or coeff so I'm back to removing them -  because data set is already normalized for year and country
 ma <- lm(sum ~ days_in_ram, data=D1_interest)
-
-
-#adding country controls
 mb <- lm(sum ~ in_ram, data=D1_interest)
+m1 <- lm(sum ~ in_ram + in_eid, data=D1_interest)
 
-#year and country controls dont make a difference in p values, sd, or coeff so I'm back to removing them - probably because data set is already normalized for year and country
-m1 <- lm(sum ~ in_ram + days_in_eid, data=D1_interest)
-m2 <- lm(sum ~ days_in_ram + days_in_eid, data=D1_interest)
-
-
-
- # covariate.labels=c("Gross horsepower","Rear axle ratio","Four foward gears",
- # "Five forward gears","Type of transmission (manual=1)")
+#both year and country controls, switching between in_ram and days_in_ram
+# m5 <- lm(sum ~ in_ram + geo + year, data=D1_interest)
+# m6 <- lm(sum ~ days_in_ram + geo + year, data=D1_interest)
 
 
 
 
 
 #global data -  sig impact detected
-m3 <- lm(hits ~ days_in_ram, data=world_interest)
-m4 <-  lm(hits ~ in_ram, data=world_interest)
-
+w1 <- lm(sum.porn ~ days_in_ram, data=world_interest)
+w2 <- lm(sum.porn ~ in_ram, data=world_interest)
+w3 <- lm(sum.porn ~ in_ram + days_in_eid, data=world_interest)
+w4 <- lm(sum.porn ~ days_in_ram + days_in_eid, data=world_interest)
 
 ```
 
@@ -331,13 +330,22 @@ This regression table output demonstrates how Ramadan causes a sigificant decrea
 
 "Days in Ramadan" is a continuous variable with values zero throuhg seven, designating the number of days in a a given week which include. "Presence of Ramadan" is a binary variable with values of one or zero based on the presence of absence of Ramadan.
 
-"Days in Eid" is a continuous variable which counts the number of days of Eid al-Futr which occur in a given week. Eid al-Futr is a feasting holiday which occurs immediately following Ramadan. 
+"Days in Eid" is a continuous variable which registers the presence of Eid al-Futr in a given week. Eid al-Futr is a three day feasting holiday which occurs immediately following Ramadan. 
 ```{r, echo = FALSE, message = FALSE, warning= FALSE, results = "asis"}
 #use results = asis in the caption to make sure the table prints properly
 
 
 #reviewing this final regression - I realize I should also look into including a binary variable for the presence of Eid, given that that seems to yeild a more significant result. 
-stargazer(ma, mb, m1, m2, summary = FALSE, type = "html", title = "Changes in Sex and Porn Related Search Values Over Ramadan in 5 Muslim-Majority Countries", dep.var.labels = "Mean values for 'sex' and 'porn' hits",  covariate.labels = c("Days in Ram", "Presence of Ram (0 or 1)", "Days in Eid"))
+stargazer(ma, mb, m1, summary = FALSE, type = "text", title = "Changes in Sex and Porn Related Search Values Over Ramadan in 5 Muslim-Majority Countries", dep.var.labels = "Mean values for 'sex' and 'porn' hits by Week",  covariate.labels = c("Days in Ram", "Presence of Ram (0 or 1)", "Presence of Eid (0 or 1)"))
+
+
+
+
+```
+Reviewing world search values  - we should be shocked to see that indeed the cumulative Global value of sex and porn searches decresaes over Ramadan on a five year basis
+```{r, echo = FALSE, message = FALSE, warning= FALSE, results = "asis"}
+
+stargazer(w1, w2, w3, w4, summary = FALSE, type = "html", title = "Changes in Sex and Porn Related Search Values Over Ramadan on a Global Scale", dep.var.labels = "Global Values for 'sex' and 'porn' hits by Week",  covariate.labels = c("Days in Ram", "Presence of Ram (0 or 1)", "Days in Eid"))
 
 
 
