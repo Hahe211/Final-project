@@ -16,6 +16,7 @@ library(tidyverse)
 library(knitr)
 library(readxl)
 library(DT)
+
 ```
 
 ## <span style="color:red">Ramadan Causes a Decrease in Sex and Porn Related Searches in Five Muslim Majority Countries </span>
@@ -186,10 +187,11 @@ m3 <- lm(sum ~ before_ram + in_ram + in_eid, data = graph)
 
 
 -----------------
-####Did I pick the right search terms to capture change in sex and pornography interests over time?
-####Here are some related queries - I'll let you decide. 
 
-#####<span style="color:red">Warning: Explicit Content </span>
+
+###Did I pick the right search terms to capture change in sex and pornography interests over time? Here are some related queries - I'll let you decide. 
+
+####<span style="color:red">Warning: Explicit Content </span>
 
 *Top - The most popular search queries. Scoring is on a relative scale where a value of 100 is the most commonly searched query, 50 is a query searched half as often as the most popular query, and so on*
 
@@ -211,20 +213,34 @@ D1$related_queries %>%
 
 ```
 
-
+----------------
 
 ### <span style="color:red">A Global Impact? </span>
 
 
-
 Given that Muslims make up about %24 percent of the global population, does the presence of Ramadan may have an impact on worldwide porn searching?
 
-Reviewing world search values  - we should be shocked to see that indeed the cumulative Global value of sex and porn searches decresaes over Ramadan on a five year basis!
+Exploiting search values aggregated on a global level  - the cumulative global value of sex and porn searches decresaes over Ramadan by one and a half percentage points at the .1 significance level. 
 
-The Muslim population has been projected to increase by about 1.5% a year and by 2060 Muslims will constitute about %32 percent of the global population so their influence on Google trends could be increasing over time.
+The Muslim population has been projected to increase by about 1.5% a year and by 2060 Muslims will constitute about %32 percent of the global population so their influence on Google trends might increase over time.
+
+
+-----------------------------
+
+```{r, echo = FALSE, message = FALSE, warning= FALSE, results = "asis", cache = TRUE}
+#read in world data
+world <- read_rds("world.rds")
+
+w1 <- lm(sum ~ in_ram, data=world)
+
+
+ stargazer(w1, summary = FALSE, type = "html", title = "Global Level Changes in Sex and Porn Related Search Values Over Ramadan", dep.var.labels = "Mean values for 'sex' and 'porn' hits by Week",covariate.labels = "Presence of Ram (0 or 1)")
 
 
 
+```
+
+---------------------
 
 
 
