@@ -118,7 +118,7 @@ graph3 <- bind_rows(graph1, graph2)
 #read in data of ramadan dates
 
 ramadan_dates <- read_excel("ramadan_dates.xlsx") %>% 
-filter(year >= 2014)
+filter(year >= 2014, Holiday == "Ramadan")
 
 
 
