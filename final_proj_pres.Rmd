@@ -1,16 +1,38 @@
 ---
-title: "final_pres_sheet"
 author: "hannah hess"
 date: "December 4, 2018"
-output: html_document
+output: 
+html_document:
+ toc: true 
+ highlight: tango   
+ fig_caption: true
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+
 ```
 
-#Heading trial <span style="color:red">Heading</span>
--------------------------------------------------------------------
+## <span style="color:red">Ramadan Causes a Decrease in Sex and Porn Related Searches in Five Muslim Majority Countries </span>
+
+  Pornography and Ramadan may seem unrelated. However, these terms are linked in google search values. Online religeous Q & A forums feature many questions from devotees about whether watching pornography material nullifies the act of fasting. Muslims who ordinarily flout the pornography prohibition appear to be cleaning up their act for the Ramadan month and reducing their pornography consumption and engagement with other explicit web based content. 
+  
+  Examining differences in pornography consumption during Ramadan potentially offers a fruitful metric for gauging soft measures of religious observance. It is evident that inhabitants of Muslim countries frequently flout Sharia and secular law to access pornography. However, if individuals who are generally non-compliant with state and Sharia laws, choose to become compliant “on their own terms” over the Ramadan month this provides insight to the society’s relationship with state-mandated religion. 
+  
+Ramadan consists of one month in the Islamic lunar calendar lasting about thirty-one days on average, which emphasizes rituals encouraging greater control over physical needs, specifically sex, food and water during the daylight hours. After sunset the fast concludes with prayers at the mosque and then family gathers for a festive breakfast meal, iftar which can last late into the night. 
+
+![](ramadan_photo.jpg) 
+ 
+This study shows a strong negative correlation between the presence of Ramadan and porn searching in majority Muslim countries. The presence of Ramadan in a Muslim country causes a decrease in the frequency of sex and porn related searches. Moreover, there is a ‘rebound effect’ of a 10% increase on Eid al-Futr the celebratory holiday following Ramadan.
+
+
+Dips in porn consumption over Ramadan may correspond to levels of individual religious observance. However, there could also be societal factors of social pressure and stigma associated with non-observance of Ramadan, which would alter individual practice, especially if some individuals generally observe porn in-group settings that they might not have access to over Ramadan such as Internet café’s. Given that most pornography searches occur at night (see picture 1) schedule changes during Ramadan and late family gatherings might render a disproportionate impact to searching activities.  Finally, bio-chemical or neurological changes associated with fasting have been shown to decrease levels of libido and alter interest in pornographic content.
+ 
+
+  
+
+  
+ 
 
 ```{r}
 
@@ -28,7 +50,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```
 
-
+![](searcher.jpg) 
 
 
 
@@ -64,6 +86,9 @@ It's important to acknowledge that the population covered in my study are those 
 
 
 
-image: ![](ramadan_photo.jpg) 
 
+
+
+*By: Hannah Hess*
 Coding References for RMarkdown [link](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf)
+

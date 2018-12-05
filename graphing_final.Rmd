@@ -133,6 +133,7 @@ graph_5year_full <- ggplot() + geom_line(data = graph3, aes(x = date, y = hits, 
 
 
 
+
 ```
 
 ```{r, cache= TRUE, warning = FALSE, message = FALSE}
