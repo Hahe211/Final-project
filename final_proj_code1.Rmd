@@ -55,13 +55,13 @@ world <- gtrends(keyword = "sex", time = "today+5-y")
 world2 <- gtrends(keyword = "porn", time = "today+5-y")
 
 world2 <- world2$interest_over_time %>% 
-  select(hits, date) %>% 
-  transmute(hits_sex = hits, date = date)
+  select(hits, date, geo) %>% 
+  transmute(hits_porn = hits, date = date, geo = geo)
 
 world_interest <- world$interest_over_time %>% 
-  full_join(world2, by = "date") %>% 
-  mutate(sum.porn = (hits + hits_sex)/2)
-  
+  rename(hits_sex = hits) %>% 
+  left_join(world2, by = c("date", "geo")) %>% 
+  mutate(sum = (hits_sex + hits_porn)/2)
 
 #load the data set I made with dates of ramadan and major holidays
 
@@ -85,12 +85,12 @@ According to the google trends website, scoring is on a relative scale where a v
   
 D1$related_queries %>% 
      select(subject, value) %>% 
-      slice(1:10) %>% 
+      slice(1:7) %>% 
      kable(caption = "A Table of Related Queries", col.names = c("Correlation Score", "Value"))
 
 D2$related_queries %>% 
   select(subject, value) %>% 
-  slice(1:10) %>% 
+  slice(1:7) %>% 
   kable(caption = "A Table of Related Queries", col.names = c("Correlation Score", "Value"))
 
 
@@ -206,6 +206,7 @@ for (i in 1:length(D1_interest$date)) {
 }
 
 #I'm commenting out this section for coding in Eid al-ahda which occurs later in the calender year because I didn't find any significant relationship
+#however, in the future I could use the fact taht Eid al-ahda isn't signficiant  to better explain the Eid al-futr effect rule out the "holida"
 # for (i in 1:length(D1_interest$date)) {
 #   D1_interest[i, "days_in_eida"] = 0 
 #   for( j in c("date" , "date1", "date2" , "date3", "date4", "date5", "date6")){
@@ -285,20 +286,27 @@ for (i in 1:length(world_interest$date)) {
 
 }
 
-#same code as above - Eid al-ahda: days_in_eida
-
+#code for the week before ramadan
 
 for (i in 1:length(world_interest$date)) {
-  world_interest[i, "days_in_eida"] = 0 
+  D1_interest[i, "days_before"] = 0 
   for( j in c("date" , "date1", "date2" , "date3", "date4", "date5", "date6")){
-    if ( (world_interest[i, j] >= ramadan_dates[ramadan_dates$year==   D1_interest[i, "year"]   &  ramadan_dates$Holiday ==  "Eid-al-adha" , ]$start  ) & (D1_interest[i, j] <=  ramadan_dates[ramadan_dates$year== world_interest[i,"year"] & ramadan_dates$Holiday ==  "Eid-al-adha" ,]$end  ) ) {
-        world_interest[i, "days_in_eida"] =   world_interest[i, "days_in_eid"]  + 1
+    if ( (D1_interest[i, j] >= ramadan_dates[ramadan_dates$year==   D1_interest[i, "year"]   &  ramadan_dates$Holiday == "Ramadan" , ]$start  ) & (D1_interest[i, j] <= ramadan_dates[ramadan_dates$year== D1_interest[i,"year"] & ramadan_dates$Holiday == "Ramadan" ,]$end  ) ) {
+        D1_interest[i, "days_in_ram"] =   D1_interest[i, "days_in_ram"]  + 1
     }
   }
-
+  
+  if (D1_interest[i, "days_in_ram"] > 2){
+      D1_interest[i,"in_ram"] = 1
+  } else{
+      D1_interest[i,"in_ram"] = 0
+  }
+  
   
 }
 
+#write rds to use in second portion 
+write_rds(world_interest, "world.rds")
 
 ```
 
@@ -348,7 +356,9 @@ m2 <- lm(sum ~ days_in_ram + in_eid, data=D1_interest)
 m3 <- lm(sum ~ before_ram + in_ram + in_eid, data = D1_interest)
 m4 <- lm(sum ~ before2_ram + in_ram + in_eid, data = D1_interest)
 
-
+t1 <- lm(sum ~in_ram + geo, data = D1_interest)
+t2 <- lm(sum ~in_ram + year, data = D1_interest)
+t3 <- lm(sum ~in_ram + year + geo, data = D1_interest)
 
 #both year and country controls, switching between in_ram and days_in_ram
 # m5 <- lm(sum ~ in_ram + geo + year, data=D1_interest)
@@ -374,9 +384,7 @@ This regression table output demonstrates how Ramadan causes a sigificant decrea
 "Days in Eid" is a continuous variable which registers the presence of Eid al-Futr in a given week. Eid al-Futr is a three day feasting holiday which occurs immediately following Ramadan. 
 ```{r, echo = FALSE, message = FALSE, warning= FALSE, results = "asis"}
 #use results = asis in the caption to make sure the table prints properly
-
-
-#reviewing this final regression - I realize I should also look into including a binary variable for the presence of Eid, given that that seems to yeild a more significant result. 
+#final regression code
 regress1 <- stargazer(ma, mb, m1, m2, m3, m4, summary = FALSE, type = "html", title = "Changes in Sex and Porn Related Search Values Over Ramadan in 5 Muslim-Majority Countries", dep.var.labels = "Mean values for 'sex' and 'porn' hits by Week",  covariate.labels = c("Days in Ram", "Presence of Ram (0 or 1)", "Presence of Eid (0 or 1)"))
 
 

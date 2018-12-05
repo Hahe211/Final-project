@@ -82,50 +82,6 @@ ggplot() + geom_line(data = yearly, aes(x = date, y = hits, colour = keyword)) +
 
 
 
-Dips in porn consumption over Ramadan may correspond to levels of individual religious observance. However, there could also be social factors of stigma associated with non-observance of Ramadan, which would alter individual practice.
-
-
-Given that most pornography searches occur at night schedule changes during Ramadan and late family gatherings likely render a significant impact to searching activities.  Additionally, bio-chemical or neurological changes associated with fasting have been [shown](http://www.urologyjournal.org/index.php/uj/article/viewFile/2787/1027) to decrease levels of libido and alter interest in pornographic content. Moreover, many countries have Ramadan laws, which [criminalize](http://www.bbc.co.uk/religion/religions/islam/practices/ramadan_1.shtml) public acts of non-observance.
-  
-
-```{r, cache = TRUE, echo = FALSE, message=FALSE, warning=FALSE}
-
-#Optional hourly code for saudi, commented out
-# hourly <- gtrends(c("sex","porn"), gprop = "web", geo = c("SA"), time = "now 7-d") 
-# 
-#  hourly$interest_over_time %>% 
-#   mutate(day = lubridate::wday(date, label = TRUE), hour = lubridate::hour(date)) %>% 
-#     ggplot() +
-#   geom_line(aes(x = hour, y = hits, colour = keyword)) +
-#   geom_smooth(aes(x = hour, y = hits), se = FALSE) +
-#   facet_grid(. ~ day) +
-#   theme_bw() + 
-#   theme(legend.position = 'top') +
-#   scale_x_continuous(breaks = c(6, 12, 18, 24)) +
-#   labs(y = NULL, x = "Time of Day", 
-#        caption = "November 27, 2018 11:00am to December 4, 2018 1:00pm",
-#        colour = NULL, title = "Google Trends Popularity of 'porn' or 'sex' over a Week in Saudi Arabia")
-# 
-
-#I redownload the data on an hourly level, hourly data is only availablefrom grends if you download in the last week
-#be careful that if I grab the data again then I will have to change the caption because the date will change!
- hourly2 <- gtrends(c("sex","porn"), gprop = "web", geo = c("JO"), time = "now 7-d") 
-
-hourly2$interest_over_time %>% 
-  mutate(day = lubridate::wday(date, label = TRUE), hour = lubridate::hour(date)) %>% 
-    ggplot() +
-  geom_line(aes(x = hour, y = hits, colour = keyword)) +
-  geom_smooth(aes(x = hour, y = hits), se = FALSE) +
-  facet_grid(. ~ day) +
-  theme_bw() + 
-  theme(legend.position = 'top') +
-  scale_x_continuous(breaks = c(6, 12, 18, 24)) +
-  labs(y = NULL, x = "Time of Day", 
-       caption = "November 27, 2018 11:00am to December 4, 2018 1:00pm",
-       colour = NULL, title = "Google Trends Popularity of 'porn' or 'sex' over a Week in Jordan", subtitle = "Most Hits Occur in the Evening Hours")
-
-```
-  
  
 
 
@@ -185,34 +141,6 @@ m3 <- lm(sum ~ before_ram + in_ram + in_eid, data = graph)
 ```
 
 
-
------------------
-
-
-###Did I pick the right search terms to capture change in sex and pornography interests over time? Here are some related queries - I'll let you decide. 
-
-####<span style="color:red">Warning: Explicit Content </span>
-
-*Top - The most popular search queries. Scoring is on a relative scale where a value of 100 is the most commonly searched query, 50 is a query searched half as often as the most popular query, and so on*
-
-```{r, echo = FALSE, message = FALSE, warning= FALSE, cache = TRUE}
-
-
-#justify that I'm picking the right terms (warning explicit content) - since I'm focused with change over time - its not critical that I isolate all the relevant terms but just that they indeed be pornography serach terms  and that they capture a high level of the variation over time
-#related queries captures the following: 
-# Users searching for your term also searched for these queries. You can sort by the following metrics:
-
-D1 <- gtrends(keyword = c("sex", "porn"), geo = c("EG", "AE","JO", "MA"), time = "today 3-m")
-
-  
-D1$related_queries %>% 
-     select(subject, value, geo, keyword) %>% 
-    datatable(caption = "A Table of Related Queries", rownames = FALSE, colnames = c("Correlation Score", "Related Query", "Country", "Sex/Porn"))
-
-
-
-```
-
 ----------------
 
 ### <span style="color:red">A Global Impact? </span>
@@ -242,6 +170,80 @@ w1 <- lm(sum ~ in_ram, data=world)
 
 ---------------------
 
+### <span style="color:red">Why the Dip? </span>
+
+
+Dips in porn consumption over Ramadan may correspond to levels of individual religious observance. However, there could also be social factors of stigma associated with non-observance of Ramadan, which would alter individual practice.
+
+
+Given that most pornography searches occur at night schedule changes during Ramadan and late family gatherings likely render a significant impact to searching activities.  Additionally, bio-chemical or neurological changes associated with fasting have been [shown](http://www.urologyjournal.org/index.php/uj/article/viewFile/2787/1027) to decrease levels of libido and alter interest in pornographic content. Moreover, many countries have Ramadan laws, which [criminalize](http://www.bbc.co.uk/religion/religions/islam/practices/ramadan_1.shtml) public acts of non-observance.
+  
+
+```{r, cache = TRUE, echo = FALSE, message=FALSE, warning=FALSE}
+
+#Optional hourly code for saudi, commented out
+# hourly <- gtrends(c("sex","porn"), gprop = "web", geo = c("SA"), time = "now 7-d") 
+# 
+#  hourly$interest_over_time %>% 
+#   mutate(day = lubridate::wday(date, label = TRUE), hour = lubridate::hour(date)) %>% 
+#     ggplot() +
+#   geom_line(aes(x = hour, y = hits, colour = keyword)) +
+#   geom_smooth(aes(x = hour, y = hits), se = FALSE) +
+#   facet_grid(. ~ day) +
+#   theme_bw() + 
+#   theme(legend.position = 'top') +
+#   scale_x_continuous(breaks = c(6, 12, 18, 24)) +
+#   labs(y = NULL, x = "Time of Day", 
+#        caption = "November 27, 2018 11:00am to December 4, 2018 1:00pm",
+#        colour = NULL, title = "Google Trends Popularity of 'porn' or 'sex' over a Week in Saudi Arabia")
+# 
+
+#I redownload the data on an hourly level, hourly data is only availablefrom grends if you download in the last week
+#be careful that if I grab the data again then I will have to change the caption because the date will change!
+ hourly2 <- gtrends(c("sex","porn"), gprop = "web", geo = c("JO"), time = "now 7-d") 
+
+hourly2$interest_over_time %>% 
+  mutate(day = lubridate::wday(date, label = TRUE), hour = lubridate::hour(date)) %>% 
+    ggplot() +
+  geom_line(aes(x = hour, y = hits, colour = keyword)) +
+  geom_smooth(aes(x = hour, y = hits), se = FALSE) +
+  facet_grid(. ~ day) +
+  theme_bw() + 
+  theme(legend.position = 'top') +
+  scale_x_continuous(breaks = c(6, 12, 18, 24)) +
+  labs(y = NULL, x = "Time of Day", 
+       caption = "November 27, 2018 11:00am to December 4, 2018 1:00pm",
+       colour = NULL, title = "Google Trends Popularity of 'porn' or 'sex' over a Week in Jordan", subtitle = "Most Hits Occur in the Evening Hours")
+
+```
+  
+
+-----------------
+
+
+###Did I pick the right search terms to capture change in sex and pornography interests over time? Here are some related queries - I'll let you decide. 
+
+####<span style="color:red">Warning: Explicit Content </span>
+
+*Top - The most popular search queries. Scoring is on a relative scale where a value of 100 is the most commonly searched query, 50 is a query searched half as often as the most popular query, and so on*
+
+```{r, echo = FALSE, message = FALSE, warning= FALSE, cache = TRUE}
+
+
+#justify that I'm picking the right terms (warning explicit content) - since I'm focused with change over time - its not critical that I isolate all the relevant terms but just that they indeed be pornography serach terms  and that they capture a high level of the variation over time
+#related queries captures the following: 
+# Users searching for your term also searched for these queries. You can sort by the following metrics:
+
+D1 <- gtrends(keyword = c("sex", "porn"), geo = c("EG", "AE","JO", "MA"), time = "today 3-m")
+
+  
+D1$related_queries %>% 
+     select(subject, value, geo, keyword) %>% 
+    datatable(caption = "A Table of Related Queries", rownames = FALSE, colnames = c("Correlation Score", "Related Query", "Country", "Sex/Porn"))
+
+
+
+```
 
 
 
