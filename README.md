@@ -1,21 +1,14 @@
 # Final-project
 
 
-Structure of my project is as follows:
+This project finds a significant decrease in pornography consumption over the past five years during Ramadan in the countries of Egypt, the United Arab Emirates, Saudi Arabia, Malaysia and Jordan.
 
-1. Aggregate Graph of Pornography consumption over time in the 9 countries under my study, displaying dips over Ramadan 
-(either control for yera in the graph or download the data by yera and then combine multiple years togethor)
+This project also examines the global impact of Ramadan and similarly finds a negative relationship between Ramadan and pornography searching, probably due to the large global muslim population. 
 
-
-
-2. Regression analysis on how the presence of ramadan impacts change in pornography consumption over time in Ramadan 
+I aggregate data using the gtrends google search library in R. 
 
 
-3. 
-Comparative analysis on other countries during their holidays? 
+Please find a more detailed description in my published study on RPubs http://rpubs.com/hahe211/446172
 
 
-4. global analysis - there's a slight worldwide dip in porn consumption over ramdadan!
-
-
-fdjfd
+Thank you.
