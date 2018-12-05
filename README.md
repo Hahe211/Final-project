@@ -1,21 +1,17 @@
-# Final-project
+# What is the Impact of Ramadan on "Porn" and "Sex" Related Searches on Google? 
 
 
-Structure of my project is as follows:
+This project finds a 11.7 percentage point decrease in searches for porn and sex related content over the past five years during Ramadan in the countries of Egypt, the United Arab Emirates, Saudi Arabia, Malaysia and Jordan. Likewise, there is a  23.7 percentage point increase in such searches in the week following Ramadan which has the feasting holiday, Eid al-Futr. 
 
-1. Aggregate Graph of Pornography consumption over time in the 9 countries under my study, displaying dips over Ramadan 
-(either control for yera in the graph or download the data by yera and then combine multiple years togethor)
+When I consider the week before Ramadan, individuals start to limit their consumption in advance, with a decrease of about five percentage point. 
 
-
-
-2. Regression analysis on how the presence of ramadan impacts change in pornography consumption over time in Ramadan 
+This project also examines the global impact of Ramadan and similarly finds a -1.5 percentage point decrease, probably due to the large global muslim population. 
 
 
-3. 
-Comparative analysis on other countries during their holidays? 
+I aggregate data using the gtrends google search library in R. 
 
 
-4. global analysis - there's a slight worldwide dip in porn consumption over ramdadan!
+Please find a more detailed description of my research on RPubs http://rpubs.com/hahe211/446172
 
 
-fdjfd
+
