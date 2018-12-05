@@ -304,7 +304,7 @@ for (i in 1:length(world_interest$date)) {
 
 
 
-This table of descriptive statistics gives an overview of the data. As indicated, there are 6500 observations. Understanding values for sex and porn searches:
+This table of descriptive statistics gives an overview of the data. As indicated, there are 1305 observations, 1 per week. Understanding values for sex and porn searches:
 According to the google trends website, numbers represent search interest relative to the highest point on the chart for the given region and time. A value of 100 is the peak popularity for the term. A value of 50 means that the term is half as popular. A score of 0 means there was not enough data for this term. 
 ```{r, include = FALSE, echo = FALSE, message = FALSE, warning= FALSE, results = "asis", cache = TRUE}
 #regression analysis
@@ -319,16 +319,16 @@ According to the google trends website, numbers represent search interest relati
 #   select(-keyword, -gprop)
 # head(time_trend)
 
-#I edit here with type = "text" but will switch to type = html for print out
-des_table <- D1_interest %>% 
-  select(-days_in_ram, -days_in_eid, -days_in_eida, -in_ram) %>% 
-  stargazer(type = "html", title="Descriptive statistics", digits=1, flip = TRUE, summary.stat = c("n", "mean", "sd", "max"), summary.logical= FALSE)
 
-des_table
-# #CODE FOR SELECTIVE DESCRIPTIVE Stats
-#  stargazer(mydata[c("mpg","hp","data")], type = "text",
-#  title="Descriptive statistics/selected variables", digits=1, out="table2.txt", flip=TRUE,
-#  covariate.labels=c("Miles/(US)gallon","Gross horsepower","Rear axle ratio"))
+
+#summary statistics table 
+des_table <- D1_interest %>% 
+  select(-days_in_ram, -days_in_eid, -in_ram,- before2_ram, -in_eid, days_before, -category, -before_ram, days_before) %>% 
+  stargazer(type = "html", title="Descriptive statistics", digits=1, flip = TRUE, summary.logical= FALSE)
+
+
+
+
 
 ```
 
@@ -377,7 +377,7 @@ This regression table output demonstrates how Ramadan causes a sigificant decrea
 
 
 #reviewing this final regression - I realize I should also look into including a binary variable for the presence of Eid, given that that seems to yeild a more significant result. 
-stargazer(ma, mb, m1, m2, m3, m4, summary = FALSE, type = "html", title = "Changes in Sex and Porn Related Search Values Over Ramadan in 5 Muslim-Majority Countries", dep.var.labels = "Mean values for 'sex' and 'porn' hits by Week",  covariate.labels = c("Days in Ram", "Presence of Ram (0 or 1)", "Presence of Eid (0 or 1)"))
+regress1 <- stargazer(ma, mb, m1, m2, m3, m4, summary = FALSE, type = "html", title = "Changes in Sex and Porn Related Search Values Over Ramadan in 5 Muslim-Majority Countries", dep.var.labels = "Mean values for 'sex' and 'porn' hits by Week",  covariate.labels = c("Days in Ram", "Presence of Ram (0 or 1)", "Presence of Eid (0 or 1)"))
 
 
 

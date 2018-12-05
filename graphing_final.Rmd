@@ -78,7 +78,7 @@ hourly <- gtrends(c("sex","porn"), gprop = "web", geo = c("SA"), time = "now 7-d
 
  hourly2 <- gtrends(c("sex","porn"), gprop = "web", geo = c("JO"), time = "now 7-d") 
 
-hourly2$interest_over_time %>% 
+hourly_graph <- hourly2$interest_over_time %>% 
   mutate(day = lubridate::wday(date, label = TRUE), hour = lubridate::hour(date)) %>% 
     ggplot() +
   geom_line(aes(x = hour, y = hits, colour = keyword)) +
@@ -126,10 +126,10 @@ filter(year >= 2014, Holiday == "Ramadan")
 ```
 
 
-```{r}
+```{r, cache= TRUE, warning = FALSE, message = FALSE}
+#full graph of all the countries in the study (the graph is very compact so I also make another one wiht only to countries so you can see the relationship more easily)
 
-
-ggplot() + geom_line(data = graph3, aes(x = date, y = hits, colour = category))+ geom_rect(data= ramadan_dates, aes(xmin=start, xmax=end, ymin=-Inf, ymax=+Inf), alpha = 0.2)
+graph_5year_full <- ggplot() + geom_line(data = graph3, aes(x = date, y = hits, colour = category))+ geom_rect(data= ramadan_dates, aes(xmin=start, xmax=end, ymin=-Inf, ymax=+Inf), alpha = 0.2)
 
 
 
@@ -137,12 +137,16 @@ ggplot() + geom_line(data = graph3, aes(x = date, y = hits, colour = category))+
 
 ```{r, cache= TRUE, warning = FALSE, message = FALSE}
 
+
+#graph of weekly data of the past five years. I tried grabbing from a longer time frame but unfortunately in that case the data could only be downloaded on a month level. The right approach for the future would probably be to download twice in 5 year incremements and then bind_cols
+
+
+#the code below is a graph with grey areas indicating ramadan.
 yearly <- gtrends(c("sex","porn"), geo = c("SA", "JO"), time = "today+5-y")  
 yearly = yearly$interest_over_time
 
-ggplot() + geom_line(data = yearly, aes(x = date, y = hits, colour = keyword)) + 
+graph_5year <- ggplot() + geom_line(data = yearly, aes(x = date, y = hits, colour = keyword)) + 
   geom_rect(data = ramadan_dates, aes(xmin=start, xmax=end, ymin=-Inf, ymax=+Inf), alpha = 0.2)
-
 
 
 

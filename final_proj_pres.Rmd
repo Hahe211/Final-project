@@ -10,4 +10,60 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 #Heading trial <span style="color:red">Heading</span>
+-------------------------------------------------------------------
 
+```{r}
+
+# ramadan_dates <- read_excel("ramadan_dates.xlsx") %>% 
+# filter(year >= 2014, Holiday == "Ramadan")
+# 
+# 
+# 
+# graph_5year_full
+# 
+# graph_5year + my_theme()
+# 
+# 
+# hourly_graph
+
+```
+
+
+
+
+
+
+```{r}
+#descriptive stats:
+# des_table
+# 
+# 
+# regress1
+```
+
+##<span style="color:blue">Regression Table Output:</span>.
+
+This regression table output demonstrates how Ramadan causes a sigificant decrease in sex and porn related searches in five muslim majority countries. It also indicates how the presence of a feasting holiday, Eid-al-Futr, which occurs in the week following Ramadan, results in an increase in related search values. The regression is run on sex and porn search values aggregated on a weekly basis. 
+
+"Days in Ramadan" is a continuous variable with values zero throuhg seven, designating the number of days in a a given week which include. "Presence of Ramadan" is a binary variable with values of one or zero based on the presence of absence of Ramadan.
+
+"In Eid" is a categorical variable which registers the presence of Eid al-Futr in a given week. Eid al-Futr is a three day feasting holiday which always occurs immediately following Ramadan. Thus, "In Eid" is standing in place for an "after ramadan" variable 
+
+```{r}
+
+
+```
+
+Reviewing world search values  - we should be shocked to see that indeed the cumulative Global value of sex and porn searches decresaes over Ramadan on a five year basis
+
+
+
+
+It's important to acknowledge that the population covered in my study are those people who access pornography searches not through a proxy site and it is likely that this population would differ somewhat from those who use a proxy site and are not found on google. thus my sample size is not representative of the population as a whole 
+
+
+
+
+image: ![](ramadan_photo.jpg) 
+
+Coding References for RMarkdown [link](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf)
