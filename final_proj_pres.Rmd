@@ -10,71 +10,200 @@ html_document:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-
+library(stargazer)
+library(gtrendsR)
+library(tidyverse)
+library(knitr)
+library(readxl)
 ```
 
 ## <span style="color:red">Ramadan Causes a Decrease in Sex and Porn Related Searches in Five Muslim Majority Countries </span>
 
   Pornography and Ramadan may seem unrelated. However, these terms are linked in google search values. Online religeous Q & A forums feature many questions from devotees about whether watching pornography material nullifies the act of fasting. Muslims who ordinarily flout the pornography prohibition appear to be cleaning up their act for the Ramadan month and reducing their pornography consumption and engagement with other explicit web based content. 
   
-  Examining differences in pornography consumption during Ramadan potentially offers a fruitful metric for gauging soft measures of religious observance. It is evident that inhabitants of Muslim countries frequently flout Sharia and secular law to access pornography. However, if individuals who are generally non-compliant with state and Sharia laws, choose to become compliant “on their own terms” over the Ramadan month this provides insight to the society’s relationship with state-mandated religion. 
+  Examining differences in pornography consumption during Ramadan offers a fruitful metric for gauging soft measures of religious observance. While obviously, many Muslims will continue to consume pornography over the Holiday, flouting the prohibition, others will not. 
   
 Ramadan consists of one month in the Islamic lunar calendar lasting about thirty-one days on average, which emphasizes rituals encouraging greater control over physical needs, specifically sex, food and water during the daylight hours. After sunset the fast concludes with prayers at the mosque and then family gathers for a festive breakfast meal, iftar which can last late into the night. 
 
 ![](ramadan_photo.jpg) 
+
+###Findings
  
 This study shows a strong negative correlation between the presence of Ramadan and porn searching in majority Muslim countries. The presence of Ramadan in a Muslim country causes a decrease in the frequency of sex and porn related searches. Moreover, there is a ‘rebound effect’ of a 10% increase on Eid al-Futr the celebratory holiday following Ramadan.
 
+```{r, echo = FALSE, message=FALSE, warning=FALSE, cache = TRUE}
+#graphs pretty graphs
 
-Dips in porn consumption over Ramadan may correspond to levels of individual religious observance. However, there could also be societal factors of social pressure and stigma associated with non-observance of Ramadan, which would alter individual practice, especially if some individuals generally observe porn in-group settings that they might not have access to over Ramadan such as Internet café’s. Given that most pornography searches occur at night (see picture 1) schedule changes during Ramadan and late family gatherings might render a disproportionate impact to searching activities.  Finally, bio-chemical or neurological changes associated with fasting have been shown to decrease levels of libido and alter interest in pornographic content.
- 
+#read in data for the first graph which includes indicators for the presence of ramadan/eid and the value for sex and porn searches
+#this was compiled in the document final_proj_code rmd  and includes the combined data from the 5 muslim majority countries over the past 5 years on a weekly basis 
+#I tried grabbing from a longer time frame but unfortunately in that case the data could only be downloaded on a month level. The right approach for the future would probably be to download twice in 5 year incremements and then bind_cols
 
-  
 
-  
- 
+graph <- read_rds("D1_interest.rds") %>% 
+select(-keyword, -date1, -date2, -date3, -date4, -date5, -date6) 
 
-```{r}
+graph1 <- graph %>%
+  mutate(hits = hits.porn,
+         category = "porn") %>%
+  select(hits, category, date, in_ram)
 
-# ramadan_dates <- read_excel("ramadan_dates.xlsx") %>% 
-# filter(year >= 2014, Holiday == "Ramadan")
-# 
-# 
-# 
-# graph_5year_full
-# 
-# graph_5year + my_theme()
-# 
-# 
-# hourly_graph
+graph2 <- graph %>%
+  mutate(hits = hits.sex,
+         category = "sex") %>%
+select(hits, category, date, in_ram)
+
+#combine the data for sex and porn searchs in a way which will allow you to create a line graph with two categories
+graph3 <- bind_rows(graph1, graph2)
+
+#read in data of ramadan dates
+ramadan_dates <- read_excel("ramadan_dates.xlsx") %>% 
+filter(year >= 2014, Holiday == "Ramadan")
+
+
+#full graph of all the countries in the study (the graph is very compact so I also make another one with only 2 countries so you can see the relationship more easily) #the code below is a graph with grey areas indicating ramadan.
+#it also might like better with color filled underneath - for future experiment
+
+
+#first graph of weekly data of the past five years. - not included, might put back later so want to save code, the
+# ggplot() + geom_line(data = graph3, aes(x = date, y = hits, colour = category))+ geom_rect(data= ramadan_dates, aes(xmin=start, xmax=end, ymin=-Inf, ymax=+Inf), alpha = 0.2) + labs(title="'Porn' and 'Sex' Search Values over the Past 5 Years", subtitle = "Values Exhibit a Strong Decrease Over Ramadan", x ="Weeks from 2013-2018", y = "Hit Values", caption = "Data Drawn from SA, JO, EG, MA, UAE")
+
+
+
+#second graph of weekly data of the past five years - fewer countries so clearer lines
+yearly <- gtrends(c("sex","porn"), geo = c("SA", "JO"), time = "today+5-y")  
+yearly = yearly$interest_over_time
+
+ggplot() + geom_line(data = yearly, aes(x = date, y = hits, colour = keyword)) + geom_rect(data = ramadan_dates, aes(xmin=start, xmax=end, ymin=-Inf, ymax=+Inf), alpha = 0.2) +labs(title="'Porn' and 'Sex' Search Values over the Past 5 Years", subtitle = "Sex and porn related searches decrease Over Ramadan",  x ="Weeks from 2013-2018", y = "Hit Values", caption = "Data Drawn from Only Saudi Arabia and Jordan for Easy Viewing")
+
 
 ```
 
-![](searcher.jpg) 
 
 
+Dips in porn consumption over Ramadan may correspond to levels of individual religious observance. However, there could also be social factors of stigma associated with non-observance of Ramadan, which would alter individual practice.
 
 
-```{r}
-#descriptive stats:
-# des_table
+Given that most pornography searches occur at night schedule changes during Ramadan and late family gatherings likely render a significant impact to searching activities.  Additionally, bio-chemical or neurological changes associated with fasting have been [shown](http://www.urologyjournal.org/index.php/uj/article/viewFile/2787/1027) to decrease levels of libido and alter interest in pornographic content. Moreover, many countries have Ramadan laws, which [criminalize](http://www.bbc.co.uk/religion/religions/islam/practices/ramadan_1.shtml) public acts of non-observance.
+  
+
+```{r, cache = TRUE, echo = FALSE, message=FALSE, warning=FALSE}
+
+#Optional hourly code for saudi, commented out
+# hourly <- gtrends(c("sex","porn"), gprop = "web", geo = c("SA"), time = "now 7-d") 
 # 
+#  hourly$interest_over_time %>% 
+#   mutate(day = lubridate::wday(date, label = TRUE), hour = lubridate::hour(date)) %>% 
+#     ggplot() +
+#   geom_line(aes(x = hour, y = hits, colour = keyword)) +
+#   geom_smooth(aes(x = hour, y = hits), se = FALSE) +
+#   facet_grid(. ~ day) +
+#   theme_bw() + 
+#   theme(legend.position = 'top') +
+#   scale_x_continuous(breaks = c(6, 12, 18, 24)) +
+#   labs(y = NULL, x = "Time of Day", 
+#        caption = "November 27, 2018 11:00am to December 4, 2018 1:00pm",
+#        colour = NULL, title = "Google Trends Popularity of 'porn' or 'sex' over a Week in Saudi Arabia")
 # 
-# regress1
+
+#I redownload the data on an hourly level, hourly data is only availablefrom grends if you download in the last week
+#be careful that if I grab the data again then I will have to change the caption because the date will change!
+ hourly2 <- gtrends(c("sex","porn"), gprop = "web", geo = c("JO"), time = "now 7-d") 
+
+hourly2$interest_over_time %>% 
+  mutate(day = lubridate::wday(date, label = TRUE), hour = lubridate::hour(date)) %>% 
+    ggplot() +
+  geom_line(aes(x = hour, y = hits, colour = keyword)) +
+  geom_smooth(aes(x = hour, y = hits), se = FALSE) +
+  facet_grid(. ~ day) +
+  theme_bw() + 
+  theme(legend.position = 'top') +
+  scale_x_continuous(breaks = c(6, 12, 18, 24)) +
+  labs(y = NULL, x = "Time of Day", 
+       caption = "November 27, 2018 11:00am to December 4, 2018 1:00pm",
+       colour = NULL, title = "Google Trends Popularity of 'porn' or 'sex' over a Week in Jordan", subtitle = "Most Hits Occur in the Evening Hours")
+
+```
+  
+ 
+
+
+###Data and Multiple Linear Regression 
+
+There are 1305 observations, 1 per week from 2013 to 2018. Data is collected from 5 Muslim majority countries across three continents, namely, Jordan, Saudi Arabia, Egypt, United Arab Emirates and Malaysia.
+
+Understanding values for sex and porn searches:
+According to the google trends website, numbers represent search interest relative to the highest point on the chart for the given region and time. A value of 100 is the peak popularity for the term. A value of 50 means that the term is half as popular. A score of 0 means there was not enough data for this term. 
+
+
+```{r, echo = FALSE, message = FALSE, warning= FALSE, results = "asis", cache = TRUE}
+
+
+#creating display table of summary stats
+#using the data frame "graph" which represents the D1_interest data frame from 'final_proj_code1'
+#results set to "asis" in order to use html in stargazer
+
+ graph %>% 
+  select(-days_in_ram, -days_in_eid, -in_ram,- before2_ram, -in_eid, days_before, -category, -before_ram, days_before) %>% 
+  stargazer(type = "html", title="Descriptive statistics", digits=1, flip = TRUE, summary.logical= FALSE)
 ```
 
-##<span style="color:blue">Regression Table Output:</span>.
 
-This regression table output demonstrates how Ramadan causes a sigificant decrease in sex and porn related searches in five muslim majority countries. It also indicates how the presence of a feasting holiday, Eid-al-Futr, which occurs in the week following Ramadan, results in an increase in related search values. The regression is run on sex and porn search values aggregated on a weekly basis. 
+Controlling for country and year, Ramadan causes a sigificant decrease in sex and porn related searches in five muslim majority countries of around 10 percentages points. As seen in (4) people decrease these searches in the week leading up to Ramadan by about two percentage points. However, in the week following, also known as Eid al-Futr, people significantly increase their searches by around 20 percentage points (seen in 3 and 4). My results are significant p < .01.
 
-"Days in Ramadan" is a continuous variable with values zero throuhg seven, designating the number of days in a a given week which include. "Presence of Ramadan" is a binary variable with values of one or zero based on the presence of absence of Ramadan.
+
+```{r, echo = FALSE, message = FALSE, warning= FALSE, results = "asis"}
+#regression analysis - putting togethor the regressions
+#year and country controls dont make a difference in p values, sd, or coeff so I'm back to removing them -  because data set is already normalized for year and country
+ma <- lm(sum ~ days_in_ram, data=graph)
+mb <- lm(sum ~ in_ram, data=graph)
+m1 <- lm(sum ~ in_ram + in_eid, data=graph)
+m3 <- lm(sum ~ before_ram + in_ram + in_eid, data = graph)
+#this is the regression of2 weeks before ramadan, I'm commenting out for this first study, but it is noteworthy since it changes the results
+#m4 <- lm(sum ~ before2_ram + before_ram + in_ram + in_eid, data = graph)
+
+
+#use results = asis in the caption to make sure the table prints properly
+#final regression code
+ stargazer(ma, mb, m1, m3, summary = FALSE, type = "html", title = "Changes in Sex and Porn Related Search Values Over Ramadan", dep.var.labels = "Mean values for 'sex' and 'porn' hits by Week",covariate.labels = c("Days in Ram", "Week Before Ram (0 or 1)", "Presence of Ram (0 or 1)", "Presence of Eid (0 or 1)"))
+
+
+
+```
+
+######*Some Variable Definitions*
+"Days in Ramadan" is a continuous variable with values zero through seven, designating the number of days in a a given week which include. "Presence of Ramadan" is a binary variable with values of one or zero based on the presence of absence of Ramadan.
 
 "In Eid" is a categorical variable which registers the presence of Eid al-Futr in a given week. Eid al-Futr is a three day feasting holiday which always occurs immediately following Ramadan. Thus, "In Eid" is standing in place for an "after ramadan" variable 
 
-```{r}
+
+
+
+###Did I pick the right search terms?
+```{r, echo = FALSE, message = FALSE, warning= FALSE, cache = TRUE}
+
+
+#justify that I'm picking the right terms (warning explicit content) - since I'm focused with change over time - its not critical that I isolate all the relevant terms but just that they indeed be pornography serach terms  and that they capture a high level of the variation over time
+#related queries captures the following: 
+# Users searching for your term also searched for these queries. You can sort by the following metrics:
+
+D1 <- gtrends(keyword = c("sex"), geo = c("EG", "SA", "AE","JO", "MA"), time = "today+5-y")
+D2 <- gtrends(keyword = c("porn"), geo = c("EG", "SA", "AE","JO", "MA"), time = "today+5-y") 
+  
+D1$related_queries %>% 
+     select(subject, value) %>% 
+      slice(1:7) %>% 
+     kable(caption = "A Table of Related Queries", col.names = c("Correlation Score", "Value"))
+
+D2$related_queries %>% 
+  select(subject, value) %>% 
+  slice(1:7) %>% 
+  kable(caption = "A Table of Related Queries", col.names = c("Correlation Score", "Value"))
 
 
 ```
+
+*Top - The most popular search queries. Scoring is on a relative scale where a value of 100 is the most commonly searched query, 50 is a query searched half as often as the most popular query, and so on*
+
 
 Reviewing world search values  - we should be shocked to see that indeed the cumulative Global value of sex and porn searches decresaes over Ramadan on a five year basis
 
@@ -85,10 +214,6 @@ It's important to acknowledge that the population covered in my study are those 
 
 
 
+###*By: Hannah Hess, Harvard College 2019*
 
-
-
-
-*By: Hannah Hess*
-Coding References for RMarkdown [link](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf)
 

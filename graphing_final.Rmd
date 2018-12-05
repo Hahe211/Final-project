@@ -78,7 +78,7 @@ hourly <- gtrends(c("sex","porn"), gprop = "web", geo = c("SA"), time = "now 7-d
 
  hourly2 <- gtrends(c("sex","porn"), gprop = "web", geo = c("JO"), time = "now 7-d") 
 
-hourly_graph <- hourly2$interest_over_time %>% 
+hourly2$interest_over_time %>% 
   mutate(day = lubridate::wday(date, label = TRUE), hour = lubridate::hour(date)) %>% 
     ggplot() +
   geom_line(aes(x = hour, y = hits, colour = keyword)) +
@@ -94,13 +94,14 @@ hourly_graph <- hourly2$interest_over_time %>%
 
 
 ```
+
+
 ```{r, cache = TRUE}
 #graph with rectanglas for ramadan presence
 
 #read in the first graph which includes indicators for the presence of ramadan/eid and the value for sex and porn searches
 graph <- read_rds("D1_interest.rds") %>% 
 select(-keyword, -date1, -date2, -date3, -date4, -date5, -date6) 
-
 
 graph1 <- graph %>%
   mutate(hits = hits.porn,
@@ -112,11 +113,10 @@ graph2 <- graph %>%
          category = "sex") %>%
 select(hits, category, date, in_ram)
 
+#combine the data for sex and porn searchs in a way which will allow you to create a line graph with two categories
 graph3 <- bind_rows(graph1, graph2)
 
-
 #read in data of ramadan dates
-
 ramadan_dates <- read_excel("ramadan_dates.xlsx") %>% 
 filter(year >= 2014, Holiday == "Ramadan")
 
@@ -139,10 +139,7 @@ graph_5year_full <- ggplot() + geom_line(data = graph3, aes(x = date, y = hits, 
 ```{r, cache= TRUE, warning = FALSE, message = FALSE}
 
 
-#graph of weekly data of the past five years. I tried grabbing from a longer time frame but unfortunately in that case the data could only be downloaded on a month level. The right approach for the future would probably be to download twice in 5 year incremements and then bind_cols
-
-
-#the code below is a graph with grey areas indicating ramadan.
+#second graph of weekly data of the past five years. 
 yearly <- gtrends(c("sex","porn"), geo = c("SA", "JO"), time = "today+5-y")  
 yearly = yearly$interest_over_time
 
