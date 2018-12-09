@@ -1,0 +1,6 @@
+"0","D1$related_queries %>% 
+     select(subject, value, geo) %>% 
+    datatable(container, caption = ""A Table of Related Queries"")
+"
+"2","Error in is.list(val) : object 'container' not found
+"

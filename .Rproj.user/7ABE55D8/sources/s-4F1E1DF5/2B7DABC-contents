@@ -1,0 +1,410 @@
+---
+title: "regression analysis"
+author: "hannah hess"
+date: "November 29, 2018"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(stargazer)
+library(gtrendsR)
+library(tidyverse)
+library(knitr)
+library(readxl)
+#library(ls)
+
+
+```
+
+This is a page for regression analysis, tables and charts
+in another page, I will look at graphs of - popular hours for porn consumption, changes in porn consumption over time
+
+ 
+first - try to pull a cross country data frame from google then combine by country... although I could make life easy on myself and not pull more than two countries. 
+```{r, cache = TRUE, include = FALSE, echo = FALSE, message = FALSE, warning= FALSE}
+
+#create preliminary data set from gtrends - last 5 years. Although I would have ideally liked to gather data from more than 5 years - I'm limited in scope because the algorithm can't pull more data then that at a time
+
+
+
+
+  #download data for sex and porn searches, this has to be done seperately or there's an overload issue
+D1 <- gtrends(keyword = c("sex"), geo = c("EG", "SA", "AE","JO", "MA"), time = "today+5-y")
+D2 <- gtrends(keyword = c("porn"), geo = c("EG", "SA", "AE","JO", "MA"), time = "today+5-y") 
+ 
+
+  #combine data for sex and porn searches by merging D2 and D1
+#search values are stored in the interest over time tibble: here is some information from google on what that represents:
+# Numbers represent search interest relative to the highest point on the chart for the given region and time. A value of 100 is the peak popularity for the term. A value of 50 means that the term is half as popular. A score of 0 means there was not enough data for this term.
+
+D2_interest <- D2$interest_over_time %>% 
+  select(hits, date, geo) %>% 
+  transmute(hits.porn = hits, date = date, geo = geo)
+  
+
+D1_interest <- D1$interest_over_time %>% 
+  rename(hits.sex = hits) %>% 
+  left_join(D2_interest, by = c("date", "geo")) %>% 
+  mutate(sum = (hits.sex + hits.porn)/2)
+
+#download world data to see if theres a world influence, the default is world data unless you change something
+world <- gtrends(keyword = "sex", time = "today+5-y")
+world2 <- gtrends(keyword = "porn", time = "today+5-y")
+
+world2 <- world2$interest_over_time %>% 
+  select(hits, date, geo) %>% 
+  transmute(hits_porn = hits, date = date, geo = geo)
+
+world_interest <- world$interest_over_time %>% 
+  rename(hits_sex = hits) %>% 
+  left_join(world2, by = c("date", "geo")) %>% 
+  mutate(sum = (hits_sex + hits_porn)/2)
+
+#load the data set I made with dates of ramadan and major holidays
+
+ramadan_dates <- read_excel("ramadan_dates.xlsx")
+
+
+```
+
+
+The table below shows related queries for searches in the category of sex and porn over Ramadan. Two demonstrate the nature of the searches I display the top 10 related search values. Warning, this includes graphic content.
+According to the google trends website, scoring is on a relative scale where a value of 100 is the most commonly searched query, 50 is a query searched half as often as the most popular query, and so on.
+  
+```{r, cache = TRUE, echo = FALSE, message = FALSE, warning= FALSE}
+#showing/determining high volume porn searches 
+
+
+#justify that I'm picking the right terms (warning explicit content) - since I'm focused with change over time - its not critical that I isolate all the relevant terms but just that they indeed be pornography serach terms  and that they capture a high level of the variation over time
+#related queries captures the following: 
+# Users searching for your term also searched for these queries. You can sort by the following metrics:
+# * Top - The most popular search queries. Scoring is on a relative scale where a value of 100 is the most commonly searched query, 50 is a query searched half as often as the most popular query, and so on.
+  
+D1$related_queries %>% 
+     select(subject, value) %>% 
+      slice(1:7) %>% 
+     kable(caption = "A Table of Related Queries", col.names = c("Correlation Score", "Value"))
+
+D2$related_queries %>% 
+  select(subject, value) %>% 
+  slice(1:7) %>% 
+  kable(caption = "A Table of Related Queries", col.names = c("Correlation Score", "Value"))
+
+
+
+```
+
+
+```{r, cache = TRUE, include = FALSE, echo = FALSE, message = FALSE, warning= FALSE}
+
+
+#I have a problem: the gtrends data set does not indicate the presence or absence of Ramadan. I have to pull that info from a different data set I have called ramadan_holiday
+#My google trends data set (D1_interest) includes ramadan search values for a whole week 
+#manipulate data set to add all days of the week 
+D1_interest$date1 = as.Date(D1_interest$date) + 1 
+D1_interest$date2 = as.Date(D1_interest$date) + 2 
+D1_interest$date3 = as.Date(D1_interest$date) + 3 
+D1_interest$date4 = as.Date(D1_interest$date) + 4 
+D1_interest$date5 = as.Date(D1_interest$date) + 5 
+D1_interest$date6 = as.Date(D1_interest$date) + 6 
+
+D1_interest$year <- substring(D1_interest$date,1,4)
+
+
+#For loop to create (1) a "days_in_ram" variable ->  the number of days in a given week with ramadan present and also (2) "in_ram" variable -> (0 or 1) whether or not ramadan is present in that week
+#first iterate over a week in a given year in the D1_interests data set to see if there are any matches for Ramadan occuring
+#count the number of days of a given week in teh D1_interest$date variable which overlap with ramadan
+#create a binary variable to code 1 if a week includes more than 3 days of ramadan. 
+
+for (i in 1:length(D1_interest$date)) {
+  D1_interest[i, "days_in_ram"] = 0 
+  for( j in c("date" , "date1", "date2" , "date3", "date4", "date5", "date6")){
+    if ( (D1_interest[i, j] >= ramadan_dates[ramadan_dates$year==   D1_interest[i, "year"]   &  ramadan_dates$Holiday == "Ramadan" , ]$start  ) & (D1_interest[i, j] <= ramadan_dates[ramadan_dates$year== D1_interest[i,"year"] & ramadan_dates$Holiday == "Ramadan" ,]$end  ) ) {
+        D1_interest[i, "days_in_ram"] =   D1_interest[i, "days_in_ram"]  + 1
+    }
+  }
+  
+  if (D1_interest[i, "days_in_ram"] > 2){
+      D1_interest[i,"in_ram"] = 1
+  } else{
+      D1_interest[i,"in_ram"] = 0
+  }
+  
+  
+}
+
+
+#code variable for the week before ramadan to test whether the week before ramadan results in a change in values
+
+D1_interest$before_ram = 0 
+  for (i in 1:length(D1_interest$date) - 1) {
+if (D1_interest$in_ram == 0 & D1_interest$in_ram[i +1] == 1) D1_interest$before_ram[i] = 1 else D1_interest$before_ram[i] <- 0
+}
+
+#code variable for the week before ramadan to test whether 2 weeks before ramadan results in a change in values
+
+D1_interest$before2_ram = 0 
+  for (i in 1:length(D1_interest$date) - 2) {
+if (D1_interest$in_ram == 0 & D1_interest$in_ram[i +2] == 1) D1_interest$before2_ram[i] = 1 else D1_interest$before2_ram[i] <- 0
+}
+
+
+#Thank you to Eric Wasserman Harvard 2019 Dunster House for helping me conceptualize how best to approach the coding problem above!
+
+
+#my next step in data manipulation before running a regression will be to add an additional variable for year so that I can control #for that. 
+#I also may go back up (before doing the ramadan stuff) and create a combined variable of porn searches called porn which is the #average of the high volume porn searches I've found 
+
+
+#repeat the ramadan iteration but this time for celebratory holidays
+
+#first I'll manipulate the ramadan_dates to code "celebratory holiday for Eid""
+
+
+#code variable for celebratory holidays, same method as ramadan 
+
+
+for (i in 1:length(D1_interest$date)) {
+  D1_interest[i, "days_in_eid"] = 0 
+  for( j in c("date" , "date1", "date2" , "date3", "date4", "date5", "date6")){
+    if ( (D1_interest[i, j] >= ramadan_dates[ramadan_dates$year==   D1_interest[i, "year"]   &  ramadan_dates$Holiday ==  "Eid al-Fitr" , ]$start  ) & (D1_interest[i, j] <=  ramadan_dates[ramadan_dates$year== D1_interest[i,"year"] & ramadan_dates$Holiday ==  "Eid al-Fitr" ,]$end  ) ) {
+        D1_interest[i, "days_in_eid"] =   D1_interest[i, "days_in_eid"]  + 1
+    }
+  }
+    if (D1_interest[i, "days_in_eid"] > 2){
+      D1_interest[i,"in_eid"] = 1
+  } else{
+      D1_interest[i,"in_eid"] = 0
+  }
+  
+
+}
+
+
+
+
+
+
+for (i in 1:length(D1_interest$date)) {
+  D1_interest[i, "days_before"] = 0 
+  for( j in c("date" , "date1", "date2" , "date3", "date4", "date5", "date6")){
+    if ( (D1_interest[i, j] >= ramadan_dates[ramadan_dates$year==   D1_interest[i, "year"]   &  ramadan_dates$Holiday == "Ramadan" , ]$start  ) & (D1_interest[i, j] <= ramadan_dates[ramadan_dates$year== D1_interest[i,"year"] & ramadan_dates$Holiday == "Ramadan" ,]$end  ) ) {
+        D1_interest[i, "days_in_ram"] =   D1_interest[i, "days_in_ram"]  + 1
+    }
+  }
+  
+  if (D1_interest[i, "days_in_ram"] > 2){
+      D1_interest[i,"in_ram"] = 1
+  } else{
+      D1_interest[i,"in_ram"] = 0
+  }
+  
+  
+}
+
+#I'm commenting out this section for coding in Eid al-ahda which occurs later in the calender year because I didn't find any significant relationship
+#however, in the future I could use the fact taht Eid al-ahda isn't signficiant  to better explain the Eid al-futr effect rule out the "holida"
+# for (i in 1:length(D1_interest$date)) {
+#   D1_interest[i, "days_in_eida"] = 0 
+#   for( j in c("date" , "date1", "date2" , "date3", "date4", "date5", "date6")){
+#     if ( (D1_interest[i, j] >= ramadan_dates[ramadan_dates$year==   D1_interest[i, "year"]   &  ramadan_dates$Holiday ==  "Eid-al-adha" , ]$start  ) & (D1_interest[i, j] <=  ramadan_dates[ramadan_dates$year== D1_interest[i,"year"] & ramadan_dates$Holiday ==  "Eid-al-adha" ,]$end  ) ) {
+#         D1_interest[i, "days_in_eida"] =   D1_interest[i, "days_in_eida"]  + 1
+#     }
+#   }
+# 
+#   
+# }
+ 
+
+#write an rds file to graph the data 
+write_rds(D1_interest, "D1_interest.rds")
+
+
+```
+
+
+
+
+```{r, cache = TRUE, include = FALSE, echo = FALSE, message = FALSE, warning= FALSE}
+
+#repeat the above step but for WORLD data to test if there's a global impact
+
+
+
+#I have a problem: the gtrends data set does not indicate the presence or absence of Ramadan. I have to pull that info from a different data set I have called ramadan_holiday
+#My google trends data set (D1_interest) includes ramadan search values for a whole week 
+#manipulate data set to add all days of the week 
+world_interest$date1 = as.Date(world_interest$date) + 1 
+world_interest$date2 = as.Date(world_interest$date) + 2 
+world_interest$date3 = as.Date(world_interest$date) + 3 
+world_interest$date4 = as.Date(world_interest$date) + 4 
+world_interest$date5 = as.Date(world_interest$date) + 5 
+world_interest$date6 = as.Date(world_interest$date) + 6 
+
+world_interest$year <- substring(world_interest$date,1,4)
+
+
+#For loop to create (1) a "days_in_ram" variable ->  the number of days in a given week with ramadan present and also (2) "in_ram" variable -> (0 or 1) whether or not ramadan is present in that week
+#first iterate over a week in a given year in the D1_interests data set to see if there are any matches for Ramadan occuring
+#count the number of days of a given week in teh D1_interest$date variable which overlap with ramadan
+#create a binary variable to code 1 if a week includes more than 3 days of ramadan. 
+
+for (i in 1:length(world_interest$date)) {
+  world_interest[i, "days_in_ram"] = 0 
+  for( j in c("date" , "date1", "date2" , "date3", "date4", "date5", "date6")){
+    if ( (world_interest[i, j] > ramadan_dates[ramadan_dates$year==   world_interest[i, "year"]   &  ramadan_dates$Holiday == "Ramadan" , ]$start  ) & (world_interest[i, j] < ramadan_dates[ramadan_dates$year== world_interest[i,"year"] & ramadan_dates$Holiday == "Ramadan" ,]$end  ) ) {
+        world_interest[i, "days_in_ram"] =   world_interest[i, "days_in_ram"]  + 1
+    }
+  }
+  
+  if (world_interest[i, "days_in_ram"] > 2){
+      world_interest[i,"in_ram"] = 1
+  } else{
+      world_interest[i,"in_ram"] = 0
+  }
+  
+  
+}
+
+#same code as above - Eid al-fitr: days_in_eid
+
+for (i in 1:length(world_interest$date)) {
+  world_interest[i, "days_in_eid"] = 0 
+  for( j in c("date" , "date1", "date2" , "date3", "date4", "date5", "date6")){
+    if ( (D1_interest[i, j] >= ramadan_dates[ramadan_dates$year==   D1_interest[i, "year"]   &  ramadan_dates$Holiday ==  "Eid al-Fitr" , ]$start  ) & (D1_interest[i, j] <=  ramadan_dates[ramadan_dates$year== world_interest[i,"year"] & ramadan_dates$Holiday ==  "Eid al-Fitr" ,]$end  ) ) {
+        world_interest[i, "days_in_eid"] =   world_interest[i, "days_in_eid"]  + 1
+    }
+  }
+   if (D1_interest[i, "days_in_eid"] > 2){
+      D1_interest[i,"in_eid"] = 1
+  } else{
+      D1_interest[i,"in_eid"] = 0
+  }
+
+}
+
+#code for the week before ramadan
+
+for (i in 1:length(world_interest$date)) {
+  D1_interest[i, "days_before"] = 0 
+  for( j in c("date" , "date1", "date2" , "date3", "date4", "date5", "date6")){
+    if ( (D1_interest[i, j] >= ramadan_dates[ramadan_dates$year==   D1_interest[i, "year"]   &  ramadan_dates$Holiday == "Ramadan" , ]$start  ) & (D1_interest[i, j] <= ramadan_dates[ramadan_dates$year== D1_interest[i,"year"] & ramadan_dates$Holiday == "Ramadan" ,]$end  ) ) {
+        D1_interest[i, "days_in_ram"] =   D1_interest[i, "days_in_ram"]  + 1
+    }
+  }
+  
+  if (D1_interest[i, "days_in_ram"] > 2){
+      D1_interest[i,"in_ram"] = 1
+  } else{
+      D1_interest[i,"in_ram"] = 0
+  }
+  
+  
+}
+
+#write rds to use in second portion 
+write_rds(world_interest, "world.rds")
+
+```
+
+
+
+This table of descriptive statistics gives an overview of the data. As indicated, there are 1305 observations, 1 per week. Understanding values for sex and porn searches:
+According to the google trends website, numbers represent search interest relative to the highest point on the chart for the given region and time. A value of 100 is the peak popularity for the term. A value of 50 means that the term is half as popular. A score of 0 means there was not enough data for this term. 
+```{r, include = FALSE, echo = FALSE, message = FALSE, warning= FALSE, results = "asis", cache = TRUE}
+#regression analysis
+
+
+#displaying summary statistics
+
+#I realize I don't like the display for this approach quite as much 
+# trends = gtrends(keyword = c("sex"), geo = c("EG", "SA", "AE","JO", "MA"), time = "today+5-y")
+# #select only interst over time 
+# time_trend=trends$interest_over_time %>% 
+#   select(-keyword, -gprop)
+# head(time_trend)
+
+
+
+#summary statistics table 
+des_table <- D1_interest %>% 
+  select(-days_in_ram, -days_in_eid, -in_ram,- before2_ram, -in_eid, days_before, -category, -before_ram, days_before) %>% 
+  stargazer(type = "html", title="Descriptive statistics", digits=1, flip = TRUE, summary.logical= FALSE)
+
+
+
+
+
+```
+
+
+
+```{r, include = FALSE}
+#regression analysis - putting togethor the regressions
+
+
+
+
+#year and country controls dont make a difference in p values, sd, or coeff so I'm back to removing them -  because data set is already normalized for year and country
+ma <- lm(sum ~ days_in_ram, data=D1_interest)
+mb <- lm(sum ~ in_ram, data=D1_interest)
+m1 <- lm(sum ~ in_ram + in_eid, data=D1_interest)
+m2 <- lm(sum ~ days_in_ram + in_eid, data=D1_interest)
+m3 <- lm(sum ~ before_ram + in_ram + in_eid, data = D1_interest)
+m4 <- lm(sum ~ before2_ram + in_ram + in_eid, data = D1_interest)
+
+t1 <- lm(sum ~in_ram + geo, data = D1_interest)
+t2 <- lm(sum ~in_ram + year, data = D1_interest)
+t3 <- lm(sum ~in_ram + year + geo, data = D1_interest)
+
+#both year and country controls, switching between in_ram and days_in_ram
+# m5 <- lm(sum ~ in_ram + geo + year, data=D1_interest)
+# m6 <- lm(sum ~ days_in_ram + geo + year, data=D1_interest)
+
+
+
+
+
+# #global data -  sig impact detected
+# w1 <- lm(sum.porn ~ days_in_ram, data=world_interest)
+# w2 <- lm(sum.porn ~ in_ram, data=world_interest)
+# w3 <- lm(sum.porn ~ in_ram + in_eid, data=world_interest)
+# w4 <- lm(sum.porn ~ days_in_ram + in_eid, data=world_interest)
+
+```
+
+
+This regression table output demonstrates how Ramadan causes a sigificant decrease in sex and porn related searches in five muslim majority countries. It also indicates how the presence of a feasting holiday, Eid-al-Futr, which occurs in the week following Ramadan, results in an increase in related search values. The regression is run on sex and porn search values aggregated on a weekly basis. 
+
+"Days in Ramadan" is a continuous variable with values zero throuhg seven, designating the number of days in a a given week which include. "Presence of Ramadan" is a binary variable with values of one or zero based on the presence of absence of Ramadan.
+
+"Days in Eid" is a continuous variable which registers the presence of Eid al-Futr in a given week. Eid al-Futr is a three day feasting holiday which occurs immediately following Ramadan. 
+```{r, echo = FALSE, message = FALSE, warning= FALSE, results = "asis"}
+#use results = asis in the caption to make sure the table prints properly
+#final regression code
+regress1 <- stargazer(ma, mb, m1, m2, m3, m4, summary = FALSE, type = "html", title = "Changes in Sex and Porn Related Search Values Over Ramadan in 5 Muslim-Majority Countries", dep.var.labels = "Mean values for 'sex' and 'porn' hits by Week",  covariate.labels = c("Days in Ram", "Presence of Ram (0 or 1)", "Presence of Eid (0 or 1)"))
+
+
+
+
+```
+Reviewing world search values  - we should be shocked to see that indeed the cumulative Global value of sex and porn searches decresaes over Ramadan on a five year basis
+```{r, echo = FALSE, message = FALSE, warning= FALSE, results = "asis"}
+
+# stargazer(w1, w2, w3, w4, summary = FALSE, type = "html", title = "Changes in Sex and Porn Related Search Values Over Ramadan on a Global Scale", dep.var.labels = "Global Values for 'sex' and 'porn' hits by Week",  covariate.labels = c("Days in Ram", "Presence of Ram (0 or 1)", "Days in Eid"))
+# 
+
+
+```
+
+
+
+
+
+
+
+
+It's important to acknowledge that the population covered in my study are those people who access pornography searches not through a proxy site and it is likely that this population would differ somewhat from those who use a proxy site and are not found on google. thus my sample size is not representative of the population as a whole 

@@ -1,0 +1,97 @@
+
+library(readr)
+library(gtrendsR)
+library(reshape2)
+library(tidyverse)
+library(knitr)
+library(readxl)
+
+x<- gtrends(keyword = c("sex", "porn"),
+  geo = "SA")
+
+interest_over_time <- x$interest_over_time
+interest_by_region <- x$interest_by_region
+related_queries <- x$related_queries
+interest_by_city <- x$interest_by_city
+
+
+wide <- interest_over_time %>% 
+  spread(key = keyword, value = hits)
+
+theme_set(theme_bw())
+
+interest_over_time%>% 
+  ggplot(aes(x= date, y = hits, color = keyword)) + geom_line() + 
+  labs(subtitle = "Ramadan in Red", x = "Date", y = "Search Volume", title = "Pornography Searches over time in Saudi Arabia", source = "Google Trends")
+
+##still looking to find data set with ramadan dates to automatically highlight when ramadan is in ggplot
+
+#geom_rect(data=rects, inherit.aes=FALSE, aes(xmin=start, xmax=end, ymin=-Inf,
+                                               #ymax=Inf, group=group), color="transparent", fill="orange", alpha=0.3)
+
+  
+
+  #g = g + geom_rect(data=recessions.trim, aes(xmin=Peak, xmax=Trough, ymin=-Inf, ymax=+Inf), fill='pink', alpha=0.2)
+
+
+#Values are calculated on a scale from 0 to 100, where 100 is the location with the most popularity as a fraction of total searches in that location, a value of 50 indicates a location which is half as popular. 
+#A value of 0 indicates a location where there was not enough data for this term.
+
+y <- gtrends("المسيار")
+Misyar_by_country <- y$interest_by_country
+
+Misyar_by_country %>% 
+  select(location, hits) %>% 
+  mutate(hits = as.numeric(hits)) %>% 
+  filter(!is.na(hits)) %>% 
+  arrange(desc(hits)) %>% 
+  head(15)
+
+z <- gtrends("زواج المتعة")   
+mutaa_by_country <- z$interest_by_country
+
+mutaa_by_country %>% 
+select(location, hits) %>% 
+  mutate(hits = as.numeric(hits)) %>% 
+  filter(!is.na(hits)) %>% 
+  arrange(desc(hits)) %>% 
+  head(15)
+
+
+
+e <- gtrends("زواج العرفي")   
+urfi_by_country <- e$interest_by_country
+
+urfi_by_country <- urfi_by_country %>% 
+  select(location, hits) %>% 
+  transmute(hit = as.numeric(hits), "country" = location) %>% 
+  arrange(desc(hit)) %>% 
+  head(15)
+
+
+temp_marriage <- left_join(mutaa_by_country, Misyar_by_country, by = "location") %>%
+  transmute("mutaa" = hits.x,  "misyar" = hits.y, "country" = location) %>%
+  mutate(misyar = as.numeric(misyar), mutaa = as.numeric(mutaa)) %>% 
+  filter(!is.na(misyar), !is.na(mutaa))
+
+#%>% 
+  #left_join(urfi_by_country, by = "country")  leaving out urfi for now
+  
+
+
+temp_marriage %>% 
+  arrange(desc(misyar)) %>% 
+  kable()
+
+temp_marriage %>% 
+  arrange(desc(misyar)) %>% 
+  slice(1:10) %>% 
+  ggplot() + geom_bar(aes(x = country, y = misyar), stat="identity") 
+
+
+
+#read in ramadan and holiday dates
+
+ramadan_dates <- read_excel("ramadan_dates.xlsx")
+
+

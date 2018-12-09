@@ -1,0 +1,5 @@
+"0","graph_5year_full <- ggplot() + geom_line(data = graph3, aes(x = date, y = hits, colour = category))+ geom_rect(data= ramadan_dates, aes(xmin=start, xmax=end, ymin=-Inf, ymax=+Inf), alpha = 0.2, fill = Holiday)
+"
+"2","Error in layer(data = data, mapping = mapping, stat = stat, geom = GeomRect,  : 
+  object 'Holiday' not found
+"

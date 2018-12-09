@@ -146,7 +146,7 @@ m3 <- lm(sum ~ before_ram + in_ram + in_eid, data = graph)
 ### <span style="color:red">A Global Impact? </span>
 
 
-Given that Muslims make up about %24 percent of the global population, does the presence of Ramadan may have an impact on worldwide pornography searching?
+Given that Muslims make up about %24 percent of the global population, does the presence of Ramadan may have an impact on worldwide porn searching?
 
 Exploiting search values aggregated on a global level  - the cumulative global value of sex and porn searches decresaes over Ramadan by one and a half percentage points at the .1 significance level. 
 

@@ -1,0 +1,29 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1543472945408.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "43EEE870",
+    "lastKnownWriteTime" : 19140779452661762,
+    "last_content_update" : 1543472945408,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "F6A827E4",
+        "caption" : "ramadan_dates",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=ramadan_dates&cache_key=F6A827E4",
+        "displayedObservations" : "45",
+        "environment" : "",
+        "object" : "ramadan_dates",
+        "preview" : "0",
+        "totalObservations" : "45",
+        "variables" : "5"
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}

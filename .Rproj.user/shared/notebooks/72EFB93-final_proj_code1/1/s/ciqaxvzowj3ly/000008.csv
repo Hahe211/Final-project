@@ -1,0 +1,7 @@
+"0","world2 <- world2$interest_over_time %>% 
+  select(hits, date, geo) %>% 
+  transmute(hits_porn = hits, date = date, geo = geo)
+"
+"2","Error in UseMethod(""select_"") : 
+  no applicable method for 'select_' applied to an object of class ""NULL""
+"

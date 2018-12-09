@@ -1,0 +1,6 @@
+"0","w1 <- lm(sum.porn ~ days_in_ram, data=world_interest)
+w2 <- lm(sum.porn ~ in_ram, data=world_interest)
+w3 <- lm(sum.porn ~ in_ram + in_eid, data=world_interest)
+"
+"2","Error in eval(predvars, data, env) : object 'in_eid' not found
+"

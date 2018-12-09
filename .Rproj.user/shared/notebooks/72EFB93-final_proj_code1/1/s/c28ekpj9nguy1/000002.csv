@@ -1,0 +1,31 @@
+"0","world_interest$date1 = as.Date(world_interest$date) + 1 
+world_interest$date2 = as.Date(world_interest$date) + 2 
+world_interest$date3 = as.Date(world_interest$date) + 3 
+world_interest$date4 = as.Date(world_interest$date) + 4 
+world_interest$date5 = as.Date(world_interest$date) + 5 
+world_interest$date6 = as.Date(world_interest$date) + 6 
+world_interest$year <- substring(world_interest$date,1,4)
+#For loop to create (1) a ""days_in_ram"" variable ->  the number of days in a given week with ramadan present and also (2) ""in_ram"" variable -> (0 or 1) whether or not ramadan is present in that week
+#first iterate over a week in a given year in the D1_interests data set to see if there are any matches for Ramadan occuring
+#count the number of days of a given week in teh D1_interest$date variable which overlap with ramadan
+#create a binary variable to code 1 if a week includes more than 3 days of ramadan. 
+for (i in 1:length(world_interest$date)) {
+  world_interest[i, ""days_in_ram""] = 0 
+  for( j in c(""date"" , ""date1"", ""date2"" , ""date3"", ""date4"", ""date5"", ""date6"")){
+    if ( (world_interest[i, j] > ramadan_dates[ramadan_dates$year==   world_interest[i, ""year""]   &  ramadan_dates$Holiday == ""Ramadan"" , ]$start  ) & (world_interest[i, j] < ramadan_dates[ramadan_dates$year== world_interest[i,""year""] & ramadan_dates$Holiday == ""Ramadan"" ,]$end  ) ) {
+        world_interest[i, ""days_in_ram""] =   world_interest[i, ""days_in_ram""]  + 1
+    }
+  }
+  
+  if (world_interest[i, ""days_in_ram""] > 2){
+      world_interest[i,""in_ram""] = 1
+  } else{
+      world_interest[i,""in_ram""] = 0
+  }
+  
+  
+}
+"
+"2","Error in if ((world_interest[i, j] > ramadan_dates[ramadan_dates$year ==  : 
+  argument is of length zero
+"

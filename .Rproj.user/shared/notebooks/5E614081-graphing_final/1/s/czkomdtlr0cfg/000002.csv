@@ -1,0 +1,15 @@
+"0","hourly_graph <- hourly2$interest_over_time %>% 
+  mutate(day = lubridate::wday(date, label = TRUE), hour = lubridate::hour(date)) %>% 
+    ggplot() +
+  geom_line(aes(x = hour, y = hits, colour = keyword)) +
+  geom_smooth(aes(x = hour, y = hits), se = FALSE) +
+  facet_grid(. ~ day) +
+  theme_bw() + 
+  theme(legend.position = 'top') +
+  scale_x_continuous(breaks = c(6, 12, 18, 24)) +
+  labs(y = NULL, x = ""Time of Day"", 
+       caption = ""November 27, 2018 11:00am to December 4, 2018 1:00pm"",
+       colour = NULL, title = ""Google Trends Popularity of 'porn' or 'sex' over a Week in Jordan"")
+"
+"2","Error in eval(lhs, parent, parent) : object 'hourly2' not found
+"
