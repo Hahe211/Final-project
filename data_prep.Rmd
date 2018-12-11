@@ -21,7 +21,7 @@ library(readxl)
 This is a page for where I download, compile and clean the data set that will be used in my rpubs. 
 
 
-```{r}
+```{r, include=FALSE}
 #grabbing country level data in 
 #for a discussion of how I chose terms please consult microsoft spreadsheet
 
