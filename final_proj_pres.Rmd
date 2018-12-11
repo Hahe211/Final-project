@@ -65,9 +65,7 @@ filter(year >= 2014, Holiday == "Ramadan")
 #full graph of all the countries in the study (the graph is very compact so I also make another one with only 2 countries so you can see the relationship more easily) #the code below is a graph with grey areas indicating ramadan.
 #it also might like better with color filled underneath - for future experiment
 
-
-#first graph of weekly data of the past five years. - not included, might put back later so want to save code, the
-# ggplot() + geom_line(data = graph3, aes(x = date, y = hits, colour = category))+ geom_rect(data= ramadan_dates, aes(xmin=start, xmax=end, ymin=-Inf, ymax=+Inf), alpha = 0.2) + labs(title="'Porn' and 'Sex' Search Values over the Past 5 Years", subtitle = "Values Exhibit a Strong Decrease Over Ramadan", x ="Weeks from 2013-2018", y = "Hit Values", caption = "Data Drawn from SA, JO, EG, MA, UAE")
+ggplot() + geom_line(data = graph3, aes(x = date, y = hits, colour = category))+ geom_rect(data= ramadan_dates, aes(xmin=start, xmax=end, ymin=-Inf, ymax=+Inf), alpha = 0.3) + labs(title="'Porn' and 'Sex' Search Values over the Past 5 Years", subtitle = "Valyes Decrease over Ramadan - Shaded Grey", x ="Weeks from 2013-2018", y = "Hit Values", caption = "Data Drawn from SA, JO, EG, MA, UAE")
 
 
 
@@ -245,6 +243,11 @@ D1$related_queries %>%
 
 ```
 
+Which 
+
+```{r}
+
+```
 
 
 ###*By: Hannah Hess, Harvard College 2019*

@@ -24,46 +24,84 @@ in another page, I will look at graphs of - popular hours for porn consumption, 
 
  
 first - try to pull a cross country data frame from google then combine by country... although I could make life easy on myself and not pull more than two countries. 
-```{r, cache = TRUE, include = FALSE, echo = FALSE, message = FALSE, warning= FALSE}
-
-#create preliminary data set from gtrends - last 5 years. Although I would have ideally liked to gather data from more than 5 years - I'm limited in scope because the algorithm can't pull more data then that at a time
 
 
+```{r}
+
+#grabbing country level data in 
+#for a discussion of how I chose terms please consult microsoft spreadsheet
+
+#grabbing data for EG, SA, JO, MA 
+grab1 <- gtrends(keyword = c("sex"), geo = c("EG", "SA", "AE","JO", "MA"), time = "today+5-y")$interest_over_time
+grab2 <- gtrends(keyword = c("porn"), geo = c("EG", "SA", "AE","JO", "MA"), time = "today+5-y")$interest_over_time
 
 
-  #download data for sex and porn searches, this has to be done seperately or there's an overload issue
-D1 <- gtrends(keyword = c("sex"), geo = c("EG", "SA", "AE","JO", "MA"), time = "today+5-y")
-D2 <- gtrends(keyword = c("porn"), geo = c("EG", "SA", "AE","JO", "MA"), time = "today+5-y") 
- 
+#merging grabbed data and averaging porn search terms for grabs 1 and 2 
 
-  #combine data for sex and porn searches by merging D2 and D1
-#search values are stored in the interest over time tibble: here is some information from google on what that represents:
-# Numbers represent search interest relative to the highest point on the chart for the given region and time. A value of 100 is the peak popularity for the term. A value of 50 means that the term is half as popular. A score of 0 means there was not enough data for this term.
-
-D2_interest <- D2$interest_over_time %>% 
+grab2 <- grab2 %>% 
   select(hits, date, geo) %>% 
   transmute(hits.porn = hits, date = date, geo = geo)
   
 
-D1_interest <- D1$interest_over_time %>% 
+grab1 <- grab1 %>% 
   rename(hits.sex = hits) %>% 
-  left_join(D2_interest, by = c("date", "geo")) %>% 
+  left_join(grab2, by = c("date", "geo")) %>% 
   mutate(sum = (hits.sex + hits.porn)/2)
 
-#download world data to see if theres a world influence, the default is world data unless you change something
-world <- gtrends(keyword = "sex", time = "today+5-y")
-world2 <- gtrends(keyword = "porn", time = "today+5-y")
+rm(grab2)
+#we're left with grab 1! 
 
-world2 <- world2$interest_over_time %>% 
+#gabbing data for Iran, Afghanistan,
+#first term is same across countries
+grab3 <- gtrends(keyword = c("سکس"), geo = c("IR", "AF"), time = "today+5-y")$interest_over_time
+grab4 <- gtrends(keyword = c("sex"), geo = c("IR", "AF"), time = "today+5-y")$interest_over_time
+
+#merging grabbed data and averaging porn search terms for grabs 3 and 4
+#renaming the sks term to hits.porn for the purpose of binding rows
+grab3 <- grab3 %>% 
   select(hits, date, geo) %>% 
-  transmute(hits_porn = hits, date = date, geo = geo)
+  transmute(hits.porn = hits, date = date, geo = geo)
+  
 
-world_interest <- world$interest_over_time %>% 
-  rename(hits_sex = hits) %>% 
-  left_join(world2, by = c("date", "geo")) %>% 
-  mutate(sum = (hits_sex + hits_porn)/2)
+grab4 <- grab4 %>% 
+  rename(hits.sex = hits) %>% 
+  left_join(grab3, by = c("date", "geo")) %>% 
+  mutate(sum = (hits.sex + hits.porn)/2)
 
-#load the data set I made with dates of ramadan and major holidays
+rm(grab3)
+#we're left with grab 4!
+
+#grabbing data for Turkey, Pakistan
+grab5 <- gtrends(keyword = c("sex"), geo = c("PK", "TR", "TN", "LY"), time = "today+5-y")$interest_over_time
+grab6 <- gtrends(keyword = c("porn"), geo = c("PK", "TR", "TN", "LY"), time = "today+5-y")$interest_over_time
+
+grab5 <- grab5 %>% 
+  select(hits, date, geo) %>% 
+  transmute(hits.sex = hits, date = date, geo = geo)
+  
+
+grab6 <- grab6 %>% 
+  rename(hits.porn = hits) %>% 
+  left_join(grab5, by = c("date", "geo")) %>% 
+  mutate(sum = (hits.sex + hits.porn)/2)
+
+#we're left with grab 6
+rm(grab5)
+
+
+#bind rows from grabbed frames and label it D1_interest
+
+D1_interest <- bind_rows(grab1, grab4, grab6)
+
+
+
+```
+
+```{r, cache = TRUE, include = FALSE, echo = FALSE, message = FALSE, warning= FALSE}
+
+
+
+#load the data set I made with dates of ramadan and major holidays in order to create a variable indicating the presence of absence of ramadan
 
 ramadan_dates <- read_excel("ramadan_dates.xlsx")
 
@@ -82,16 +120,16 @@ According to the google trends website, scoring is on a relative scale where a v
 #related queries captures the following: 
 # Users searching for your term also searched for these queries. You can sort by the following metrics:
 # * Top - The most popular search queries. Scoring is on a relative scale where a value of 100 is the most commonly searched query, 50 is a query searched half as often as the most popular query, and so on.
-  
-D1$related_queries %>% 
-     select(subject, value) %>% 
-      slice(1:7) %>% 
-     kable(caption = "A Table of Related Queries", col.names = c("Correlation Score", "Value"))
-
-D2$related_queries %>% 
-  select(subject, value) %>% 
-  slice(1:7) %>% 
-  kable(caption = "A Table of Related Queries", col.names = c("Correlation Score", "Value"))
+#   
+# D1$related_queries %>% 
+#      select(subject, value) %>% 
+#       slice(1:7) %>% 
+#      kable(caption = "A Table of Related Queries", col.names = c("Correlation Score", "Value"))
+# 
+# D2$related_queries %>% 
+#   select(subject, value) %>% 
+#   slice(1:7) %>% 
+#   kable(caption = "A Table of Related Queries", col.names = c("Correlation Score", "Value"))
 
 
 
@@ -144,26 +182,21 @@ D1_interest$before_ram = 0
 if (D1_interest$in_ram == 0 & D1_interest$in_ram[i +1] == 1) D1_interest$before_ram[i] = 1 else D1_interest$before_ram[i] <- 0
 }
 
-#code variable for the week before ramadan to test whether 2 weeks before ramadan results in a change in values
+# Next I code a variable for 2 weeks before ramadan to test whether 2 weeks before ramadan results in a change in values
+# this might be useful for future but I'm placing this on the side for the present because I don't have room to discuss 
 
-D1_interest$before2_ram = 0 
-  for (i in 1:length(D1_interest$date) - 2) {
-if (D1_interest$in_ram == 0 & D1_interest$in_ram[i +2] == 1) D1_interest$before2_ram[i] = 1 else D1_interest$before2_ram[i] <- 0
-}
+# D1_interest$before2_ram = 0 
+#   for (i in 1:length(D1_interest$date) - 2) {
+# if (D1_interest$in_ram == 0 & D1_interest$in_ram[i +2] == 1) D1_interest$before2_ram[i] = 1 else D1_interest$before2_ram[i] <- 0
+# }
 
 
 #Thank you to Eric Wasserman Harvard 2019 Dunster House for helping me conceptualize how best to approach the coding problem above!
 
 
-#my next step in data manipulation before running a regression will be to add an additional variable for year so that I can control #for that. 
-#I also may go back up (before doing the ramadan stuff) and create a combined variable of porn searches called porn which is the #average of the high volume porn searches I've found 
 
 
 #repeat the ramadan iteration but this time for celebratory holidays
-
-#first I'll manipulate the ramadan_dates to code "celebratory holiday for Eid""
-
-
 #code variable for celebratory holidays, same method as ramadan 
 
 
@@ -188,22 +221,6 @@ for (i in 1:length(D1_interest$date)) {
 
 
 
-for (i in 1:length(D1_interest$date)) {
-  D1_interest[i, "days_before"] = 0 
-  for( j in c("date" , "date1", "date2" , "date3", "date4", "date5", "date6")){
-    if ( (D1_interest[i, j] >= ramadan_dates[ramadan_dates$year==   D1_interest[i, "year"]   &  ramadan_dates$Holiday == "Ramadan" , ]$start  ) & (D1_interest[i, j] <= ramadan_dates[ramadan_dates$year== D1_interest[i,"year"] & ramadan_dates$Holiday == "Ramadan" ,]$end  ) ) {
-        D1_interest[i, "days_in_ram"] =   D1_interest[i, "days_in_ram"]  + 1
-    }
-  }
-  
-  if (D1_interest[i, "days_in_ram"] > 2){
-      D1_interest[i,"in_ram"] = 1
-  } else{
-      D1_interest[i,"in_ram"] = 0
-  }
-  
-  
-}
 
 #I'm commenting out this section for coding in Eid al-ahda which occurs later in the calender year because I didn't find any significant relationship
 #however, in the future I could use the fact taht Eid al-ahda isn't signficiant  to better explain the Eid al-futr effect rule out the "holida"
@@ -219,7 +236,7 @@ for (i in 1:length(D1_interest$date)) {
 # }
  
 
-#write an rds file to graph the data 
+#write an rds file to save the data and graph in presentation
 write_rds(D1_interest, "D1_interest.rds")
 
 
@@ -232,6 +249,19 @@ write_rds(D1_interest, "D1_interest.rds")
 
 #repeat the above step but for WORLD data to test if there's a global impact
 
+
+#download world data to see if theres a world influence, the default is world data unless you change something
+world <- gtrends(keyword = "sex", time = "today+5-y")
+world2 <- gtrends(keyword = "porn", time = "today+5-y")
+
+world2 <- world2$interest_over_time %>% 
+  select(hits, date, geo) %>% 
+  transmute(hits_porn = hits, date = date, geo = geo)
+
+world_interest <- world$interest_over_time %>% 
+  rename(hits_sex = hits) %>% 
+  left_join(world2, by = c("date", "geo")) %>% 
+  mutate(sum = (hits_sex + hits_porn)/2)
 
 
 #I have a problem: the gtrends data set does not indicate the presence or absence of Ramadan. I have to pull that info from a different data set I have called ramadan_holiday
@@ -312,27 +342,19 @@ write_rds(world_interest, "world.rds")
 
 
 
-This table of descriptive statistics gives an overview of the data. As indicated, there are 1305 observations, 1 per week. Understanding values for sex and porn searches:
-According to the google trends website, numbers represent search interest relative to the highest point on the chart for the given region and time. A value of 100 is the peak popularity for the term. A value of 50 means that the term is half as popular. A score of 0 means there was not enough data for this term. 
 ```{r, include = FALSE, echo = FALSE, message = FALSE, warning= FALSE, results = "asis", cache = TRUE}
 #regression analysis
 
 
 #displaying summary statistics
 
-#I realize I don't like the display for this approach quite as much 
-# trends = gtrends(keyword = c("sex"), geo = c("EG", "SA", "AE","JO", "MA"), time = "today+5-y")
-# #select only interst over time 
-# time_trend=trends$interest_over_time %>% 
-#   select(-keyword, -gprop)
-# head(time_trend)
 
 
 
 #summary statistics table 
 des_table <- D1_interest %>% 
   select(-days_in_ram, -days_in_eid, -in_ram,- before2_ram, -in_eid, days_before, -category, -before_ram, days_before) %>% 
-  stargazer(type = "html", title="Descriptive statistics", digits=1, flip = TRUE, summary.logical= FALSE)
+  stargazer(type = "text", title="Descriptive statistics", digits=1, flip = TRUE, summary.logical= FALSE)
 
 
 
