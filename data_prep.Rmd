@@ -1,5 +1,5 @@
 ---
-title: "regression analysis"
+title: "data prep"
 author: "hannah hess"
 date: "November 29, 2018"
 output:
@@ -14,36 +14,30 @@ library(gtrendsR)
 library(tidyverse)
 library(knitr)
 library(readxl)
-#library(ls)
 
 
 ```
 
-This is a page for regression analysis, tables and charts
-in another page, I will look at graphs of - popular hours for porn consumption, changes in porn consumption over time
-
- 
-first - try to pull a cross country data frame from google then combine by country... although I could make life easy on myself and not pull more than two countries. 
+This is a page for where I download, compile and clean the data set that will be used in my rpubs. 
 
 
 ```{r}
-
 #grabbing country level data in 
 #for a discussion of how I chose terms please consult microsoft spreadsheet
 
 #grabbing data for EG, SA, JO, MA 
-grab1 <- gtrends(keyword = c("sex"), geo = c("EG", "SA", "AE","JO", "MA"), time = "today+5-y")$interest_over_time
-grab2 <- gtrends(keyword = c("porn"), geo = c("EG", "SA", "AE","JO", "MA"), time = "today+5-y")$interest_over_time
+grab1 <- gtrends(keyword = c("sex"), geo = c("EG", "SA", "AE","JO", "MA"), time = "today+5-y")
+grab2 <- gtrends(keyword = c("porn"), geo = c("EG", "SA", "AE","JO", "MA"), time = "today+5-y")
 
 
 #merging grabbed data and averaging porn search terms for grabs 1 and 2 
 
-grab2 <- grab2 %>% 
+grab2 <- grab2$interest_over_time %>% 
   select(hits, date, geo) %>% 
   transmute(hits.porn = hits, date = date, geo = geo)
   
 
-grab1 <- grab1 %>% 
+grab1 <- grab1$interest_over_time %>% 
   rename(hits.sex = hits) %>% 
   left_join(grab2, by = c("date", "geo")) %>% 
   mutate(sum = (hits.sex + hits.porn)/2)
@@ -53,17 +47,17 @@ rm(grab2)
 
 #gabbing data for Iran, Afghanistan,
 #first term is same across countries
-grab3 <- gtrends(keyword = c("سکس"), geo = c("IR", "AF"), time = "today+5-y")$interest_over_time
-grab4 <- gtrends(keyword = c("sex"), geo = c("IR", "AF"), time = "today+5-y")$interest_over_time
+grab4 <- gtrends(keyword = c("sex"), geo = c("IR", "AF"), time = "today+5-y")
+grab3 <- gtrends(keyword = c("سکس"), geo = c("IR", "AF"), time = "today+5-y")
 
 #merging grabbed data and averaging porn search terms for grabs 3 and 4
 #renaming the sks term to hits.porn for the purpose of binding rows
-grab3 <- grab3 %>% 
+grab3 <- grab3$interest_over_time %>% 
   select(hits, date, geo) %>% 
   transmute(hits.porn = hits, date = date, geo = geo)
   
 
-grab4 <- grab4 %>% 
+grab4 <- grab4$interest_over_time %>% 
   rename(hits.sex = hits) %>% 
   left_join(grab3, by = c("date", "geo")) %>% 
   mutate(sum = (hits.sex + hits.porn)/2)
@@ -72,15 +66,14 @@ rm(grab3)
 #we're left with grab 4!
 
 #grabbing data for Turkey, Pakistan
-grab5 <- gtrends(keyword = c("sex"), geo = c("PK", "TR", "TN", "LY"), time = "today+5-y")$interest_over_time
-grab6 <- gtrends(keyword = c("porn"), geo = c("PK", "TR", "TN", "LY"), time = "today+5-y")$interest_over_time
-
-grab5 <- grab5 %>% 
+grab5 <- gtrends(keyword = c("sex"), geo = c("PK", "TR", "TN", "LY"), time = "today+5-y")
+grab6 <- gtrends(keyword = c("porn"), geo = c("PK", "TR", "TN", "LY"), time = "today+5-y")
+grab5 <- grab5$interest_over_time %>% 
   select(hits, date, geo) %>% 
   transmute(hits.sex = hits, date = date, geo = geo)
   
 
-grab6 <- grab6 %>% 
+grab6 <- grab6$interest_over_time %>% 
   rename(hits.porn = hits) %>% 
   left_join(grab5, by = c("date", "geo")) %>% 
   mutate(sum = (hits.sex + hits.porn)/2)
@@ -98,7 +91,6 @@ D1_interest <- bind_rows(grab1, grab4, grab6)
 ```
 
 ```{r, cache = TRUE, include = FALSE, echo = FALSE, message = FALSE, warning= FALSE}
-
 
 
 #load the data set I made with dates of ramadan and major holidays in order to create a variable indicating the presence of absence of ramadan
@@ -342,91 +334,5 @@ write_rds(world_interest, "world.rds")
 
 
 
-```{r, include = FALSE, echo = FALSE, message = FALSE, warning= FALSE, results = "asis", cache = TRUE}
-#regression analysis
 
 
-#displaying summary statistics
-
-
-
-
-#summary statistics table 
-des_table <- D1_interest %>% 
-  select(-days_in_ram, -days_in_eid, -in_ram,- before2_ram, -in_eid, days_before, -category, -before_ram, days_before) %>% 
-  stargazer(type = "text", title="Descriptive statistics", digits=1, flip = TRUE, summary.logical= FALSE)
-
-
-
-
-
-```
-
-
-
-```{r, include = FALSE}
-#regression analysis - putting togethor the regressions
-
-
-
-
-#year and country controls dont make a difference in p values, sd, or coeff so I'm back to removing them -  because data set is already normalized for year and country
-ma <- lm(sum ~ days_in_ram, data=D1_interest)
-mb <- lm(sum ~ in_ram, data=D1_interest)
-m1 <- lm(sum ~ in_ram + in_eid, data=D1_interest)
-m2 <- lm(sum ~ days_in_ram + in_eid, data=D1_interest)
-m3 <- lm(sum ~ before_ram + in_ram + in_eid, data = D1_interest)
-m4 <- lm(sum ~ before2_ram + in_ram + in_eid, data = D1_interest)
-
-t1 <- lm(sum ~in_ram + geo, data = D1_interest)
-t2 <- lm(sum ~in_ram + year, data = D1_interest)
-t3 <- lm(sum ~in_ram + year + geo, data = D1_interest)
-
-#both year and country controls, switching between in_ram and days_in_ram
-# m5 <- lm(sum ~ in_ram + geo + year, data=D1_interest)
-# m6 <- lm(sum ~ days_in_ram + geo + year, data=D1_interest)
-
-
-
-
-
-# #global data -  sig impact detected
-# w1 <- lm(sum.porn ~ days_in_ram, data=world_interest)
-# w2 <- lm(sum.porn ~ in_ram, data=world_interest)
-# w3 <- lm(sum.porn ~ in_ram + in_eid, data=world_interest)
-# w4 <- lm(sum.porn ~ days_in_ram + in_eid, data=world_interest)
-
-```
-
-
-This regression table output demonstrates how Ramadan causes a sigificant decrease in sex and porn related searches in five muslim majority countries. It also indicates how the presence of a feasting holiday, Eid-al-Futr, which occurs in the week following Ramadan, results in an increase in related search values. The regression is run on sex and porn search values aggregated on a weekly basis. 
-
-"Days in Ramadan" is a continuous variable with values zero throuhg seven, designating the number of days in a a given week which include. "Presence of Ramadan" is a binary variable with values of one or zero based on the presence of absence of Ramadan.
-
-"Days in Eid" is a continuous variable which registers the presence of Eid al-Futr in a given week. Eid al-Futr is a three day feasting holiday which occurs immediately following Ramadan. 
-```{r, echo = FALSE, message = FALSE, warning= FALSE, results = "asis"}
-#use results = asis in the caption to make sure the table prints properly
-#final regression code
-regress1 <- stargazer(ma, mb, m1, m2, m3, m4, summary = FALSE, type = "html", title = "Changes in Sex and Porn Related Search Values Over Ramadan in 5 Muslim-Majority Countries", dep.var.labels = "Mean values for 'sex' and 'porn' hits by Week",  covariate.labels = c("Days in Ram", "Presence of Ram (0 or 1)", "Presence of Eid (0 or 1)"))
-
-
-
-
-```
-Reviewing world search values  - we should be shocked to see that indeed the cumulative Global value of sex and porn searches decresaes over Ramadan on a five year basis
-```{r, echo = FALSE, message = FALSE, warning= FALSE, results = "asis"}
-
-# stargazer(w1, w2, w3, w4, summary = FALSE, type = "html", title = "Changes in Sex and Porn Related Search Values Over Ramadan on a Global Scale", dep.var.labels = "Global Values for 'sex' and 'porn' hits by Week",  covariate.labels = c("Days in Ram", "Presence of Ram (0 or 1)", "Days in Eid"))
-# 
-
-
-```
-
-
-
-
-
-
-
-
-It's important to acknowledge that the population covered in my study are those people who access pornography searches not through a proxy site and it is likely that this population would differ somewhat from those who use a proxy site and are not found on google. thus my sample size is not representative of the population as a whole 
