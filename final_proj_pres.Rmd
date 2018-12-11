@@ -243,9 +243,14 @@ D1$related_queries %>%
 
 ```
 
-Which 
+Which Countries exhibit the most significant decrease? 
 
 ```{r}
+
+ggplot(D1_interest, aes(sum, geo)) +
+        geom_line(aes(group = geo)) +
+        geom_point(aes(color = days_in_ram))
+
 
 ```
 
