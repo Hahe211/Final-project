@@ -13,5 +13,5 @@ I aggregate data using the gtrends google search library in R.
 
 Please find a more detailed description of my research on RPubs http://rpubs.com/hahe211/446172
 
-
+Finally, to replicate my work, please check out the "Data Prep" rmd file which you can run (but not knit). Next, check out the final_proj_pes.rmd file which you can knit to replicate my rpubs document.
 
