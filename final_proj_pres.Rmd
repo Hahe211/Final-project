@@ -15,6 +15,9 @@ library(gtrendsR)
 library(tidyverse)
 library(knitr)
 library(readxl)
+library(foreign)
+library(car)
+
 
 ```
 
@@ -177,8 +180,8 @@ m3 <- lm(sum ~ before_ram + in_ram + in_eid + geo + year, data = data)
 
 #use results = asis in the caption to make sure the table prints properly
 #final regression code
- stargazer(ma, mb, m1, m3, summary = FALSE, type = "html", title = "Changes in Sex and Porn Related Search Values Over Ramadan", dep.var.labels = "Mean values for 'sex' and 'porn' hits by Week",covariate.labels = c("geoJO", "Week Before Ram (0 or 1)", "Presence of Ram (0 or 1)", "Presence of Eid (0 or 1)"), omit = c("geo", "year"), omit.labels = c("Country Control?", "Year Control?"), omit.yes.no = c("No", "Yes"))
-
+stargazer(ma, mb, m1, m3, summary = FALSE, type = "html", title = "Changes in Sex and Porn Related Search Values Over Ramadan", dep.var.labels = "Mean values for 'sex' and 'porn' hits by Week",covariate.labels = c( "Week Before Ram (0 or 1)", "Presence of Ram (0 or 1)", "Presence of Eid (0 or 1)"), omit = c("geo", "year"), omit.labels = c("Country Control?", "Year Control?"), omit.yes.no = c("No", "Yes"))
+#the control labels are incorrectly displayed above. I'm not sure why? 
 ```
 
 
@@ -379,10 +382,8 @@ Here is another graph to think about the variation between countries - some coun
 
 ```{r, message=FALSE, echo=FALSE, warning = FALSE}
 #some graphs by country to show individual level decrease
-library(foreign)
-library(car)
 
-panel <- read_rds("data.rds")
+panel <- data
 
 
 #print nice graph showing dips over Ramadan across countries by date in 5 small graphs
