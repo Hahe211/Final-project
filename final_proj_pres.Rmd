@@ -16,7 +16,7 @@ library(tidyverse)
 library(knitr)
 library(readxl)
 library(DT)
-
+library(plyr)
 ```
 
 ## <span style="color:red">Ramadan Causes a Decrease in Sex and Porn Related Searches in Five Muslim Majority Countries </span>
@@ -41,15 +41,19 @@ This study shows a strong negative correlation between the presence of Ramadan a
 #I tried grabbing from a longer time frame but unfortunately in that case the data could only be downloaded on a month level. The right approach for the future would probably be to download twice in 5 year incremements and then bind_cols
 
 
-graph <- read_rds("D1_interest.rds") %>% 
-select(-keyword, -date1, -date2, -date3, -date4, -date5, -date6) 
+data <- read_rds("data.rds") %>% 
+select(-keyword, -date1, -date2, -date3, -date4, -date5, -date6) %>% 
+#I realized late that the data pulled on 2013 does not include ramadan, since the google code for the last 5 years counts backward from today*12/11/18. As a result, I'm filtering up for only 2014 and above.
+#in the future, I would add more years but for now this will suffice
+  filter(year > 2013)
 
-graph1 <- graph %>%
+
+graph1 <- data %>%
   mutate(hits = hits.porn,
          category = "porn") %>%
   select(hits, category, date, in_ram)
 
-graph2 <- graph %>%
+graph2 <- data %>%
   mutate(hits = hits.sex,
          category = "sex") %>%
 select(hits, category, date, in_ram)
@@ -62,10 +66,13 @@ ramadan_dates <- read_excel("ramadan_dates.xlsx") %>%
 filter(year >= 2014, Holiday == "Ramadan")
 
 
+
+
+
 #full graph of all the countries in the study (the graph is very compact so I also make another one with only 2 countries so you can see the relationship more easily) #the code below is a graph with grey areas indicating ramadan.
 #it also might like better with color filled underneath - for future experiment
 
-ggplot() + geom_line(data = graph3, aes(x = date, y = hits, colour = category))+ geom_rect(data= ramadan_dates, aes(xmin=start, xmax=end, ymin=-Inf, ymax=+Inf), alpha = 0.3) + labs(title="'Porn' and 'Sex' Search Values over the Past 5 Years", subtitle = "Valyes Decrease over Ramadan - Shaded Grey", x ="Weeks from 2013-2018", y = "Hit Values", caption = "Data Drawn from SA, JO, EG, MA, UAE")
+ggplot() + geom_line(data = data, aes(x = date, y = sum))+ geom_rect(data= ramadan_dates, aes(xmin=start, xmax=end, ymin=-Inf, ymax=+Inf), alpha = 0.3) + labs(title="'Porn' and 'Sex' Search Values over the Past 5 Years", subtitle = "Values Decrease over Ramadan - Shaded Grey", x ="Weeks from 2013-2018", y = "Hit Values", caption = "Data Drawn from SA, JO, EG, MA, UAE")
 
 
 
@@ -99,8 +106,8 @@ There are 1305 observations, 1 per week from 2013 to 2018. Data is collected fro
 #using the data frame "graph" which represents the D1_interest data frame from 'final_proj_code1'
 #results set to "asis" in order to use html in stargazer
 
- graph %>% 
-  select(-days_in_ram, -days_in_eid, -in_ram,- before2_ram, -in_eid, -days_before, -category, -before_ram, days_before) %>% 
+ data %>% 
+  select(-days_in_ram, -days_in_eid, -in_ram, -in_eid, -category, -before_ram) %>%
   stargazer(type = "html", title="Summary statistics", digits=1, flip = TRUE, summary.logical= FALSE)
 ```
 
@@ -122,10 +129,10 @@ Controlling for country and year, Ramadan causes a sigificant decrease in sex an
 ```{r, echo = FALSE, message = FALSE, warning= FALSE, results = "asis"}
 #regression analysis - putting togethor the regressions
 #year and country controls dont make a difference in p values, sd, or coeff so I'm back to removing them -  because data set is already normalized for year and country
-ma <- lm(sum ~ days_in_ram, data=graph)
-mb <- lm(sum ~ in_ram, data=graph)
-m1 <- lm(sum ~ in_ram + in_eid, data=graph)
-m3 <- lm(sum ~ before_ram + in_ram + in_eid, data = graph)
+ma <- lm(sum ~ days_in_ram, data=data)
+mb <- lm(sum ~ in_ram, data=data)
+m1 <- lm(sum ~ in_ram + in_eid, data=data)
+m3 <- lm(sum ~ before_ram + in_ram + in_eid, data = data)
 #this is the regression of2 weeks before ramadan, I'm commenting out for this first study, but it is noteworthy since it changes the results
 #m4 <- lm(sum ~ before2_ram + before_ram + in_ram + in_eid, data = graph)
 
@@ -243,14 +250,122 @@ D1$related_queries %>%
 
 ```
 
+```{r, include = FALSE, warning= FALSE}
+
+#code to prep for graphs
+#code a categorical variable for ramadan/not ramadan
+
+data$scode <- mapvalues(data$in_ram, from = c("0", "1"), to = c("Not Ramadan", "Ramadan"))
+
+#arrange by country with highest porn viewing
+geo_lev <- data %>%
+        group_by(geo) %>%
+        summarise(sum = median(sum, na.rm = TRUE)) %>%
+        arrange(sum)  %>%
+        mutate(geo = factor(geo, levels = .$geo))
+
+
+#then organize by ramadan vs not ramadan 
+#I divide 
+geo_lev_ram <-  data %>%
+        group_by(geo, scode) %>%
+        summarise(sum = median(sum, na.rm = TRUE)) %>%
+        ungroup() %>% 
+        mutate(geo = factor(geo, levels = geo_lev$geo)) 
+     
+
+#lolly plot, total sum of porn viewing Ramadan vs not ramadan cumulative sums over 4 years    
+#maybe I should divide values of sum by total # of weeks before displaying???
+ggplot(geo_lev_ram, aes(sum, geo)) +   #include label = year if wish to add label to aes
+        geom_line(aes(group = geo)) +
+        geom_point(aes(color = scode))
+         #geom_text(aes(color = scode), check_overlap = TRUE, size = 4, angle = 45)
+
+
+#try another graph where I lable the percent increase
+big_diff <- geo_lev_ram %>% 
+        spread(scode, sum) %>% 
+        group_by(geo) %>% 
+        mutate(Max = max(Ramadan, `Not Ramadan`),
+               Min = min(Ramadan, `Not Ramadan`),
+               Diff = Max / Min - 1) %>% 
+           arrange(desc(Diff)) %>%
+             filter(Diff > .2)
+
+
+#create labal frame
+right_label <- geo_lev_ram %>%
+        group_by(geo) %>%
+        arrange(desc(sum)) %>%
+        top_n(1)
+
+left_label <- geo_lev_ram %>%
+        group_by(geo) %>%
+        arrange(desc(sum)) %>%
+        slice(2)
+
+# filter the label data frames to only include those countries where the
+# difference exceeds 20%
+right_label <- filter(right_label, geo %in% big_diff$geo)
+left_label <- filter(left_label, geo %in% big_diff$geo)
+
+highlight <- filter(geo_lev_ram, geo %in% big_diff$geo)
+```
+
 Which Countries exhibit the most significant decrease? 
 
-```{r}
+```{r, message=FALSE, echo=FALSE, warning = FALSE}
 
-ggplot(D1_interest, aes(sum, geo)) +
-        geom_line(aes(group = geo)) +
-        geom_point(aes(color = days_in_ram))
 
+
+#create ggplot which highlights the countries with more than a 20% change over ramadan
+ggplot(geo_lev_ram, aes(sum, geo)) +
+        geom_line(aes(group = geo), alpha = .3) +
+        geom_point(aes(color = scode), size = 1.5, alpha = .3) +
+        geom_line(data = highlight, aes(group = geo)) +
+        geom_point(data = highlight, aes(color = scode), size = 2) +
+        geom_text(data = right_label, aes(color = scode, label = round(sum, 0)),
+                  size = 3, hjust = -.5) +
+        geom_text(data = left_label, aes(color = scode, label = round(sum, 0)),
+                  size = 3, hjust = 1.5) +
+        scale_x_continuous()
+
+
+
+plot_label <- big_diff %>%
+        select(geo, sum = Max, Diff) %>%
+        right_join(right_label)
+
+#add signs indicating percent decrease 
+p <- ggplot(geo_lev_ram, aes(sum, geo)) +
+        geom_line(aes(group = geo), alpha = .3) +
+        geom_point(aes(color = scode), size = 1.5, alpha = .3) +
+        geom_line(data = highlight, aes(group = geo)) +
+        geom_point(data = highlight, aes(color = scode), size = 2) +
+        geom_text(data = plot_label, aes(label = paste0("-", scales::percent(round(Diff, 2)))),
+                  size = 3, hjust = -.5)
+
+#add labels to plot and also a nice theme
+
+p + #scale_color_discrete(labels = c("Not Ramadan", "Ramadan")) +
+       # scale_y_discrete(expand = c(.02, 0)) +
+        labs(title = "Changes in Median Weekly Porn Search Values over Ramadan",
+             subtitle = "8 Out of the 11 Muslim Countries studied have a decrease in porn consumption of over 20% in Ramadan weeks")
++
+         xlab("Median Weekly Porn Consumption")+
+        theme_minimal() +
+        theme(axis.title = element_blank(),
+              panel.grid.major.x = element_blank(),
+              panel.grid.minor = element_blank(),
+              legend.title = element_blank(),
+              legend.justification = c(0, 1), 
+              legend.position = c(.1, 1.075),
+              legend.background = element_blank(),
+              legend.direction="horizontal",
+              text = element_text(family = "Georgia"),
+              plot.title = element_text(size = 20, margin = margin(b = 10)),
+              plot.subtitle = element_text(size = 10, color = "darkslategrey", margin = margin(b = 25)),
+              plot.caption = element_text(size = 8, margin = margin(t = 10), color = "grey70", hjust = 0))
 
 ```
 

@@ -19,6 +19,8 @@ library(readxl)
 ```
 
 This is a page for where I download, compile and clean the data set that will be used in my rpubs. 
+Please run, rather than knit the document if you wish to recompile the data. Unfortunately, knitting hasn't been working for me with the gtrends library!
+
 
 
 ```{r, include=FALSE}
@@ -31,7 +33,6 @@ grab2 <- gtrends(keyword = c("porn"), geo = c("EG", "SA", "AE","JO", "MA"), time
 
 
 #merging grabbed data and averaging porn search terms for grabs 1 and 2 
-
 grab2 <- grab2$interest_over_time %>% 
   select(hits, date, geo) %>% 
   transmute(hits.porn = hits, date = date, geo = geo)
@@ -52,14 +53,14 @@ grab3 <- gtrends(keyword = c("سکس"), geo = c("IR", "AF"), time = "today+5-y")
 
 #merging grabbed data and averaging porn search terms for grabs 3 and 4
 #renaming the sks term to hits.porn for the purpose of binding rows
-grab3 <- grab3$interest_over_time %>% 
-  select(hits, date, geo) %>% 
+grab3 <- grab3$interest_over_time %>%
+  select(hits, date, geo) %>%
   transmute(hits.porn = hits, date = date, geo = geo)
-  
 
-grab4 <- grab4$interest_over_time %>% 
-  rename(hits.sex = hits) %>% 
-  left_join(grab3, by = c("date", "geo")) %>% 
+
+grab4 <- grab4$interest_over_time %>%
+  rename(hits.sex = hits) %>%
+  left_join(grab3, by = c("date", "geo")) %>%
   mutate(sum = (hits.sex + hits.porn)/2)
 
 rm(grab3)
@@ -68,14 +69,14 @@ rm(grab3)
 #grabbing data for Turkey, Pakistan
 grab5 <- gtrends(keyword = c("sex"), geo = c("PK", "TR", "TN", "LY"), time = "today+5-y")
 grab6 <- gtrends(keyword = c("porn"), geo = c("PK", "TR", "TN", "LY"), time = "today+5-y")
-grab5 <- grab5$interest_over_time %>% 
-  select(hits, date, geo) %>% 
+grab5 <- grab5$interest_over_time %>%
+  select(hits, date, geo) %>%
   transmute(hits.sex = hits, date = date, geo = geo)
-  
 
-grab6 <- grab6$interest_over_time %>% 
-  rename(hits.porn = hits) %>% 
-  left_join(grab5, by = c("date", "geo")) %>% 
+
+grab6 <- grab6$interest_over_time %>%
+  rename(hits.porn = hits) %>%
+  left_join(grab5, by = c("date", "geo")) %>%
   mutate(sum = (hits.sex + hits.porn)/2)
 
 #we're left with grab 6
@@ -127,6 +128,7 @@ According to the google trends website, scoring is on a relative scale where a v
 
 ```
 
+In this section I employ a data set of Holidays to code the dates of ramadan and other holidays into D1_interest
 
 ```{r, cache = TRUE, include = FALSE, echo = FALSE, message = FALSE, warning= FALSE}
 
@@ -212,8 +214,6 @@ for (i in 1:length(D1_interest$date)) {
 
 
 
-
-
 #I'm commenting out this section for coding in Eid al-ahda which occurs later in the calender year because I didn't find any significant relationship
 #however, in the future I could use the fact taht Eid al-ahda isn't signficiant  to better explain the Eid al-futr effect rule out the "holida"
 # for (i in 1:length(D1_interest$date)) {
@@ -228,8 +228,10 @@ for (i in 1:length(D1_interest$date)) {
 # }
  
 
+
+
 #write an rds file to save the data and graph in presentation
-write_rds(D1_interest, "D1_interest.rds")
+write_rds(D1_interest, "data.rds")
 
 
 ```
