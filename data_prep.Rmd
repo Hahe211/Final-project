@@ -239,7 +239,7 @@ write_rds(D1_interest, "data.rds")
 
 
 
-```{r, cache = TRUE, include = FALSE, echo = FALSE, message = FALSE, warning= FALSE}
+```{r, cache = TRUE, include = FALSE}
 
 #repeat the above step but for WORLD data to test if there's a global impact
 
@@ -331,6 +331,28 @@ for (i in 1:length(world_interest$date)) {
 
 #write rds to use in second portion 
 write_rds(world_interest, "world.rds")
+
+```
+
+
+
+```{r, include=FALSE}
+#unused code - an interactive chart to show related queries and explore the search terms I was using
+
+
+
+# #justify that I'm picking the right terms (warning explicit content) - since I'm focused with change over time - its not critical that I isolate all the relevant terms but just that they indeed be pornography serach terms  and that they capture a high level of the variation over time
+# #related queries captures the following: 
+# # Users searching for your term also searched for these queries. You can sort by the following metrics:
+# 
+# D1 <- gtrends(keyword = c("sex", "porn"), geo = c("EG", "AE","JO", "MA"), time = "today 3-m")
+# 
+#   
+# D1$related_queries %>% 
+#      select(subject, value, geo, keyword) %>% 
+#     datatable(caption = "A Table of Related Queries", rownames = FALSE, colnames = c("Correlation Score", "Related Query", "Country", "Sex/Porn"))
+
+
 
 ```
 

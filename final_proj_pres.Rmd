@@ -20,15 +20,42 @@ library(readxl)
 
 ## <span style="color:red">Ramadan Causes a Decrease in Sex and Porn Related Searches in Five Muslim Majority Countries </span>
 
-  Pornography and Ramadan may seem unrelated. However, these terms are linked in google search values. Online religeous Q & A forums feature many questions from devotees about whether watching pornography material nullifies the act of fasting. Muslims who ordinarily flout the pornography prohibition appear to be cleaning up their act for the Ramadan month and reducing their pornography consumption and engagement with other explicit web based content. 
+  Pornography and Ramadan may seem unrelated. However, these terms are very much linked both in real life and in Google searches. While pornography is always considered illicit in Islam, this is even more true over the month of Ramadan.  The message of Ramadan emphasizes pious behaviors and abtaining from physical pleasures: specifically sex, food and water during the daylight hours. Many musilms increase their observance over this time-period through fasting and attending mosque. 
   
+  In light of this, Muslims who ordinarily flout the pornography prohibition might consider cleaning up their act for the Ramadan month.  All the while, many Muslim-majority countries are fighting a losing battle against rising consumption of pornography in their countries.  Many countries have attempted and failed to enact internet porn bans. 
+  
+###So, what is the impact of Ramadan on Pornography consumption in Muslim-majority countries? There is plausible reason to assume a negative or positive impact.    
+
+On the one hand, Pornography might be thought to decrease over Ramadan as individuals increase in their religious observance and become busy with family holiday celebrations. On the other hand, given that Ramadan is often marked by shorter work or school day in Muslim countries, this might mean individuals have more free time to search for pornography. 
+
+There has been previous research 
+
+Based on previous research, high levels of Islamic observance in a country may be causally linked to pornography consumption. Research conducted on a state level in the US suggets that higher percentages of practicing Christians in a state predict higher frequencies of porn searching. (Andrew L. Whitehead & Samuel L. Perry (2018)) On the other had, another study showed that while religious areas purcahsed the same cumulative
+in regions where more people report regularly attending religious services (per National Election Studies 2004), overall subscription rates are not statistically significantly different from subscriptions elsewhere However, in such regions, a statistically significantly smaller proportion of subscriptions begin on Sundays
+  Edelman, B. (2009). 
+
+  
+  
+
+
+![](Ramadans-Night-Prayers.jpg) 
+
+
+
+
+###Why is this importnat?
   Examining differences in pornography consumption during Ramadan offers a fruitful metric for gauging soft measures of religious observance. While obviously, many Muslims will continue to consume pornography over the Holiday, flouting the prohibition, others will not. 
   
 Ramadan consists of one month in the Islamic lunar calendar lasting about thirty-one days on average, which emphasizes rituals encouraging greater control over physical needs, specifically sex, food and water during the daylight hours. After sunset the fast concludes with prayers at the mosque and then family gathers for a festive breakfast meal, iftar which can last late into the night. 
 
-![](ramadan_photo.jpg) 
 
-###Findings
+###Testing the question with Data:
+
+#####My data set:
+
+
+
+####my results
  
 This study shows a strong negative correlation between the presence of Ramadan and porn searching in majority Muslim countries. The presence of Ramadan in a Muslim country causes a decrease in the frequency of sex and porn related searches. Moreover, there is a ‘rebound effect’ of a 10% increase on Eid al-Futr the celebratory holiday following Ramadan.
 
@@ -223,25 +250,6 @@ hourly2$interest_over_time %>%
   
 
 
-
-
-```{r, echo = FALSE, message = FALSE, warning= FALSE, cache = TRUE}
-
-
-# #justify that I'm picking the right terms (warning explicit content) - since I'm focused with change over time - its not critical that I isolate all the relevant terms but just that they indeed be pornography serach terms  and that they capture a high level of the variation over time
-# #related queries captures the following: 
-# # Users searching for your term also searched for these queries. You can sort by the following metrics:
-# 
-# D1 <- gtrends(keyword = c("sex", "porn"), geo = c("EG", "AE","JO", "MA"), time = "today 3-m")
-# 
-#   
-# D1$related_queries %>% 
-#      select(subject, value, geo, keyword) %>% 
-#     datatable(caption = "A Table of Related Queries", rownames = FALSE, colnames = c("Correlation Score", "Related Query", "Country", "Sex/Porn"))
-
-
-
-```
 
 ```{r, include = FALSE, warning= FALSE}
 
