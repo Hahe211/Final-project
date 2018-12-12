@@ -15,8 +15,7 @@ library(gtrendsR)
 library(tidyverse)
 library(knitr)
 library(readxl)
-library(DT)
-library(plyr)
+
 ```
 
 ## <span style="color:red">Ramadan Causes a Decrease in Sex and Porn Related Searches in Five Muslim Majority Countries </span>
@@ -223,28 +222,22 @@ hourly2$interest_over_time %>%
 ```
   
 
------------------
 
 
-###Did I pick the right search terms to capture change in sex and pornography interests over time? Here are some related queries - I'll let you decide. 
-
-####<span style="color:red">Warning: Explicit Content </span>
-
-*Top - The most popular search queries. Scoring is on a relative scale where a value of 100 is the most commonly searched query, 50 is a query searched half as often as the most popular query, and so on*
 
 ```{r, echo = FALSE, message = FALSE, warning= FALSE, cache = TRUE}
 
 
-#justify that I'm picking the right terms (warning explicit content) - since I'm focused with change over time - its not critical that I isolate all the relevant terms but just that they indeed be pornography serach terms  and that they capture a high level of the variation over time
-#related queries captures the following: 
-# Users searching for your term also searched for these queries. You can sort by the following metrics:
-
-D1 <- gtrends(keyword = c("sex", "porn"), geo = c("EG", "AE","JO", "MA"), time = "today 3-m")
-
-  
-D1$related_queries %>% 
-     select(subject, value, geo, keyword) %>% 
-    datatable(caption = "A Table of Related Queries", rownames = FALSE, colnames = c("Correlation Score", "Related Query", "Country", "Sex/Porn"))
+# #justify that I'm picking the right terms (warning explicit content) - since I'm focused with change over time - its not critical that I isolate all the relevant terms but just that they indeed be pornography serach terms  and that they capture a high level of the variation over time
+# #related queries captures the following: 
+# # Users searching for your term also searched for these queries. You can sort by the following metrics:
+# 
+# D1 <- gtrends(keyword = c("sex", "porn"), geo = c("EG", "AE","JO", "MA"), time = "today 3-m")
+# 
+#   
+# D1$related_queries %>% 
+#      select(subject, value, geo, keyword) %>% 
+#     datatable(caption = "A Table of Related Queries", rownames = FALSE, colnames = c("Correlation Score", "Related Query", "Country", "Sex/Porn"))
 
 
 
@@ -253,105 +246,121 @@ D1$related_queries %>%
 ```{r, include = FALSE, warning= FALSE}
 
 #code to prep for graphs
-#code a categorical variable for ramadan/not ramadan
+#code a categorical variable for ramadan/not ramadan/eid after Ramadan
+data$scode <- NA
+data$scode[data$in_ram==0] <- "Not Ramadan"
+data$scode[data$in_ram==1] <- "Ramadan"
+data$scode[data$in_eid== 1] <- "Eid_after_Ramadan"
 
-data$scode <- mapvalues(data$in_ram, from = c("0", "1"), to = c("Not Ramadan", "Ramadan"))
 
 #arrange by country with highest porn viewing
-geo_lev <- data %>%
-        group_by(geo) %>%
-        summarise(sum = median(sum, na.rm = TRUE)) %>%
-        arrange(sum)  %>%
-        mutate(geo = factor(geo, levels = .$geo))
+geo_sum <-   data %>%
+  group_by(geo)%>%
+  summarise(sum = median(sum, na.rm = TRUE))%>%
+        arrange(sum) %>% 
+          mutate(geo = factor(geo, levels = .$geo))
+
+
 
 
 #then organize by ramadan vs not ramadan 
 #I divide 
 geo_lev_ram <-  data %>%
         group_by(geo, scode) %>%
+  #find the median weekly value in Ramadan/not ramadan by Geo, I choose median bc more robust to outliers
         summarise(sum = median(sum, na.rm = TRUE)) %>%
         ungroup() %>% 
-        mutate(geo = factor(geo, levels = geo_lev$geo)) 
+        mutate(geo = factor(geo, levels = geo_sum$geo)) 
      
 
-#lolly plot, total sum of porn viewing Ramadan vs not ramadan cumulative sums over 4 years    
-#maybe I should divide values of sum by total # of weeks before displaying???
-ggplot(geo_lev_ram, aes(sum, geo)) +   #include label = year if wish to add label to aes
+#lolly plot, weekly median porn viewing Ramadan vs not ramadan 
+ggplot(geo_lev_ram, aes(sum, geo)) +   #include label = year if wish to add label to aes with year marks, would also need to adjust geo_sum above
         geom_line(aes(group = geo)) +
         geom_point(aes(color = scode))
-         #geom_text(aes(color = scode), check_overlap = TRUE, size = 4, angle = 45)
+       
 
 
-#try another graph where I lable the percent increase
-big_diff <- geo_lev_ram %>% 
-        spread(scode, sum) %>% 
-        group_by(geo) %>% 
-        mutate(Max = max(Ramadan, `Not Ramadan`),
-               Min = min(Ramadan, `Not Ramadan`),
-               Diff = Max / Min - 1) %>% 
-           arrange(desc(Diff)) %>%
-             filter(Diff > .2)
 
-
-#create labal frame
-right_label <- geo_lev_ram %>%
-        group_by(geo) %>%
-        arrange(desc(sum)) %>%
-        top_n(1)
-
-left_label <- geo_lev_ram %>%
-        group_by(geo) %>%
-        arrange(desc(sum)) %>%
-        slice(2)
-
-# filter the label data frames to only include those countries where the
-# difference exceeds 20%
-right_label <- filter(right_label, geo %in% big_diff$geo)
-left_label <- filter(left_label, geo %in% big_diff$geo)
-
-highlight <- filter(geo_lev_ram, geo %in% big_diff$geo)
 ```
 
 Which Countries exhibit the most significant decrease? 
 
 ```{r, message=FALSE, echo=FALSE, warning = FALSE}
 
+#try another graph where I lable the percent increase
+#create frame with the values of the percent change
+big_diff <- geo_lev_ram %>% 
+        spread(scode, sum) %>% 
+        group_by(geo) %>% 
+     #calculate list of percent change btwn ram and not ram
+        mutate(Diff = (Ramadan - `Not Ramadan`)/`Not Ramadan`)
+
+   
+
+#create labal frame
+after_ram_label <- geo_lev_ram %>%
+        group_by(geo) %>%
+        arrange(desc(sum)) %>%
+        top_n(1)
+
+not_ram_label <- geo_lev_ram %>%
+        group_by(geo) %>%
+        arrange(desc(sum)) %>%
+        slice(2)
+
+ram_label <-  geo_lev_ram %>%
+        group_by(geo) %>%
+        arrange(desc(sum)) %>%
+        slice(3)
+
+# filter the label data frames to only include those countries where the
+# difference exceeds 20%
+# right_label <- filter(right_label, geo %in% big_diff$geo)
+# left_label <- filter(left_label, geo %in% big_diff$geo)
+
+highlight <- filter(geo_lev_ram, geo %in% big_diff$geo)
+
+#create ggplot which has values labels for the 3 s-code points
+#I am muting this code because I would rather have the second graph showing percent changes
+ # ggplot(geo_lev_ram, aes(sum, geo)) +
+ #        geom_line(aes(group = geo), alpha = .3) +
+ #        geom_point(aes(color = scode), size = 1.5, alpha = .3) +
+ #        geom_line(data = highlight, aes(group = geo)) +
+ #        geom_point(data = highlight, aes(color = scode), size = 2) +
+ #        geom_text(data = after_ram_label, aes(color = scode, label = round(sum, 0)),
+ #                  size = 3, hjust = -.5, check_overlap = TRUE, size = 4, angle = 45) +
+ #        geom_text(data = not_ram_label, aes(color = scode, label = round(sum, 0)),
+ #                  size = 3, hjust = 1.5, check_overlap = TRUE, size = 4, angle = 45) +
+ #        geom_text(data = ram_label, aes(color = scode, label = round(sum, 0)),
+ #                  size = 3, hjust = 1.5, check_overlap = TRUE, size = 4, angle = 45) +
+ #        scale_x_continuous()
+
+     
 
 
-#create ggplot which highlights the countries with more than a 20% change over ramadan
-ggplot(geo_lev_ram, aes(sum, geo)) +
-        geom_line(aes(group = geo), alpha = .3) +
-        geom_point(aes(color = scode), size = 1.5, alpha = .3) +
-        geom_line(data = highlight, aes(group = geo)) +
-        geom_point(data = highlight, aes(color = scode), size = 2) +
-        geom_text(data = right_label, aes(color = scode, label = round(sum, 0)),
-                  size = 3, hjust = -.5) +
-        geom_text(data = left_label, aes(color = scode, label = round(sum, 0)),
-                  size = 3, hjust = 1.5) +
-        scale_x_continuous()
 
-
-
+# create a new label data frame for percent changes
 plot_label <- big_diff %>%
-        select(geo, sum = Max, Diff) %>%
-        right_join(right_label)
-
-#add signs indicating percent decrease 
-p <- ggplot(geo_lev_ram, aes(sum, geo)) +
+        select(geo, sum = Ramadan, Diff) 
+#create a graph with percent change labels instead of point labels
+ p<- ggplot(geo_lev_ram, aes(sum, geo)) +
         geom_line(aes(group = geo), alpha = .3) +
         geom_point(aes(color = scode), size = 1.5, alpha = .3) +
         geom_line(data = highlight, aes(group = geo)) +
         geom_point(data = highlight, aes(color = scode), size = 2) +
-        geom_text(data = plot_label, aes(label = paste0("-", scales::percent(round(Diff, 2)))),
-                  size = 3, hjust = -.5)
+        geom_text(data = plot_label, aes(label = paste0(scales::percent(round(Diff, 2)))),
+                  size = 3, hjust = .05, vjust = -.8) 
+   
 
-#add labels to plot and also a nice theme
 
-p + #scale_color_discrete(labels = c("Not Ramadan", "Ramadan")) +
-       # scale_y_discrete(expand = c(.02, 0)) +
+
+
+#add titles to plot and also a nice theme
+
+p + scale_color_discrete(labels = c("After Ramadan", "Ramadan", "Rest of Year")) +
+        #scale_y_discrete(expand = c(.02, 0)) +
         labs(title = "Changes in Median Weekly Porn Search Values over Ramadan",
-             subtitle = "8 Out of the 11 Muslim Countries studied have a decrease in porn consumption of over 20% in Ramadan weeks")
-+
+             subtitle = "8 Out of the 11 Muslim Countries studied have a decrease in porn consumption of over 20% in Ramadan weeks")+
          xlab("Median Weekly Porn Consumption")+
         theme_minimal() +
         theme(axis.title = element_blank(),
@@ -363,10 +372,12 @@ p + #scale_color_discrete(labels = c("Not Ramadan", "Ramadan")) +
               legend.background = element_blank(),
               legend.direction="horizontal",
               text = element_text(family = "Georgia"),
-              plot.title = element_text(size = 20, margin = margin(b = 10)),
-              plot.subtitle = element_text(size = 10, color = "darkslategrey", margin = margin(b = 25)),
-              plot.caption = element_text(size = 8, margin = margin(t = 10), color = "grey70", hjust = 0))
+              #plot.title = element_text(size = 20, margin = margin(b = 10)),
+              plot.subtitle = element_text(size = 9, color = "darkslategrey", margin = margin(b = 25)),
+              plot.caption = element_text(size = 8, margin = margin(t = 10), color = "grey70", hjust = .5))+
+              scale_y_discrete(labels = c("Iran", "Libya", "Turkey", "Saudi Arabia", "Tunisia,", "Jordan", "Egypt", "Afghanistan", "Malaysia", "UAE", "Pakistan"))
 
+#This was a great resource I was designing my plot! http://uc-r.github.io/cleveland-dot-plots 
 ```
 
 
