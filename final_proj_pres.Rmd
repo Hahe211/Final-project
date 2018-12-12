@@ -18,23 +18,22 @@ library(readxl)
 
 ```
 
-## <span style="color:red">Ramadan Causes a Decrease in Sex and Porn Related Searches in Five Muslim Majority Countries </span>
+## <span style="color:red">A Country Level Analysis of the Impact of Ramadan on Pornography Googling </span>
 
-  Pornography and Ramadan may seem unrelated. However, these terms are very much linked both in real life and in Google searches. While pornography is always considered illicit in Islam, this is even more true over the month of Ramadan.  The message of Ramadan emphasizes pious behaviors and abtaining from physical pleasures: specifically sex, food and water during the daylight hours. Many musilms increase their observance over this time-period through fasting and attending mosque. 
+  What is the impact of Ramadan on Pornography consumption in Muslim-majority countries? Pornography and Ramadan may seem unrelated. However, these terms are very much linked both in real life and in Google searches. While pornography is always considered illicit in Islam, this is even more true over the month of Ramadan.  The message of Ramadan emphasizes pious behaviors and abstaining from physical pleasures: specifically sex, food and water during the daylight hours. Many musilms increase their observance over this time-period through fasting and attending mosque. 
   
-  In light of this, Muslims who ordinarily flout the pornography prohibition might consider cleaning up their act for the Ramadan month.  All the while, many Muslim-majority countries are fighting a losing battle against rising consumption of pornography in their countries.  Many countries have attempted and failed to enact internet porn bans. 
+  In light of this, Muslims who ordinarily flout the pornography prohibition might consider cleaning up their act for the Ramadan month.  All the while, many Muslim-majority countries are [fighting a losing battle](https://www.salon.com/2015/01/15/why_porn_is_exploding_in_the_middle_east_partner/) against rising consumption of pornography in their countries, with many governments attempting and failing to enforce internet porn bans. 
   
-###So, what is the impact of Ramadan on Pornography consumption in Muslim-majority countries? There is plausible reason to assume a negative or positive impact.    
+#### There is plausible reason to assume a negative or positive impact.    
 
-On the one hand, Pornography might be thought to decrease over Ramadan as individuals increase in their religious observance and become busy with family holiday celebrations. On the other hand, given that Ramadan is often marked by shorter work or school day in Muslim countries, this might mean individuals have more free time to search for pornography. 
+On the one hand, Pornography consumption might be thought to decrease over Ramadan as individuals increase their religious observance and become occupied with family holiday celebrations. On the other hand, given that Ramadan is often marked by shorter work or school day in Muslim countries, individuals might gain more free time to search for pornography. 
 
-There has been previous research 
+There has been conflicting research connecting pornography searching to religious observance and holidays. A selection of studies coducted at the individual level show that religious individuals report lower levels of porn consumption. [Kyler Rasmussen, Alex Bierman. (2016)](https://doi.org/10.1016/j.adolescence.2016.03.017.) However, research relying on non-self reported data from web subscriptions and internet search values suggests the opposite. 
 
-Based on previous research, high levels of Islamic observance in a country may be causally linked to pornography consumption. Research conducted on a state level in the US suggets that higher percentages of practicing Christians in a state predict higher frequencies of porn searching. (Andrew L. Whitehead & Samuel L. Perry (2018)) On the other had, another study showed that while religious areas purcahsed the same cumulative
-in regions where more people report regularly attending religious services (per National Election Studies 2004), overall subscription rates are not statistically significantly different from subscriptions elsewhere However, in such regions, a statistically significantly smaller proportion of subscriptions begin on Sundays
-  Edelman, B. (2009). 
+A state level study in the US demonstrates that higher percentages of practicing Christians in a state predict higher frequencies of porn searching. [(Andrew L. Whitehead & Samuel L. Perry 2018)](https://www.ncbi.nlm.nih.gov/pubmed/28276941) Other research demonstrated that regions where more people report regularly attending religious services, purchased the same total level of porn but a smaller portion of subscriptions begin on Sunday. Edelman, B. (2009). 
 
-  
+Finally, [pornhub](https://www.pornhub.com/insights/christmas-holiday-searches) publishes subscription statistics from the Christmas holiday season which indicate that traffic changes on Christmas Day vary widely by country. In some countries such as Austrialia, the UK, and the Italy there is a decrease in traffic by over 20%. However, in Japan, India and Russia there is the opposite effect of an increase in traffic running from 2% to 13%.  
+
   
 
 
@@ -43,10 +42,6 @@ in regions where more people report regularly attending religious services (per 
 
 
 
-###Why is this importnat?
-  Examining differences in pornography consumption during Ramadan offers a fruitful metric for gauging soft measures of religious observance. While obviously, many Muslims will continue to consume pornography over the Holiday, flouting the prohibition, others will not. 
-  
-Ramadan consists of one month in the Islamic lunar calendar lasting about thirty-one days on average, which emphasizes rituals encouraging greater control over physical needs, specifically sex, food and water during the daylight hours. After sunset the fast concludes with prayers at the mosque and then family gathers for a festive breakfast meal, iftar which can last late into the night. 
 
 
 ###Testing the question with Data:
