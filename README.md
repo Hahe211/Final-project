@@ -11,7 +11,7 @@ This project also examines the global impact of Ramadan and similarly finds a -1
 I aggregate data using the gtrends google search library in R. 
 
 
-Please find a more detailed description of my research on RPubs http://rpubs.com/hahe211/446172
+Please find a more detailed description of my research on RPubs http://rpubs.com/hahe211/450376 
 
 Finally, to replicate my work, please check out the "Data Prep" rmd file which you can run (but not knit). Next, check out the final_proj_pres.rmd file which you can knit to replicate my RPubs.
 
