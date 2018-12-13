@@ -70,7 +70,7 @@ select(-keyword, -date1, -date2, -date3, -date4, -date5, -date6) %>%
 #results set to "asis" in order to use html in stargazer
 
 data %>% 
-  rename(query1 = hits.sex, query2 = hits.porn, mean = sum) %>% 
+  rename(Q1 = hits.sex, Q2 = hits.porn, mean = sum) %>% 
   select(-category, -days_in_ram, -in_ram, -before_ram, -days_in_eid, -in_eid) %>% 
   stargazer(type = "html", title="Summary statistics", digits=1, flip = TRUE, summary.logical= FALSE, column.sep.width = "10pt", single.row = TRUE)
 
@@ -181,8 +181,9 @@ m3 <- lm(sum ~ before_ram + in_ram + in_eid + geo + year, data = data)
 
 #use results = asis in the caption to make sure the table prints properly
 #final regression code
-stargazer(ma, mb, m1, m3, summary = FALSE, type = "html", title = "Changes in Sex and Porn Related Search Values Over Ramadan", dep.var.labels = "Mean values for 'sex' and 'porn' hits by Week",covariate.labels = c( "Week Before Ram (0 or 1)", "Presence of Ram (0 or 1)", "Presence of Eid (0 or 1)"), omit = c("geo", "year"), omit.labels = c("Country Control?", "Year Control?"), omit.yes.no = c("No", "Yes"))
-#the control labels are incorrectly displayed above. I'm not sure why? 
+stargazer(ma, mb, m1, m3, summary = FALSE, type = "html", title = "Changes in Sex and Porn Related Search Values Over Ramadan", dep.var.labels = "Mean values for 'sex' and 'porn' hits by Week",covariate.labels = c( "Week Before Ram (0 or 1)", "Presence of Ram (0 or 1)", "Presence of Eid (0 or 1)"), omit = c("year","geo"), add.lines = list(c("Controls for Country and Year?", "No", "Yes", "Yes", "Yes")))
+        
+
 ```
 
 
