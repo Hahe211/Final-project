@@ -18,30 +18,30 @@ library(readxl)
 library(foreign)
 library(car)
 
-
+#link to my rpubs http://rpubs.com/hahe211/455307
 ```
 
 ###Do Pornography Consumption Patterns Change Over Ramadan in Muslim Countries? 
 
 While pornography is always forbidden in Islam, this is even more true over the month of Ramadan. The message of Ramadan emphasizes pious behaviors and abstaining from physical pleasures: specifically, sex, food and water during the daylight hours. Many Muslims increase their religious observance over this time-period through fasting and attending mosque and religious authorities [encourage](http://seekershub.org/ans-blog/2009/09/12/does-looking-at-pornography-break-ones-fast/) their followers eliminate pornography viewing. All the while, many Muslim-majority countries are fighting [a losing battle](https://www.salon.com/2015/01/15/why_porn_is_exploding_in_the_middle_east_partner/) against rising consumption of pornography in their countries, with numerous governments attempting and failing to enforce internet porn bans. 
   
-#### There is plausible reason to assume a negative or positive impact.    
+#### My hypothesis is that Ramadan could enact a negative or positive impact on pornography viewing by Muslims.    
 
 On the one hand, pornography viewing might be expected to decrease over Ramadan as individuals increase their religious observance and become occupied with family holiday celebrations. On the other hand, given that Ramadan is often marked by shorter work or school day in Muslim countries, people might gain more free time to search for pornography. 
 
-There has been conflicting research connecting pornography searching to religious observance and holidays. A selection of studies coducted at the individual level show that religious individuals report lower levels of porn consumption. [Kyler Rasmussen, Alex Bierman. (2016)](https://doi.org/10.1016/j.adolescence.2016.03.017.) However, a study which employed data from google searches and web subscriptions showed the opposite.  In a U.S. based study of google search data,  higher percentages of practicing Christians in a state were shown to predict higher frequencies of porn searching.[(Andrew L. Whitehead & Samuel L. Perry 2018)](https://www.ncbi.nlm.nih.gov/pubmed/28276941) Another study also showed that regions where more people report regularly attending religious services purchased the same total level of porn but had a smaller portion of subscriptions beginning on Sunday. [Edelman, B. (2009)](http://www.benedelman.org/publications/redlightstates.pdf) Finally, [pornhub](https://www.pornhub.com/insights/christmas-holiday-searches) statistics from the holiday season demonstrate that traffic changes on Christmas Day vary widely by country. In some countries such as Australia, the U.K., and the Italy there is a decrease in traffic by over twenty percent. However, in Japan, India and Russia there is the opposite effect of an increase in traffic from two to thirteen percent on Christamas.  
+There has been conflicting research connecting pornography searching to religious observance and holidays. A selection of studies coducted at the individual level show that religious individuals report lower levels of pornography consumption. [Kyler Rasmussen, Alex Bierman. (2016)](https://doi.org/10.1016/j.adolescence.2016.03.017.) However, a study which employed data from google searches and web subscriptions showed the opposite.  In a U.S. based study of google search data,  higher percentages of practicing Christians in a state were shown to predict higher frequencies of porn searching.[(Andrew L. Whitehead & Samuel L. Perry 2018)](https://www.ncbi.nlm.nih.gov/pubmed/28276941) Another study also showed that regions where more people report regularly attending religious services purchased the same total level of porn but had a smaller portion of subscriptions beginning on Sunday. [Edelman, B. (2009)](http://www.benedelman.org/publications/redlightstates.pdf) Finally, [pornhub](https://www.pornhub.com/insights/christmas-holiday-searches) statistics from the holiday season demonstrate that traffic changes on Christmas Day vary widely by country. In some countries such as Australia, the U.K., and the Italy there is a decrease in traffic by over twenty percent. However, in Japan, India and Russia there is the opposite effect of an increase in traffic from two to thirteen percent on Christamas.  
 
   
 
 
 ![](Ramadans-Night-Prayers.jpg) 
 
+----------------------------------------------------------
 
 
 
 
-
-###Google Trends Data Reveals a Decrease in Pornography Search Values over Ramadan
+###My Analysis of Google Trends Data Reveals a Significant Decrease in Pornography Searching over Ramadan
  
 My study shows a negative relationship between the presence of Ramadan and pornography searching in eleven Muslim countries.  The presence of Ramadan is associated with a nine percentage point  decrease in weekly porn searches. The week before Ramadan also results in a two percentage point decrease in searches. However, in the week following Ramadan, when the feasting holiday of Eid al-Futr occurs, there is a rebound effect of an increase in pornography searches by over 15 percentage points.  
 
@@ -102,7 +102,7 @@ ggplot() + geom_line(data = data, aes(x = date, y = sum))+ geom_rect(data= ramad
 
  
 
-####How I compiled my data:
+###How I compiled my data:
 
 
 The dependent variable represents the mean popularity of the two most common pornography-related search terms for Egypt, Tunisia, Libya, Arab Emirates, Saudi Arabia, Iran, Afghanistan, Jordan, Pakistan, Malaysia from Jan 5, 2014 through December 12, 2018. There are 2827 observations, each corresponding to a search volume value in a given week in a given country. The study starts with 2014 since google trends offers a convenient option to download weekly data for the past five years. In future studies, it would be possible to include earlier years. 
@@ -126,14 +126,14 @@ data %>%
 -----------------------
 
 
-#### A note on interpreting google trends values
+#### A note on interpreting Google Trends values:
 •	Each data point is divided by the total searches of the geography and time range it represents to compare relative popularity. Otherwise, places with the most search volume would always be ranked highest.
 •	The resulting numbers are then scaled on a range of 0 to 100 based on a topic’s proportion to all searches on all topics.
 •	Different regions that show the same search interest for a term don't always have the same total search volumes.
 Source: [Google trends]( https://support.google.com/trends/answer/4365533?hl=en&ref_topic=6248052)
 
 
-#####Independent Variables: 
+####Independent Variables: 
 
  “ __Presence of Ramadan __” is a binary variable with values of one or zero based on the presence of absence of Ramadan.
 
@@ -174,7 +174,7 @@ stargazer(ma, mb, m1, m3, summary = FALSE, type = "html", title = "Changes in Se
 ----------------
 
 
-####Why does Pornography Consumption Decrease over the Ramadan Holiday?
+###Why does Pornography Searching Decrease over the Ramadan Holiday?
 
 
 Decreases in the popularity of porn over Ramadan may correspond to levels of individual religious observance. However, there could also be social and scheduling factors associated with observance of Ramadan, which would alter individual practice.Given that most pornography searches occur at night, schedule changes during Ramadan for late night family gatherings and breakfast meals and prayers coudld render a significant impact to internet browsing behaviors Moreover, many countries have Ramadan laws, which [criminalize](http://www.bbc.co.uk/religion/religions/islam/practices/ramadan_1.shtml) public acts of non-observance, this could include viewing porn in public settings such as internet cafes.Another factor could be the physical exhaustion from fasting decreases interest in sexual stimulation. Bio-chemical or neurological changes associated with fasting have been [shown](http://www.urologyjournal.org/index.php/uj/article/viewFile/2787/1027) to decrease levels of libido and alter interest in pornographic content. 
@@ -215,7 +215,7 @@ hourly2$interest_over_time %>%
   scale_x_continuous(breaks = c(6, 12, 18, 24)) +
   labs(y = NULL, x = "Time of Day", 
        caption = "November 27, 2018 11:00am to December 4, 2018 1:00pm",
-       colour = NULL, title = "Google Trends Popularity of 'porn' or 'sex' over a Week in Jordan", subtitle = "Most Hits Occur in the Evening Hours")
+       colour = NULL, title = "The Hourly Popularity of 'Porn' And 'Sex' Google Searches Over a Week in Jordan", subtitle = "Most Hits Occur in the Evening Hours - A Typical Week")
 
 ```
   
@@ -263,7 +263,7 @@ ggplot(geo_lev_ram, aes(sum, geo)) +   #include label = year if wish to add labe
 ```
 
 
-####Which Countries exhibit the most significant decrease? 
+###Which Countries Exhibit the Most Significant Decrease in Pornography Searching? 
 
 Examining the differences between countries may give insight into how Ramadan observance differ by region.  Here is series of individual country graph to analyze the variation between countries - some countries exhibit more signficant changes over Ramadan than others. Pakistan tops the list with a thirty percent decrease while Iran is at the bottom with only a thirteen percent decrease. That is a big difference. 
 
@@ -367,7 +367,7 @@ p + scale_color_discrete(labels = c("After Ramadan", "Rest of Year", "Ramadan"))
 
 
 
-###A Global Impact? 
+###Does Ramadan Impact Global Pornography Search Patterns? 
 
 
 Muslims comprise [twenty-four percent](http://www.pewresearch.org/fact-tank/2017/04/06/why-muslims-are-the-worlds-fastest-growing-religious-group/) of the global population, so does the presence of Ramadan also impact global pornography searching patterns? To answer this question I analyze global google search data from from 2014 to 2018. The data shows that Ramadan is associated with a one and a half percentage point decrease in global searches for “sex” and “porn” at ten-percent significance level, in a given year. The Muslim population has been projected to increase to constitute [thirty-two percent](http://www.pewresearch.org/fact-tank/2017/04/06/why-muslims-are-the-worlds-fastest-growing-religious-group/) of the global population by 2060. Their influence on Google Trends will probably increase with time.
@@ -396,10 +396,10 @@ w1 <- lm(sum ~ in_ram + year, data=world)
 
 ###Future avenues for research
 
-Next, I'll study the relationship between country-level religious observance and decrease in pornography consumption over Ramadan.  Does higher self-reported mosque attendance and religious belief result in a more significant decrease in porn-viewing over Ramadan? I would like to find out. 
+Next, I hope to study the relationship between country-level religious observance and decrease in pornography consumption over Ramadan.  Does higher self-reported mosque attendance and religious belief result in a decrease in pornography searching over Ramadan of greater magnitude? I would like to find out. 
 
+-----------------------
 
-####*By: Hannah Hess, Harvard College 2019*
-####you can email me at hess@college.harvard.edu
+####*Hannah Hess, Harvard College 2019*. You can email me at hess@college.harvard.edu
 
 
