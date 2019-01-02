@@ -85,7 +85,7 @@ filter(year >= 2014, Holiday == "Ramadan")
 #full graph of all the countries in the study (the graph is very compact so I also make another one with only 2 countries so you can see the relationship more easily) #the code below is a graph with grey areas indicating ramadan.
 #it also might like better with color filled underneath - for future experiment
 
-ggplot() + geom_line(data = data, aes(x = date, y = sum))+ geom_rect(data= ramadan_dates, aes(xmin=start, xmax=end, ymin=-Inf, ymax=+Inf), alpha = 0.3) + labs(subtitle = "Pornography Search Volume over Time with Ramadan Shaded in Grey", x ="Weeks from Jan 5, 2014 through December 12, 2018", y = "Pornography Search Volume", caption = "Data Drawn from Egypt, Tunisia, Libya, UAE, Saudi Arabia, Iran, Afghanistan, Jordan, Pakistan, Malaysia")
+ggplot() + geom_line(data = data, aes(x = date, y = sum))+ geom_rect(data= ramadan_dates, aes(xmin=start, xmax=end, ymin=-Inf, ymax=+Inf), alpha = 0.3) + labs(subtitle = "Pornography Search Volume from 2014-2018 with the Month of Ramadan Shaded in Grey", x ="Weeks from Jan 5, 2014 through December 12, 2018", y = "Pornography Search Volume", caption = "Data Drawn from Egypt, Tunisia, Libya, UAE, Saudi Arabia, Iran, Afghanistan, Jordan, Pakistan, Malaysia")
 
 
 
