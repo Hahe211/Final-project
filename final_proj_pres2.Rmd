@@ -1,0 +1,429 @@
+---
+author: "hannah hess"
+date: "December 4, 2018"
+output: 
+html_document:
+ toc: true 
+ highlight: tango   
+ fig_caption: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(stargazer)
+library(gtrendsR)
+library(tidyverse)
+library(knitr)
+library(readxl)
+library(foreign)
+library(car)
+
+
+```
+
+## <span style="color:red">Do Muslims Consume More or Less Porn on Ramadan? </span>
+
+Pornography and Ramadan may seem unrelated. However, these terms are very much linked both in real life and in Google searches. While pornography is always considered illicit in Islam, this is even more true over the month of Ramadan. The message of Ramadan emphasizes pious behaviors and abstaining from physical pleasures: specifically, sex, food and water during the daylight hours. Many Muslims increase their observance over this time-period through fasting and attending mosque and some might eliminate pornography conumption over the Ramadan month. All the while, many Muslim-majority countries are fighting [a losing battle](https://www.salon.com/2015/01/15/why_porn_is_exploding_in_the_middle_east_partner/) against rising consumption of pornography in their countries, with numerous governments attempting and failing to enforce internet porn bans. 
+  
+#### There is plausible reason to assume a negative or positive impact.    
+
+On the one hand, pornography consumption might be expected to decrease over Ramadan as individuals increase their religious observance and become occupied with family holiday celebrations. On the other hand, given that Ramadan is often marked by shorter work or school day in Muslim countries, people might gain more free time to search for pornography. 
+
+There has been conflicting research connecting pornography searching to religious observance and holidays. A selection of studies coducted at the individual level show that religious individuals report lower levels of porn consumption. [Kyler Rasmussen, Alex Bierman. (2016)](https://doi.org/10.1016/j.adolescence.2016.03.017.) However, research relying on non-self-reported data from web subscriptions and google searches suggests the opposite.  In a U.S. study of google search data,  higher percentages of practicing Christians in a state were shown to predict higher frequencies of porn searching.[(Andrew L. Whitehead & Samuel L. Perry 2018)](https://www.ncbi.nlm.nih.gov/pubmed/28276941) Another study also showed that regions where more people report regularly attending religious services purchased the same total level of porn but had a smaller portion of subscriptions beginning on Sunday. [Edelman, B. (2009)](http://www.benedelman.org/publications/redlightstates.pdf) Finally, [pornhub](https://www.pornhub.com/insights/christmas-holiday-searches) statistics from the holiday season demonstrate that traffic changes on Christmas Day vary widely by country. In some countries such as Australia, the UK, and the Italy there is a decrease in traffic by over twenty percent. However, in Japan, India and Russia there is the opposite effect of an increase in traffic from two to thirteen percent on Christamas.  
+
+  
+
+
+![](Ramadans-Night-Prayers.jpg) 
+
+
+
+
+
+
+###We can use google trends data to uncover porn watching trends over Ramadan
+
+####Here's how I compiled my data
+
+
+The dependent variable represents the mean popularity of the two most common porn-related search terms for Egypt, Tunisia, Libya, Arab Emirates, Saudi Arabia, Iran, Afghanistan, Jordan, Pakistan, Malaysia from Jan 5, 2014 through December 12, 2018. There are 2827 observations, each corresponding to a value for porn search volume in a given week in a given country. I began the search after 2014 since google trends offers a convenient option to download weekly data for the past 5 years. In future studies, it would be possible to include earlier years. 
+For each country, I chose the two highest volume queries from a list of twenty. I drew from Arabic and Persian term lists in the following sources[1](https://productforums.google.com/forum/#!msg/websearch/0_kNuK17P8o/TjMBPHhOuysJ), [2](https://opennet.net/sites/opennet.net/files/bing_arabiancountries.pdf). However, I found that in all but Iran and Afghanistan, the highest volume porn searches were for the english terms, “sex” and “porn”, as opposed to Arabic language terms. This speaks to the international nature of the pornography industry. However, In Iran and Afghanistan, I replaced the term “سکس for “porn” since it was searched more popularly (the word is just a transliteration of sex in Perso-arabic alphabet). 
+
+
+```{r, echo = FALSE, message = FALSE, warning= FALSE, results = "asis", cache = TRUE}
+
+#read in the data
+data <- read_rds("data.rds") %>% 
+select(-keyword, -date1, -date2, -date3, -date4, -date5, -date6) %>% 
+#I realized late that the data pulled on 2013 does not include ramadan, since the google code for the last 5 years counts backward from today*12/11/18. As a result, I'm filtering up for only 2014 and above.
+#in the future, I would add more years but for now this will suffice
+  filter(year > 2013)
+
+#creating display table of summary stats
+#results set to "asis" in order to use html in stargazer
+
+data %>% 
+  rename(Q1 = hits.sex, Q2 = hits.porn, mean = sum) %>% 
+  select(-category, -days_in_ram, -in_ram, -before_ram, -days_in_eid, -in_eid) %>% 
+  stargazer(type = "html", title="Summary statistics", digits=1, flip = TRUE, summary.logical= FALSE, column.sep.width = "10pt", single.row = TRUE)
+
+```
+
+-----------------------
+
+
+#### A note on interpreting google trends values
+•	Each data point is divided by the total searches of the geography and time range it represents to compare relative popularity. Otherwise, places with the most search volume would always be ranked highest.
+•	The resulting numbers are then scaled on a range of 0 to 100 based on a topic’s proportion to all searches on all topics.
+•	Different regions that show the same search interest for a term don't always have the same total search volumes.
+Source: [Google trends]( https://support.google.com/trends/answer/4365533?hl=en&ref_topic=6248052)
+
+
+#####Independent Variables: 
+
+ “ __Presence of Ramadan __” is a binary variable with values of one or zero based on the presence of absence of Ramadan.
+
+ “ __In Eid __” is a categorical variable which registers the presence of Eid al-Futr. Eid al-Futr is a three-day feasting holiday which always occurs immediately following Ramadan. Thus, “In Eid” is also standing as an “after ramadan” variable.
+ 
+ “ __Week Before Ram __” is a binary variable for the week before Ramadan. It examines whether individuals decrease their pornography searching in advance of the holiday.
+ 
+ *Controls: I include controls for year and country.
+
+
+
+
+###Findings
+ 
+This study shows a negative relationship between the presence of Ramadan and porn searching in majority Muslim countries. 
+
+
+```{r, echo = FALSE, message=FALSE, warning=FALSE, cache = TRUE}
+#graphs pretty graphs
+
+#read in data for the first graph which includes indicators for the presence of ramadan/eid and the value for sex and porn searches
+#this was compiled in the document final_proj_code rmd  and includes the combined data from the 5 muslim majority countries over the past 5 years on a weekly basis 
+#I tried grabbing from a longer time frame but unfortunately in that case the data could only be downloaded on a month level. The right approach for the future would probably be to download twice in 5 year incremements and then bind_cols
+
+
+
+
+
+graph1 <- data %>%
+  mutate(hits = hits.porn,
+         category = "porn") %>%
+  select(hits, category, date, in_ram)
+
+graph2 <- data %>%
+  mutate(hits = hits.sex,
+         category = "sex") %>%
+select(hits, category, date, in_ram)
+
+#combine the data for sex and porn searchs in a way which will allow you to create a line graph with two categories
+graph3 <- bind_rows(graph1, graph2)
+
+#read in data of ramadan dates
+ramadan_dates <- read_excel("ramadan_dates.xlsx") %>% 
+filter(year >= 2014, Holiday == "Ramadan")
+
+
+
+
+
+#full graph of all the countries in the study (the graph is very compact so I also make another one with only 2 countries so you can see the relationship more easily) #the code below is a graph with grey areas indicating ramadan.
+#it also might like better with color filled underneath - for future experiment
+
+ggplot() + geom_line(data = data, aes(x = date, y = sum))+ geom_rect(data= ramadan_dates, aes(xmin=start, xmax=end, ymin=-Inf, ymax=+Inf), alpha = 0.3) + labs(title="'Porn' and 'Sex' Search Values over the Past 4 Years", subtitle = "Values Decrease over Ramadan - Shaded Grey", x ="Weeks from 2014-2018", y = "Hit Values", caption = "Data Drawn from 11 Muslim Majority Countries")
+
+
+
+#second graph of weekly data of the past five years - fewer countries so clearer lines - not included for now
+# yearly <- gtrends(c("sex","porn"), geo = c("SA", "JO"), time = "today+5-y")  
+# yearly = yearly$interest_over_time
+# 
+# ggplot() + geom_line(data = yearly, aes(x = date, y = hits, colour = keyword)) + geom_rect(data = ramadan_dates, aes(xmin=start, xmax=end, ymin=-Inf, ymax=+Inf), alpha = 0.2) +labs(title="'Porn' and 'Sex' Search Values over the Past 5 Years", subtitle = "Sex and porn related searches decrease Over Ramadan",  x ="Weeks from 2013-2018", y = "Hit Values", caption = "Data Drawn from Only Saudi Arabia and Jordan for Easy Viewing")
+
+
+
+
+```
+
+ 
+
+
+
+
+The presence of Ramadan is associated with a nine-percentage point  decrease in weekly porn searches. As seen in Regression 4, the week before Ramadan also results in a two-percentage point decrease in searches. However, in the week following, in which Eid al-Futr occurs, there is a rebound effect of an increase in pornography searches by over 15 percentage points. This increase is greater in magnitude than the decrease (regressions 3 and 4). These results are significant (p < .01) and include controls for year and country. 
+
+
+-----------------------
+
+
+
+```{r, echo = FALSE, message = FALSE, warning= FALSE, results = "asis"}
+#regression analysis - putting togethor the regressions
+#year and country controls dont make a difference in p values, sd, or coeff so I'm back to removing them -  because data set is already normalized for year and country
+ma <- lm(sum ~ in_ram, data=data)
+mb <- lm(sum ~ in_ram + geo + year, data=data)
+m1 <- lm(sum ~ in_ram + in_eid + geo + year, data=data)
+m3 <- lm(sum ~ before_ram + in_ram + in_eid + geo + year, data = data)
+#this is the regression of2 weeks before ramadan, I'm commenting out for this first study, but it is noteworthy since it changes the results
+#m4 <- lm(sum ~ before2_ram + before_ram + in_ram + in_eid, data = graph)
+
+
+#use results = asis in the caption to make sure the table prints properly
+#final regression code
+stargazer(ma, mb, m1, m3, summary = FALSE, type = "html", title = "Changes in Sex and Porn Related Search Values Over Ramadan", dep.var.labels = "Mean values for 'sex' and 'porn' hits by Week",covariate.labels = c( "Week Before Ram (0 or 1)", "Presence of Ram (0 or 1)", "Presence of Eid (0 or 1)"), omit = c("year","geo"), add.lines = list(c("Controls for Country and Year?", "No", "Yes", "Yes", "Yes")))
+        
+
+```
+
+
+----------------
+
+
+####Why does Pornography Consumption Decrease over the Holiday?
+
+
+Decreases in the popularity of porn over Ramadan may correspond to levels of individual religious observance. However, there could also be social and scheduling factors associated with observance of Ramadan, which would alter individual practice.Given that most pornography searches occur at night, schedule changes during Ramadan for late night family gatherings and breakfast meals and prayers coudld render a significant impact to internet browsing behaviors Moreover, many countries have Ramadan laws, which [criminalize](http://www.bbc.co.uk/religion/religions/islam/practices/ramadan_1.shtml) public acts of non-observance, this could include viewing porn in public settings such as internet cafes.Another factor could be the physical exhaustion from fasting decreases interest in sexual stimulation. Bio-chemical or neurological changes associated with fasting have been [shown](http://www.urologyjournal.org/index.php/uj/article/viewFile/2787/1027) to decrease levels of libido and alter interest in pornographic content. 
+
+  
+
+```{r, cache = TRUE, echo = FALSE, message=FALSE, warning=FALSE}
+
+#Optional hourly code for saudi, commented out
+# hourly <- gtrends(c("sex","porn"), gprop = "web", geo = c("SA"), time = "now 7-d") 
+# 
+#  hourly$interest_over_time %>% 
+#   mutate(day = lubridate::wday(date, label = TRUE), hour = lubridate::hour(date)) %>% 
+#     ggplot() +
+#   geom_line(aes(x = hour, y = hits, colour = keyword)) +
+#   geom_smooth(aes(x = hour, y = hits), se = FALSE) +
+#   facet_grid(. ~ day) +
+#   theme_bw() + 
+#   theme(legend.position = 'top') +
+#   scale_x_continuous(breaks = c(6, 12, 18, 24)) +
+#   labs(y = NULL, x = "Time of Day", 
+#        caption = "November 27, 2018 11:00am to December 4, 2018 1:00pm",
+#        colour = NULL, title = "Google Trends Popularity of 'porn' or 'sex' over a Week in Saudi Arabia")
+# 
+
+#I redownload the data on an hourly level, hourly data is only availablefrom grends if you download in the last week
+#be careful that if I grab the data again then I will have to change the caption because the date will change!
+ hourly2 <- gtrends(c("sex","porn"), gprop = "web", geo = c("JO"), time = "now 7-d") 
+
+hourly2$interest_over_time %>% 
+  mutate(day = lubridate::wday(date, label = TRUE), hour = lubridate::hour(date)) %>% 
+    ggplot() +
+  geom_line(aes(x = hour, y = hits, colour = keyword)) +
+  geom_smooth(aes(x = hour, y = hits), se = FALSE) +
+  facet_grid(. ~ day) +
+  theme_bw() + 
+  theme(legend.position = 'top') +
+  scale_x_continuous(breaks = c(6, 12, 18, 24)) +
+  labs(y = NULL, x = "Time of Day", 
+       caption = "November 27, 2018 11:00am to December 4, 2018 1:00pm",
+       colour = NULL, title = "Google Trends Popularity of 'porn' or 'sex' over a Week in Jordan", subtitle = "Most Hits Occur in the Evening Hours")
+
+```
+  
+
+
+
+```{r, include = FALSE, warning= FALSE}
+
+#code to prep for graphs comparing countries, can ignore
+#code a categorical variable for ramadan/not ramadan/eid after Ramadan
+data$scode <- NA
+data$scode[data$in_ram==0] <- "Not Ramadan"
+data$scode[data$in_ram==1] <- "Ramadan"
+data$scode[data$in_eid== 1] <- "Eid_after_Ramadan"
+
+
+#arrange by country with highest porn viewing
+geo_sum <-   data %>%
+  group_by(geo)%>%
+  summarise(sum = median(sum, na.rm = TRUE))%>%
+        arrange(sum) %>% 
+          mutate(geo = factor(geo, levels = .$geo))
+
+
+
+
+#then organize by ramadan vs not ramadan 
+#I divide 
+geo_lev_ram <-  data %>%
+        group_by(geo, scode) %>%
+  #find the median weekly value in Ramadan/not ramadan by Geo, I choose median bc more robust to outliers
+        summarise(sum = median(sum, na.rm = TRUE)) %>%
+        ungroup() %>% 
+        mutate(geo = factor(geo, levels = geo_sum$geo)) 
+     
+
+#lolly plot, weekly median porn viewing Ramadan vs not ramadan 
+ggplot(geo_lev_ram, aes(sum, geo)) +   #include label = year if wish to add label to aes with year marks, would also need to adjust geo_sum above
+        geom_line(aes(group = geo)) +
+        geom_point(aes(color = scode))
+       
+
+
+
+```
+
+
+####Which Countries exhibit the most significant decrease? 
+
+Examining the differences between countries may give insight into how Ramadan observance differ by region. 
+
+```{r, message=FALSE, echo=FALSE, warning = FALSE}
+
+#try another graph where I lable the percent increase
+#create frame with the values of the percent change
+big_diff <- geo_lev_ram %>% 
+        spread(scode, sum) %>% 
+        group_by(geo) %>% 
+     #calculate list of percent change btwn ram and not ram
+        mutate(Diff = (Ramadan - `Not Ramadan`)/`Not Ramadan`)
+
+   
+
+#create labal frame
+after_ram_label <- geo_lev_ram %>%
+        group_by(geo) %>%
+        arrange(desc(sum)) %>%
+        top_n(1)
+
+not_ram_label <- geo_lev_ram %>%
+        group_by(geo) %>%
+        arrange(desc(sum)) %>%
+        slice(2)
+
+ram_label <-  geo_lev_ram %>%
+        group_by(geo) %>%
+        arrange(desc(sum)) %>%
+        slice(3)
+
+# filter the label data frames to only include those countries where the
+# difference exceeds 20%
+# right_label <- filter(right_label, geo %in% big_diff$geo)
+# left_label <- filter(left_label, geo %in% big_diff$geo)
+
+highlight <- filter(geo_lev_ram, geo %in% big_diff$geo)
+
+#create ggplot which has values labels for the 3 s-code points
+#I am muting this code because I would rather have the second graph showing percent changes
+ # ggplot(geo_lev_ram, aes(sum, geo)) +
+ #        geom_line(aes(group = geo), alpha = .3) +
+ #        geom_point(aes(color = scode), size = 1.5, alpha = .3) +
+ #        geom_line(data = highlight, aes(group = geo)) +
+ #        geom_point(data = highlight, aes(color = scode), size = 2) +
+ #        geom_text(data = after_ram_label, aes(color = scode, label = round(sum, 0)),
+ #                  size = 3, hjust = -.5, check_overlap = TRUE, size = 4, angle = 45) +
+ #        geom_text(data = not_ram_label, aes(color = scode, label = round(sum, 0)),
+ #                  size = 3, hjust = 1.5, check_overlap = TRUE, size = 4, angle = 45) +
+ #        geom_text(data = ram_label, aes(color = scode, label = round(sum, 0)),
+ #                  size = 3, hjust = 1.5, check_overlap = TRUE, size = 4, angle = 45) +
+ #        scale_x_continuous()
+
+     
+
+
+
+# create a new label data frame for percent changes
+plot_label <- big_diff %>%
+        select(geo, sum = Ramadan, Diff) 
+#create a graph with percent change labels instead of point labels
+ p<- ggplot(geo_lev_ram, aes(sum, geo)) +
+        geom_line(aes(group = geo), alpha = .3) +
+        geom_point(aes(color = scode), size = 1.5, alpha = .3) +
+        geom_line(data = highlight, aes(group = geo)) +
+        geom_point(data = highlight, aes(color = scode), size = 2) +
+        geom_text(data = plot_label, aes(label = paste0(scales::percent(round(Diff, 2)))),
+                  size = 3, hjust = .05, vjust = -.8) 
+   
+
+
+
+
+#add titles to plot and also a nice theme
+
+p + scale_color_discrete(labels = c("After Ramadan", "Rest of Year", "Ramadan")) +
+        #scale_y_discrete(expand = c(.02, 0)) +
+        labs(title = "Changes By Country in Median Weekly Porn Search Values",
+             subtitle = "8 Out of the 11 Countries have a decrease in porn consumption of over 20% in Ramadan weeks")+
+         xlab("Median Weekly Porn Consumption")+
+        theme_minimal() +
+        theme(axis.title = element_blank(),
+              panel.grid.major.x = element_blank(),
+              panel.grid.minor = element_blank(),
+              legend.title = element_blank(),
+              legend.justification = c(0, 1), 
+              legend.position = c(.1, 1.075),
+              legend.background = element_blank(),
+              legend.direction="horizontal",
+              text = element_text(family = "Georgia"),
+              #plot.title = element_text(size = 20, margin = margin(b = 10)),
+              plot.subtitle = element_text(size = 9, color = "darkslategrey", margin = margin(b = 25)),
+              plot.caption = element_text(size = 8, margin = margin(t = 10), color = "grey70", hjust = .5))+
+              scale_y_discrete(labels = c("Iran", "Libya", "Turkey", "Saudi Arabia", "Tunisia", "Jordan", "Egypt", "Afghanistan", "Malaysia", "UAE", "Pakistan"))
+
+#This was a great resource I was designing my plot! http://uc-r.github.io/cleveland-dot-plots 
+```
+--------------------------------
+
+Here is series of individual country graph to think about the variation between countries - some countries exhibit more signficant changes over Ramadan than others! Pakistan tops the list with a thirty percent decrease while Iran is at the bottom with only a thirteen percent decrease. That is a big difference. 
+
+```{r, message=FALSE, echo=FALSE, warning = FALSE}
+#some graphs by country to show individual level decrease
+
+panel <- data
+
+
+#print nice graph showing dips over Ramadan across countries by date in 5 small graphs
+
+coplot(sum ~ date|geo,  type="l", data=panel, ylab = "Weekly Popularity of Pornography", xlab = "Weeks from 2014 - 2017") 
+
+```
+
+
+
+
+### <span style="color:red">A Global Impact? </span>
+
+
+We know that Muslims make up [twenty-four percent of the global population](http://www.pewresearch.org/fact-tank/2017/04/06/why-muslims-are-the-worlds-fastest-growing-religious-group/). Does the presence of Ramadan also have an impact on global pornography searching?
+
+To answer this I pull global google search data from from 2014-2018. The data shows that Ramadan is associated with a one and a half percentage point decrease in global searches for “sex” and “porn” at ten-percent significance level, in a given year.
+
+The Muslim population has been projected to increase to constitute [thirty-two percent of the global population]((http://www.pewresearch.org/fact-tank/2017/04/06/why-muslims-are-the-worlds-fastest-growing-religious-group/) by 2060 so their influence on Google Trends might increase over time.
+
+
+-----------------------------
+
+```{r, echo = FALSE, message = FALSE, warning= FALSE, results = "asis", cache = TRUE}
+#read in world data
+world <- read_rds("world.rds")
+
+w1 <- lm(sum ~ in_ram + year, data=world)
+
+
+ stargazer(w1, summary = FALSE, type = "html", title = "Global Level Changes in Sex and Porn Related Search Values Over Ramadan", dep.var.labels = "Mean values for 'sex' and 'porn' hits by Week",covariate.labels = "Presence of Ram (0 or 1)",  omit = "year", omit.labels = "Year Control?")
+
+
+
+
+```
+
+
+
+
+---------------------
+
+###Future avenues for research
+
+Next, I'll study the relationship between country-level religious observance and decrease in pornography consumption over Ramadan.  Does higher self-reported mosque attendance and religious belief result in a more significant decrease in porn-viewing over Ramadan? I'd like to find out. 
+
+
+####*By: Hannah Hess, Harvard College 2019*
+####you can email me at hess@college.harvard.edu
+
+
